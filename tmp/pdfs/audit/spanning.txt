@@ -1,0 +1,214 @@
+Distributed Spanning Tree
+       Construction
+  Core idea of the GHS construction
+➢ Start with a forest of individual one-node components
+
+
+➢ Repeatedly identify a minimum-weight outgoing edge (MWOE) for each
+  component
+
+
+➢ Merge components through the selected MWOE
+
+
+➢ Repeat level by level until only one component remains
+
+
+➢ Each component has a representative leader UID                  4
+Level 0: the initial spanning forest
+
+ With n nodes, level 0 contains n separate spanning trees
+
+
+ Each component contains exactly one node and no selected
+ edges
+
+
+ Every node knows its own UID and acts as the leader of its
+ component
+
+
+ Nodes know their incident edges and their weights
+
+                                                              5
+Step 1: Search for the MWOE
+
+➢ Each node participates in a search message broadcast within its current
+  component to merge the two components
+
+
+➢ This intra component broadcast is a BFS
+
+
+➢ Each node examines incident edges and looks for edges leaving the
+  component
+➢ M W O E stands for Minimum Weight Outgoing Edge
+
+
+➢ A test message to neighbors is used to determine their component
+  identity                                                              6
+Step 2: Identify outgoing edges using component UIDs
+
+                           2
+
+
+                 2                    1
+
+
+       1                                          4           3    5
+
+
+                 5                    4
+
+
+                           3
+
+
+
+Each node asks its neighbors for their component leader UID
+Same UID → same component → the edge is internal
+Different UID → different component → the edge is outgoing
+Among its outgoing edges, each node keeps its minimum-weight candidate
+                                                                         7
+Step 3: Convergecast candidate MWOEs to the leader
+
+Each peripheral node sends its locally minimum
+outgoing edge toward the component leader                 L
+
+
+
+
+The convergecast aggregates candidates from the       2       3
+
+component
+
+
+The leader computes the global minimum                            5
+                                                  4
+
+
+
+
+That edge becomes the component's MWOE for the
+current merge.
+
+                                                                      8
+ Step 4: Merge two components through the MWOE
+
+The selected MWOE connects two different components
+                                                         1
+
+The current component leader communicates with the two
+                                                             2
+endpoint nodes
+                                                                 2   1   4
+
+
+Both endpoints mark the selected edge as part of the         4
+spanning structure
+                                                         3
+
+
+The two components are joined into one component
+
+
+
+
+                                                                             9
+How is the new component leader selected?
+
+After a merge, the two endpoint nodes know each other's UID
+
+
+The node with the larger UID becomes the leader of the merged
+component
+
+
+The new leader information is broadcast throughout the merged
+component
+                                                UI              UI
+                                                D               D
+                                                14              27
+
+                                              27 > 14 → UID 27 leads
+                                                                       10
+ Why levels are essential
+
+Components operate independently, so uncontrolled simultaneous merges could
+create conflicts
+Two level-0 components merge to form a level-1 component
+
+
+A level-0 component and a level-1 component produce a level-1 component
+
+
+Equal level merges advance to the next level
+
+
+Leveling imposes order and prevents conflicting activity
+
+                                                                          11
+Termination: when is the MST complete?
+
+Eventually the forest becomes one component
+
+
+The leader starts another MWOE search
+
+
+Every neighbor reports the same leader UID, so there is no edge to
+another component
+
+
+The leader knows that the entire network is covered by one spanning
+tree and the construction can stop
+
+                                                                      13
+Complexity analysis
+
+At each level, O(n) time is required for message propagation and
+processing
+
+
+The number of levels is at most O(log n), because component sizes grow
+geometrically
+
+
+Time complexity - O(n log n)
+
+
+Communication complexity: O((n + e) log n), where n is nodes and e is
+edges
+                                                                        14
+ Why the MST is useful beyond construction
+
+Once an MST exists, it provides a communication backbone for distributed
+operations
+
+
+Leaf nodes initiate a convergecast through the tree
+
+
+Internal nodes combine information and forward it toward the remaining
+neighbor
+
+
+The tree structure makes global aggregation simpler than operating over the
+original network
+                                                                           15
+ Leader election over the constructed tree
+
+➢ Each node has a unique, comparable UID
+➢ Leaves initiate convergecast messages
+➢ An internal node waits for messages from descendants, combines the
+  information, and forwards it
+➢ If two neighboring nodes remain as candidates, the node with the higher UID
+  becomes leader
+➢ MST construction therefore provides a reusable structure for later distributed
+  algorithms
+
+
+
+
+                                                                                   16
+

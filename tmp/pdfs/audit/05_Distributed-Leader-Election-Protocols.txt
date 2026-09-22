@@ -1,0 +1,53 @@
+Distributed Leader
+      Election
+      Consensus Protocol: Paxos
+Paxos is a consensus protocol designed to
+achieve agreement among a group of distributed
+processes or nodes in a network, especially in
+the presence of failures. It is particularly useful in
+distributed systems where it is crucial to ensure
+that multiple nodes agree on a single value or
+state, despite the potential for some nodes to
+fail or become unreachable.
+             Key Concepts of Paxos
+Proposers: Nodes that propose values to be agreed upon. They
+initiate the consensus process by suggesting a value.
+
+Acceptors: Nodes that receive proposals and respond to them.
+They can accept or reject proposals based on certain rules.
+
+Learners: Nodes that learn the value that has been agreed upon.
+They do not participate in the consensus process but are informed
+of the outcome.
+
+Quorum: A subset of nodes that must agree on a proposal for it to
+be considered accepted. Typically, a majority of acceptors is
+required to form a quorum.
+        Example of Paxos in Action
+Consider a distributed system with three nodes (A, B, and C) that
+need to agree on a value.
+Prepare Phase:
+Node A (the proposer) chooses a proposal number n = 1 and
+sends Prepare(1) to nodes B and C. Both B and C respond with
+Promise(1) because they have not seen any higher proposal
+numbers.
+
+Propose Phase:
+Node A, having received a majority of promises, decides to
+propose the value X and sends Propose(X) to nodes B and C.
+Both nodes accept the proposal and send back Accepted(X).
+
+Consensus Achieved:
+Since a majority (2 out of 3) of the nodes have accepted the
+proposal, the value X is now agreed upon by the system.
+          Advantages of Paxos
+Fault Tolerance: Paxos can tolerate failures of
+some nodes as long as a majority is operational.
+
+Decentralization: There is no single point of
+failure, as any node can propose a value.
+
+Consistency: Paxos ensures that all nodes
+eventually agree on the same value, maintaining
+consistency across the distributed system.
+

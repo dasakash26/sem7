@@ -1,0 +1,229 @@
+Logical Clocks
+Dept. of IT, Jadavpur University   3
+Causally related events and concurrent events
+  ◼   Causally related events: Event a causally affects event
+      b if a-> b.
+
+  ◼   Concurrent events: Two different events a and b are
+      concurrent (denoted a||b) if a does not causally affect b
+      and b does not causally affect a.
+
+  ◼   For any two events a and b, either a->b or                b->a or a||b.
+
+
+
+
+                             Dept. of IT, Jadavpur University               4
+    Lamport’s logical clock
+
+◼   There is a clock Ci at each process Pi.
+
+◼   The clock is a function that assigns a number Ci(a) to any
+    event a called the timestamp of event a in process Pi.
+
+◼   It has no connection with physical time.
+
+◼   It assumes monotonically increasing values.
+
+
+
+
+                           Dept. of IT, Jadavpur University   8
+The positioning of Lamport’s logical
+ clocks in distributed systems.
+Conditions satisfied by logical clocks
+◼   For any events a and b
+    ❑ if a -> b, then we want C(a) < C(b).
+
+
+
+◼   The above is possible if logical clocks obey the following 2
+    conditions
+
+    [C1] For any 2 events a and b in a process Pi, if a occurs before b,
+    then Ci(a) < Ci(b).
+
+    [C2] If a is the event of sending a message m in Pi and b is the
+    event of receiving the same message m at process Pj, then Ci(a) <
+    Cj(b).
+                               Dept. of IT, Jadavpur University     12
+    Implementation rules of logical clocks
+◼   The following implementation rules guarantee the satisfaction of conditions
+    C1 and C2:
+
+    ❑   [IR1] Clock Ci is incremented between any two successive events (local
+        event or message send/receive) in process Pi:
+        ◼ Ci := Ci + d (d>0)
+     If a and b are 2 successive events in Pi and a->b, then Ci(b) = Ci(a) + d
+
+    ❑   [IR2] If event a is the sending of message m by process Pi, then
+        message m is assigned the timestamp tm = Ci(a). On receiving the same
+        message m by process Pj, Cj is set as:
+        ◼ Cj := max(Cj, tm + d) (d>0)
+
+
+        d is usually set to 1.
+
+
+◼   N.B. First apply [IR1]. Then apply [IR2].
+                                      Dept. of IT, Jadavpur University     13
+    Lamport’s Logical Clocks
+◼   Three processes, each with its own clock. The clocks run at different rates.
+    Lamport’s Logical Clocks
+
+
+
+
+◼    Lamport’s algorithm corrects the clocks.
+    Basic Properties
+◼   Consistency Property
+     Scalar clocks satisfy the monotonicity and hence the
+    consistency property for two events ei and ej
+               ei → ej ⇒ C(ei ) < C(ej )
+
+◼   Total Ordering
+    Scalar clocks can be used to totally order events in a
+    distributed system. The main problem in totally ordering
+    events is that two or more events at different processes
+    may have identical timestamp.
+    Total Ordering
+◼   Total order is a binary relation that can be used to
+    compare any 2 elements of a set with each other. As a
+    direct consequence of this property, using this relation we
+    can derive only a single order for all the elements in a set,
+    which is why it’s called total order.
+
+◼   The set of unique integers {7, 9, 3, 2, 6} can be totally
+    ordered (using the relation less than <) and the associated
+    total order is
+     [2, 3, 6, 7, 9].
+    Partial order
+◼   Partial order is a binary relation that can be used to compare only
+    some of the elements of a set with each other. As a
+    consequence, using this relation we can derive multiple, valid
+    orders for all the elements in the set.
+
+     For example, the set of the following sets of integers {{0}, {1},
+    {2}, {0,1}, {1,2}} can only be partially ordered, using the subset
+    relation ⊆. If we pick the elements {0} and {0,1}, then they can be
+    ordered, since {0} ⊆ {0,1}.
+
+    The elements {0,1} and {1,2} cannot be ordered using this relation,
+    since neither {0,1} ⊆ {1,2} nor {1,2} ⊆ {0,1} holds. As a result, both
+    [{0}, {1}, {2}, {0,1}, {1,2}] and [{2}, {1}, {0}, {1,2}, {0,1}] would be
+    valid partial orderings.
+                                  Dept. of IT, Jadavpur University       18
+Conclusion:
+
+•   In systems that are composed of a single node, it’s easy and
+    intuitive to determine a total ordering of events. The main
+    reason is that there is a single actor, where all the events
+    happen, so this actor can impose a total order on these
+    events as they occur.
+
+•   Total orderings also make it much simpler to build protocols
+    and algorithms.
+
+•   However, in a distributed system it’s not that straightforward
+    to impose a total order on events, since there are multiple
+    nodes in the system and events might be happening
+    concurrently on different nodes.
+      Partial order on events
+◼   The system of scalar clocks is not strongly consistent; that is,
+    for two events ei and ej , C(ei ) < C(ej ) =/⇒ ei → ej .
+
+    For example, the first event of process P1 may have smaller
+    scalar timestamp than the 2nd event of process P3. However,
+    the former did not happen before the latter.
+
+◼   The reason that scalar clocks are not strongly consistent is that
+    the logical local clock and logical global clock of a process are
+    squashed into one, resulting in the loss causal dependency
+    information among events at different processes.
+
+
+                               Dept. of IT, Jadavpur University   21
+Limitation of Lamport’s clocks
+◼ If a -> b, C(a) < C(b)
+◼ The reverse is not necessarily true
+
+
+                                                              Timestamp of e1 = (1).
+                e1        e2
+                                                              Timestamp of e2 = (2)
+                     e3                e4                     e1 is causally related to
+                                                              e2
+           e5   e6                       e7                   Timestamp of e6 = (2)
+                                                              C(e1) < C(e6) but e1 is
+                                                              not causally related to
+                                                              e6.
+
+                           Dept. of IT, Jadavpur University                        22
+    Vector Time
+◼   In the system of n vector clocks, the time domain is represented
+    by a set of n-dimensional non-negative integer vectors.
+
+◼   Each process pi maintains a vector vti [1..n], where vti [i ] is the
+    local logical clock of pi and describes the logical time progress
+    at process pi .
+◼   vti [j ] represents process pi’s latest knowledge of process pj‘s
+    local time.
+
+◼   If vti [j ]=x, then process pi knows that local time at process pj
+    has progressed till x.
+
+◼   The entire vector vti constitutes pi ’s view of the global logical
+    time and is used to timestamp events.
+     Vector Clocks
+◼    Let there be n processes in a distributed system
+
+◼    Each process Pi has a clock Ci which is a vector of length n.
+     Vector clocks are constructed by letting each process Pi
+     maintain a vector VCi with the following two properties:
+
+1.   VCi [ i ] is the number of events that have occurred so far at
+     Pi. In other words, VCi [ i ] is the local logical clock at
+     process Pi .
+
+2.   If VCi [ j ] = k then Pi knows that k events have occurred at
+     Pj. It is thus Pi’s knowledge of the local time at Pj .
+                              Dept. of IT, Jadavpur University   28
+    Vector clocks: Implementation
+◼   The implementation rules follow:
+
+    ❑   [IR1] Clock Ci is incremented between any 2 successive events (local
+        event or message send/receive) in process Pi
+        ◼ Ci[i] := Ci[i] + d         (d>0)
+
+    ❑   [IR2]
+        ◼ If event a is the sending of message m by process Pi, then
+              message m is assigned the timestamp tm := Ci(a)
+        ◼ When message m is received by process Pj, then Cj is updated as
+              for all k, Cj[k] := max(Cj[k], tm[k])
+
+◼   Comments: For each local event and each message send/receive, the
+    logical clock advances. Each message carries as its timestamp the
+    current vector clock value of the sender. The receiver updates its vector
+    clock using the timestamp of the received message.
+
+◼   N.B. First apply [IR1]. Then apply [IR2].
+                                 Dept. of IT, Jadavpur University         29
+• Vector clocks allow us to order events by simply
+  looking at their timestamps.
+Enforcing Causal Communication
+◼ Enforcing causal communication.
+    Enforcing Causal communication
+◼   Pj receives a message m from Pi . The delivery of the message to
+    the application layer will then be delayed until the following
+    conditions are met.
+
+               1. ts(m)[i] =VCj[i] +1
+               2. ts(m)[k] <= VCj[k] for all k !=I
+
+✓ The first condition states that m is the next message that Pj
+  was expecting from Pi.
+
+✓ The second condition states that Pj has seen all the messages
+  that have been seen by Pi . When it sent message m there is no
+  need for process Pj to delay the delivery of its own messages.
+

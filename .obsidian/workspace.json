@@ -1,0 +1,293 @@
+{
+  "main": {
+    "id": "f243ec82cf32724f",
+    "type": "split",
+    "children": [
+      {
+        "id": "bc64c62d69eedd54",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "24baf7650ec303f6",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "DC/01_Fundamental_Concepts/notes/Fundamental_Concepts.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Fundamental_Concepts"
+            }
+          },
+          {
+            "id": "750f3cca6339d151",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "DC/02_Clocks_and_Event_Ordering/notes/Clocks_and_Event_Ordering.md",
+                "mode": "preview",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Clocks_and_Event_Ordering"
+            }
+          },
+          {
+            "id": "b178387ae9acee4c",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "DC/02_Clocks_and_Event_Ordering/sources/02_Logical-Clocks-and-Event-Ordering.pdf"
+              },
+              "icon": "lucide-file-text",
+              "title": "02_Logical-Clocks-and-Event-Ordering"
+            }
+          },
+          {
+            "id": "fea9fb5f3b8f6fae",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "DC/02_Clocks_and_Event_Ordering/sources/03_Synchronization-of-Clocks.pdf"
+              },
+              "icon": "lucide-file-text",
+              "title": "03_Synchronization-of-Clocks"
+            }
+          },
+          {
+            "id": "4461721f0bda4c1f",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "DC/05_Wave_Traversal_and_Leader_Election/notes/Wave_Traversal_and_Leader_Election.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Wave_Traversal_and_Leader_Election"
+            }
+          }
+        ],
+        "currentTab": 3
+      }
+    ],
+    "direction": "vertical"
+  },
+  "left": {
+    "id": "80072e1d6d698176",
+    "type": "split",
+    "children": [
+      {
+        "id": "f4c8fa95f1cbd499",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "ecb3ace8cc3ec35f",
+            "type": "leaf",
+            "state": {
+              "type": "file-explorer",
+              "state": {
+                "sortOrder": "alphabetical",
+                "autoReveal": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-folder-closed",
+              "title": "Files"
+            }
+          },
+          {
+            "id": "bd320b7aaad6cc18",
+            "type": "leaf",
+            "state": {
+              "type": "search",
+              "state": {
+                "query": "",
+                "matchingCase": false,
+                "explainSearch": false,
+                "collapseAll": false,
+                "extraContext": false,
+                "sortOrder": "alphabetical"
+              },
+              "icon": "lucide-search",
+              "title": "Search"
+            }
+          },
+          {
+            "id": "774f04b7f4c51276",
+            "type": "leaf",
+            "state": {
+              "type": "bookmarks",
+              "state": {
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-bookmark",
+              "title": "Bookmarks"
+            }
+          }
+        ]
+      }
+    ],
+    "direction": "horizontal",
+    "width": 245.3671875
+  },
+  "right": {
+    "id": "8697c88fb17fc811",
+    "type": "split",
+    "children": [
+      {
+        "id": "d55a1fc3e2313568",
+        "type": "tabs",
+        "children": [
+          {
+            "id": "257f0f21c94407d7",
+            "type": "leaf",
+            "state": {
+              "type": "backlink",
+              "state": {
+                "file": "ML/ct1.md",
+                "collapseAll": true,
+                "extraContext": false,
+                "sortOrder": "alphabetical",
+                "showSearch": false,
+                "searchQuery": "",
+                "backlinkCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-coming-in",
+              "title": "Backlinks"
+            }
+          },
+          {
+            "id": "80e19c70053ba856",
+            "type": "leaf",
+            "state": {
+              "type": "outgoing-link",
+              "state": {
+                "file": "ML/ct1.md",
+                "linksCollapsed": false,
+                "unlinkedCollapsed": true
+              },
+              "icon": "links-going-out",
+              "title": "Outgoing links"
+            }
+          },
+          {
+            "id": "d758cb9a4811e3dc",
+            "type": "leaf",
+            "state": {
+              "type": "tag",
+              "state": {
+                "sortOrder": "frequency",
+                "useHierarchy": true,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-tags",
+              "title": "Tags"
+            }
+          },
+          {
+            "id": "78e88cb56668e42f",
+            "type": "leaf",
+            "state": {
+              "type": "all-properties",
+              "state": {
+                "sortOrder": "frequency",
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-archive",
+              "title": "All properties"
+            }
+          },
+          {
+            "id": "e308cb740e4a984b",
+            "type": "leaf",
+            "state": {
+              "type": "outline",
+              "state": {
+                "file": "DC/02_Clocks_and_Event_Ordering/sources/03_Synchronization-of-Clocks.pdf",
+                "followCursor": false,
+                "showSearch": false,
+                "searchQuery": ""
+              },
+              "icon": "lucide-list",
+              "title": "Outline"
+            }
+          }
+        ],
+        "currentTab": 4
+      }
+    ],
+    "direction": "horizontal",
+    "width": 282.86328125
+  },
+  "left-ribbon": {
+    "hiddenItems": {
+      "switcher:Open quick switcher": false,
+      "graph:Open graph view": false,
+      "canvas:Create new canvas": false,
+      "daily-notes:Open today's daily note": false,
+      "templates:Insert template": false,
+      "command-palette:Open command palette": false,
+      "bases:Create new base": false
+    }
+  },
+  "active": "fea9fb5f3b8f6fae",
+  "lastOpenFiles": [
+    "DC/02_Clocks_and_Event_Ordering/assets/matrix-time-explained.svg",
+    "DC/02_Clocks_and_Event_Ordering/sources/02_Logical-Clocks-and-Event-Ordering.pdf",
+    "DC/02_Clocks_and_Event_Ordering/notes/Clocks_and_Event_Ordering.md",
+    "DC/02_Clocks_and_Event_Ordering/sources/03_Synchronization-of-Clocks.pdf",
+    "DC/01_Fundamental_Concepts/notes/Fundamental_Concepts.md",
+    "DC/05_Wave_Traversal_and_Leader_Election/notes/Wave_Traversal_and_Leader_Election.md",
+    "DC/01_Fundamental_Concepts/sources/01_Introduction-DC.pdf",
+    "DC/00_Course_Guide/MIDTERM_SLIDE_SCOPE.md",
+    "tmp/pdfs/ocr_protocols/page-47.jpg",
+    "tmp/pdfs/ocr_protocols/page-46.jpg",
+    "tmp/pdfs/ocr_protocols/page-45.jpg",
+    "tmp/pdfs/ocr_protocols/page-44.jpg",
+    "tmp/pdfs/ocr_protocols/page-43.jpg",
+    "tmp/pdfs/ocr_protocols/page-42.jpg",
+    "tmp/pdfs/ocr_protocols/page-41.jpg",
+    "tmp/pdfs/ocr_protocols/page-40.jpg",
+    "tmp/pdfs/ocr_protocols/page-39.jpg",
+    "tmp/pdfs/ocr_protocols/page-38.jpg",
+    "tmp/pdfs/ocr_protocols",
+    "tmp/pdfs/ocr_election",
+    "tmp/pdfs/ocr_clocks",
+    "tmp/pdfs/audit/sync_pages",
+    "tmp/pdfs/audit/logical_pages",
+    "tmp/pdfs/audit/intro_pages",
+    "tmp/pdfs/audit/spanning_pages",
+    "DC/04_Termination_Detection/notes/Termination_Detection.md",
+    "DC/09_Distributed_Transactions_and_Concurrency_Control/notes/Distributed_Transactions_and_Concurrency_Control.md",
+    "DC/00_Course_Guide/REFERENCES.md",
+    "DC/DC_EXAM_NOTES.md",
+    "DC/00_Course_Guide/PYQ_TOPIC_INDEX.md",
+    "DC/08_Distributed_File_Systems/notes/Distributed_File_Systems.md",
+    "DC/00_Course_Guide/SYLLABUS_MAP.md",
+    "DC/00_Course_Guide/REVISION_PLAN.md",
+    "DC/00_Course_Guide/EXAM_COVERAGE_AUDIT.md",
+    "DC/00_Course_Guide/original_navigation/Distributed_Computing_Complete_Study_Notes_before_rewrite.md",
+    "DC/07_Distributed_Deadlock_Detection/notes/Distributed_Deadlock_Detection.md",
+    "DC/06_Distributed_Mutual_Exclusion/notes/Distributed_Mutual_Exclusion.md",
+    "DC/05_Wave_Traversal_and_Leader_Election/README.md",
+    "DC/03_Global_State_and_Snapshots/notes/Global_State_and_Snapshots.md",
+    "DC/03_Global_State_and_Snapshots/README.md",
+    "DC/02_Clocks_and_Event_Ordering/README.md",
+    "DC/01_Fundamental_Concepts/README.md",
+    "DC/README.md",
+    "notes/Fundamental_Concepts.md",
+    "DC/10_Past_Questions/README.md",
+    "DC/09_Distributed_Transactions_and_Concurrency_Control/README.md"
+  ]
+}

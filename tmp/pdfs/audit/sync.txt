@@ -1,0 +1,57 @@
+    Synchronization
+
+Physical Clocks, Logical Clocks
+Synchronous Systems
+Asynchronous Systems
+   Distributed Process Synchronization
+• Communication between processes in a distributed system can have
+  unpredictable delays, processes can fail, messages may be lost.
+
+• Synchronization in distributed systems is harder than in centralized
+  systems because the need for distributed algorithms.
+
+   Properties of distributed algorithms:
+
+
+✓ The relevant information is scattered among multiple machines.
+✓ Processes make decisions based only on locally available information.
+✓ A single point of failure in the system should be avoided.
+✓ No common clock or other precise global time source exists.
+Challenge:
+
+How to design schemes so that multiple systems can coordinate
+or synchronize to solve problems efficiently?
+                        Absence of global clock
+No system-wide common clock (global clock)
+
+Reasons:
+  Suppose a global clock exists. Two different processes can observe the clock at
+  different times due to unpredictable message delays. Hence two different instances in
+  physical time may be perceived as a single instance in physical time.
+
+  If each process has a local clock In a distributed system, each node has its own clock
+  and each one of those clocks may run at a different rate or granularity due to
+  technological limitations, which means they will drift apart from each other.
+
+  Hence two different instances in physical time may be perceived as a single instance
+  in physical time.
+
+                                       Dept. of IT, Jadavpur University    23
+          Impact of the absence of global time
+
+• Scheduling of processes by an OS depends on the temporal order of
+  process arrival.
+
+• Difficult to design and debug distributed programs since it is difficult to
+  reason about temporal order of events in distributed systems.
+
+• Without a global clock, difficult to collect up-to-date information on the state
+  of the entire system.
+
+
+
+
+                                    Dept. of IT, Jadavpur University   24
+Updating a replicated database and leaving it in an
+                inconsistent state
+
