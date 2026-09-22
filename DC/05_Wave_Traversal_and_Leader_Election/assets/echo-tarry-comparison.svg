@@ -1,0 +1,70 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="650" viewBox="0 0 1200 650">
+  <defs>
+    <marker id="blueArrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#2563eb"/>
+    </marker>
+    <marker id="orangeArrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#ea580c"/>
+    </marker>
+    <marker id="greenArrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#16a34a"/>
+    </marker>
+    <style>
+      .title { font: 700 27px system-ui, sans-serif; fill: #111827; }
+      .label { font: 600 19px system-ui, sans-serif; fill: #111827; }
+      .small { font: 16px system-ui, sans-serif; fill: #374151; }
+      .node { fill: #fff; stroke: #111827; stroke-width: 3; }
+      .edge { stroke: #9ca3af; stroke-width: 3; }
+      .out { stroke: #2563eb; stroke-width: 4; fill: none; marker-end: url(#blueArrow); }
+      .back { stroke: #ea580c; stroke-width: 4; fill: none; marker-end: url(#orangeArrow); }
+      .tour { stroke: #16a34a; stroke-width: 4; fill: none; marker-end: url(#greenArrow); }
+    </style>
+  </defs>
+  <rect width="1200" height="650" fill="#ffffff" rx="18"/>
+
+  <text x="45" y="50" class="title">Echo: concurrent outward exploration, then inward replies</text>
+  <line x1="150" y1="165" x2="390" y2="105" class="edge"/>
+  <line x1="150" y1="165" x2="390" y2="225" class="edge"/>
+  <line x1="390" y1="105" x2="650" y2="165" class="edge"/>
+  <line x1="390" y1="225" x2="650" y2="165" class="edge"/>
+  <line x1="650" y1="165" x2="900" y2="165" class="edge"/>
+  <path d="M182 156 L350 114" class="out"/>
+  <path d="M182 174 L350 216" class="out"/>
+  <path d="M423 112 L612 156" class="out"/>
+  <path d="M419 213 L611 174" class="out"/>
+  <path d="M610 192 L421 229" class="out"/>
+  <path d="M684 165 L860 165" class="out"/>
+  <path d="M860 185 L686 185" class="back"/>
+  <path d="M612 147 L424 105" class="back"/>
+  <path d="M350 122 L182 165" class="back"/>
+  <path d="M350 235 L182 193" class="back"/>
+  <circle cx="150" cy="165" r="31" class="node"/><text x="141" y="172" class="label">r</text>
+  <circle cx="390" cy="105" r="29" class="node"/><text x="381" y="112" class="label">a</text>
+  <circle cx="390" cy="225" r="29" class="node"/><text x="381" y="232" class="label">b</text>
+  <circle cx="650" cy="165" r="29" class="node"/><text x="641" y="172" class="label">c</text>
+  <circle cx="900" cy="165" r="29" class="node"/><text x="891" y="172" class="label">d</text>
+  <text x="940" y="140" class="small" fill="#2563eb">OUTWARD WAVE</text>
+  <text x="940" y="195" class="small" fill="#ea580c">RETURN WAVE</text>
+  <text x="45" y="285" class="small">Several messages can be in flight. The first WAVE fixes a parent; a node replies only after all other incident edges are accounted for.</text>
+
+  <line x1="45" y1="325" x2="1155" y2="325" stroke="#d1d5db" stroke-width="2"/>
+  <text x="45" y="375" class="title">Tarry: one token performs a serial edge tour</text>
+  <line x1="155" y1="500" x2="380" y2="430" class="edge"/>
+  <line x1="380" y1="430" x2="640" y2="500" class="edge"/>
+  <line x1="640" y1="500" x2="880" y2="430" class="edge"/>
+  <line x1="640" y1="500" x2="880" y2="570" class="edge"/>
+  <path d="M185 490 C250 435 315 420 350 430" class="tour"/>
+  <path d="M410 438 C500 455 560 478 605 492" class="tour"/>
+  <path d="M675 488 C750 455 810 435 846 430" class="tour"/>
+  <path d="M846 450 C780 485 735 505 676 515" class="tour"/>
+  <path d="M675 520 C750 545 810 565 846 570" class="tour"/>
+  <path d="M847 585 C780 570 725 545 675 525" class="tour"/>
+  <path d="M605 520 C520 500 455 470 411 450" class="tour"/>
+  <path d="M350 450 C280 470 220 505 185 515" class="tour"/>
+  <circle cx="155" cy="500" r="31" class="node"/><text x="146" y="507" class="label">r</text>
+  <circle cx="380" cy="430" r="29" class="node"/><text x="371" y="437" class="label">a</text>
+  <circle cx="640" cy="500" r="29" class="node"/><text x="631" y="507" class="label">b</text>
+  <circle cx="880" cy="430" r="29" class="node"/><text x="871" y="437" class="label">c</text>
+  <circle cx="880" cy="570" r="29" class="node"/><text x="871" y="577" class="label">d</text>
+  <text x="45" y="625" class="small">Only one token moves. Local edge memory prevents repeated exploration; each undirected edge is used at most once in each direction.</text>
+</svg>

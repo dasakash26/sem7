@@ -143,35 +143,51 @@ When sending to $P_j$, it includes only components $k$ for which $LS_i[j] < LU_i
 
 ### Matrix time
 
-Vector time tells $P_i$ **what has happened**. Matrix time additionally tells $P_i$ **what other processes are known to know**. Process $P_i$ maintains an $n\times n$ matrix $M_i$:
+Process $P_i$ maintains an $n\times n$ matrix $mt_i$:
 
-- $M_i[i,*]$ is $P_i$'s own vector clock;
-- $M_i[j,*]$ is the latest vector-clock view of $P_j$ known to $P_i$; and
-- $M_i[j,k]=x$ means: according to $P_i$, process $P_j$ knows at least the first $x$ events of $P_k$.
+- $mt_i[i,i]$ is $P_i$'s local logical clock;
+- $mt_i[i,*]$ is $P_i$'s ordinary vector-clock view; its entry $mt_i[i,j]$ is the latest time of $P_j$ known directly to $P_i$; and
+- $mt_i[j,k]$ means that $P_i$ believes $P_j$ knows about $P_k$ up to time $mt_i[j,k]$.
 
-For example, suppose $P_1$ stores
+Vector time records what $P_i$ knows. Matrix time also records what $P_i$ knows that other processes know.
+
+#### Updating the matrix
+
+For every event, $P_i$ advances its own clock (usually $d=1$):
 
 $$
-M_1=
-\begin{bmatrix}
-5&4&2\\
-3&4&2\\
-2&1&2
-\end{bmatrix}.
+mt_i[i,i] := mt_i[i,i]+d, \qquad d>0.
 $$
 
-The first row, $[5,4,2]$, is $P_1$'s normal vector clock. The entry $M_1[2,3]=2$ says that $P_1$ believes $P_2$ has seen the first two events of $P_3$. It does **not** say that $P_2$ is currently at its second event; the row and column have different roles.
+Every message carries the sender's matrix $mt$. On receiving it from $P_j$, $P_i$ does two things. First, it merges $P_j$'s row into its own row: what $P_j$ knew is now also known to $P_i$.
 
-![How to interpret a matrix clock](../assets/matrix-time-explained.svg)
+$$
+mt_i[i,k] := \max(mt_i[i,k], mt[j,k]) \qquad (1\le k\le n).
+$$
 
-When $P_i$ receives a message from $P_j$, the message carries $P_j$'s matrix. Process $P_i$ merges newer entries using componentwise maximum. In particular, it merges $P_j$'s current row into its own row because everything known to $P_j$ is now known to $P_i$. The remaining rows update $P_i$'s information about what the other processes know.
+Second, it takes the maximum of every matrix entry, so it also learns what the sender knew about other processes' knowledge:
 
-This second-order knowledge is useful for deleting obsolete state. If $P_i$ can establish from the relevant rows that every process has seen event $e_k^x$, then information retained only for a process that has not yet seen $e_k^x$ can be discarded. A vector clock cannot establish this: it tells $P_i$ that **it** has seen the event, not that everyone else has.
+$$
+mt_i[k,l] := \max(mt_i[k,l], mt[k,l]) \qquad (1\le k,l\le n).
+$$
 
-| Clock | Stored information | Timestamp space |
-|---|---|---|
-| Vector clock | What $P_i$ knows about every process | $O(n)$ |
-| Matrix clock | What $P_i$ believes every process knows about every process | $O(n^2)$ |
+It then advances its diagonal entry and delivers the message.
+
+The slide's event $e$ occurs at $P_i$ after messages from $P_j$ and $P_k$ arrive.
+
+![Figure 3.4: evolution of matrix time from the supplied slides](../assets/matrix-time-slide-figure.jpg)
+
+At $e$, row $i$ says that $P_i$ knows $P_k$ up to $e_k^2$ and $P_j$ up to $e_j^2$. The cross entries say more: $mt_e[j,k]=x_k^1$ means $P_i$ knows that $P_j$ has seen $P_k$ only up to $e_k^1$; similarly, $mt_e[k,j]=x_j^1$ describes what $P_k$ knows about $P_j$. Those cross entries are what a vector clock cannot store.
+
+#### Basic property
+
+For a fixed process $P_l$, examine column $l$. If
+
+$$
+\min_k(mt_i[k,l])\ge t,
+$$
+
+then $P_i$ knows that every process knows $P_l$ has reached time $t$. An algorithm can use this to discard information from $P_l$ with timestamp at most $t$. The cost is $O(n^2)$ space.
 
 ## 6. Causal message delivery
 
@@ -181,6 +197,16 @@ Causal delivery requires that if `send(m1) -> send(m2)` and a process delivers b
 
 For BSS, $V_i[k]$ counts causal broadcasts from $P_k$ known at $P_i$; it is not the all-events vector used in the previous section. Receiving another process's broadcast does not independently increment the receiver's own component.
 
+The supplied slide shows why buffering is necessary:
+
+![Enforcing causal communication using vector clocks](../assets/causal-communication-slide.jpg)
+
+1. $P_0$ broadcasts $m$ with timestamp $[1,0,0]$.
+2. $P_1$ receives $m$, so it knows $P_0$'s first broadcast. It then broadcasts $m^*$ with timestamp $[1,1,0]$. Therefore `send(m) -> send(m*)`.
+3. Network delays allow $m^*$ to reach $P_2$ before $m$. At this point $V_2=[0,0,0]$.
+4. For $m^*$, the sender condition passes because $T[1]=1=V_2[1]+1$. However, the dependency condition fails because $T[0]=1>V_2[0]=0$: the timestamp says that $m^*$ depends on a broadcast from $P_0$ that $P_2$ has not delivered.
+5. $P_2$ buffers $m^*$. When $m$ arrives, it delivers $m$ and reaches $[1,0,0]$. The buffered message now satisfies both conditions, so $P_2$ delivers $m^*$ and reaches $[1,1,0]$.
+
 Before $P_i$ broadcasts $m$, it increments $V_i[i]$ and attaches $T=V_i$. Process $P_j$, where $j\ne i$, may deliver $m$ only when:
 
 1. $T[i]=V_j[i]+1$ - it is the next broadcast expected from $P_i$;
@@ -188,11 +214,9 @@ Before $P_i$ broadcasts $m$, it increments $V_i[i]$ and attaches $T=V_i$. Proces
 
 Otherwise, $P_j$ buffers the message. After delivery it updates its vector componentwise and rechecks the buffer.
 
-Example: $P_1$ sends $m_1$ to $P_2$, which then sends $m_2$. If $P_3$ receives $m_2$ first, condition 2 fails. It buffers $m_2$, delivers $m_1$ when it arrives, and then releases $m_2$.
-
 ### Schiper-Eggli-Sandoz protocol
 
-SES is named in the syllabus but not developed in the supplied clock slides. It provides causal point-to-point delivery by attaching destination-relevant dependencies and delaying a message until those dependencies have been delivered. Unlike BSS, it is not presented as a broadcast protocol.
+It provides causal point-to-point delivery by attaching destination-relevant dependencies and delaying a message until those dependencies have been delivered. Unlike BSS, it is not presented as a broadcast protocol.
 
 ## 7. Clock comparison
 

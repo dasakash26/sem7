@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="390" viewBox="0 0 1200 390">
+  <defs>
+    <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto" markerUnits="strokeWidth">
+      <path d="M0,0 L0,6 L9,3 z" fill="#4f46e5"/>
+    </marker>
+    <style>
+      .title { font: 700 27px system-ui, sans-serif; fill: #111827; }
+      .head { font: 700 19px system-ui, sans-serif; fill: #111827; }
+      .text { font: 16px system-ui, sans-serif; fill: #374151; }
+      .box { fill: #eef2ff; stroke: #4f46e5; stroke-width: 3; rx: 14; }
+      .arrow { stroke: #4f46e5; stroke-width: 4; fill: none; marker-end: url(#arrow); }
+    </style>
+  </defs>
+  <rect width="1200" height="390" fill="#ffffff" rx="18"/>
+  <text x="45" y="52" class="title">KKM modular view: traversals compete by level and identifier</text>
+
+  <rect x="45" y="105" width="215" height="110" class="box"/>
+  <text x="70" y="140" class="head">Start</text>
+  <text x="70" y="170" class="text">Each initiator launches</text>
+  <text x="70" y="194" class="text">a level-0 traversal token.</text>
+
+  <path d="M265 160 L350 160" class="arrow"/>
+  <rect x="355" y="105" width="250" height="110" class="box"/>
+  <text x="380" y="140" class="head">Tokens meet</text>
+  <text x="380" y="170" class="text">Compare level first, then</text>
+  <text x="380" y="194" class="text">the ordered candidate ID.</text>
+
+  <path d="M610 160 L695 160" class="arrow"/>
+  <rect x="700" y="85" width="250" height="150" class="box"/>
+  <text x="725" y="120" class="head">Resolve competition</text>
+  <text x="725" y="150" class="text">Lower token is annexed,</text>
+  <text x="725" y="174" class="text">chases, or waits; equal-level</text>
+  <text x="725" y="198" class="text">survivors combine at level + 1.</text>
+
+  <path d="M955 160 L1040 160" class="arrow"/>
+  <rect x="1045" y="105" width="110" height="110" class="box"/>
+  <text x="1067" y="140" class="head">Finish</text>
+  <text x="1064" y="170" class="text">One token</text>
+  <text x="1062" y="194" class="text">covers G.</text>
+
+  <path d="M825 240 C825 280 465 280 465 225" class="arrow"/>
+  <text x="485" y="312" class="text">Each level eliminates or absorbs competitors; at most log₂ k + 1 levels for k starters.</text>
+  <text x="45" y="360" class="text">Conceptual flow only: KKM is a traversal-to-election transformation, not a flooding or MST algorithm.</text>
+</svg>
