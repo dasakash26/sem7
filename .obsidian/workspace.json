@@ -8,107 +8,35 @@
         "type": "tabs",
         "children": [
           {
-            "id": "24baf7650ec303f6",
+            "id": "9361a08689ef111a",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DC/02_Clocks_and_Event_Ordering/notes/Clocks_and_Event_Ordering.md",
-                "mode": "preview",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Clocks_and_Event_Ordering"
-            }
-          },
-          {
-            "id": "2fb7c566d1efeb2a",
-            "type": "leaf",
-            "state": {
-              "type": "pdf",
-              "state": {
-                "file": "DC/02_Clocks_and_Event_Ordering/sources/02_Logical-Clocks-and-Event-Ordering.pdf"
-              },
-              "icon": "lucide-file-text",
-              "title": "02_Logical-Clocks-and-Event-Ordering"
-            }
-          },
-          {
-            "id": "853eae06e85dfe0d",
-            "type": "leaf",
-            "state": {
-              "type": "pdf",
-              "state": {
-                "file": "DC/02_Clocks_and_Event_Ordering/sources/03_Synchronization-of-Clocks.pdf"
-              },
-              "icon": "lucide-file-text",
-              "title": "03_Synchronization-of-Clocks"
-            }
-          },
-          {
-            "id": "ec7c78e00ea4523b",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "DC/05_Wave_Traversal_and_Leader_Election/notes/Wave_Traversal_and_Leader_Election.md",
+                "file": "DC/SLIDE_QUICK_REVISION.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "Wave_Traversal_and_Leader_Election"
+              "title": "SLIDE_QUICK_REVISION"
             }
           },
           {
-            "id": "6a506d5a9a5376e3",
+            "id": "e1e28b1ce01e1175",
             "type": "leaf",
             "state": {
-              "type": "pdf",
+              "type": "markdown",
               "state": {
-                "file": "DC/05_Wave_Traversal_and_Leader_Election/sources/04_Classical-Leader-Election-Algorithms.pdf"
+                "file": "DM/00_Course_Guide/FORMULA_ALGORITHM_CHECKLIST.md",
+                "mode": "source",
+                "source": false
               },
-              "icon": "lucide-file-text",
-              "title": "04_Classical-Leader-Election-Algorithms"
-            }
-          },
-          {
-            "id": "37143d0850855760",
-            "type": "leaf",
-            "state": {
-              "type": "pdf",
-              "state": {
-                "file": "DC/05_Wave_Traversal_and_Leader_Election/sources/05_Distributed-Leader-Election-Protocols.pdf"
-              },
-              "icon": "lucide-file-text",
-              "title": "05_Distributed-Leader-Election-Protocols"
-            }
-          },
-          {
-            "id": "2ca13e162406fd33",
-            "type": "leaf",
-            "state": {
-              "type": "pdf",
-              "state": {
-                "file": "DC/05_Wave_Traversal_and_Leader_Election/sources/06_Message-Passing-Algorithms.pdf"
-              },
-              "icon": "lucide-file-text",
-              "title": "06_Message-Passing-Algorithms"
-            }
-          },
-          {
-            "id": "8d96d0e100b2108c",
-            "type": "leaf",
-            "state": {
-              "type": "pdf",
-              "state": {
-                "file": "DC/05_Wave_Traversal_and_Leader_Election/sources/07_Distributed-Spanning-Tree.pdf"
-              },
-              "icon": "lucide-file-text",
-              "title": "07_Distributed-Spanning-Tree"
+              "icon": "lucide-file",
+              "title": "FORMULA_ALGORITHM_CHECKLIST"
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -170,8 +98,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 245.3671875,
-    "collapsed": true
+    "width": 245.3671875
   },
   "right": {
     "id": "8697c88fb17fc811",
@@ -249,7 +176,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "DC/05_Wave_Traversal_and_Leader_Election/notes/Wave_Traversal_and_Leader_Election.md",
+                "file": "DM/00_Course_Guide/FORMULA_ALGORITHM_CHECKLIST.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -263,8 +190,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 282.86328125,
-    "collapsed": true
+    "width": 282.86328125
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -277,32 +203,37 @@
       "bases:Create new base": false
     }
   },
-  "active": "ec7c78e00ea4523b",
+  "active": "e1e28b1ce01e1175",
   "lastOpenFiles": [
-    "DC/05_Wave_Traversal_and_Leader_Election/sources/04_Classical-Leader-Election-Algorithms.pdf",
-    "DC/05_Wave_Traversal_and_Leader_Election/sources/05_Distributed-Leader-Election-Protocols.pdf",
-    "DC/05_Wave_Traversal_and_Leader_Election/sources/06_Message-Passing-Algorithms.pdf",
-    "DC/05_Wave_Traversal_and_Leader_Election/sources/07_Distributed-Spanning-Tree.pdf",
+    "DM/00_Course_Guide/PYQ_TOPIC_INDEX.md",
+    "DM/00_Course_Guide/REVISION_PLAN.md",
+    "DM/00_Course_Guide/SYLLABUS_MAP.md",
+    "DM/00_Course_Guide/FORMULA_ALGORITHM_CHECKLIST.md",
+    "DM/2_DM_preprocessing.pdf",
+    "DM/QP_DM_SEM_25.pdf",
+    "DM/data-mining-concepts-and-techniques-2nd-edition-impressao.pdf",
+    "DM/QP_DM_SEM_26.pdf",
+    "DM/4_Association_Rules.pdf",
+    "DM/1_DM_Intro.pdf",
+    "DC/SLIDE_QUICK_REVISION.md",
     "DC/05_Wave_Traversal_and_Leader_Election/notes/Wave_Traversal_and_Leader_Election.md",
+    "DC/02_Clocks_and_Event_Ordering/notes/Clocks_and_Event_Ordering.md",
+    "DC/05_Wave_Traversal_and_Leader_Election/sources/07_Distributed-Spanning-Tree.pdf",
+    "DC/05_Wave_Traversal_and_Leader_Election/sources/05_Distributed-Leader-Election-Protocols.pdf",
     "DC/02_Clocks_and_Event_Ordering/sources/03_Synchronization-of-Clocks.pdf",
+    "DC/05_Wave_Traversal_and_Leader_Election/sources/06_Message-Passing-Algorithms.pdf",
     "DC/05_Wave_Traversal_and_Leader_Election/assets/kkm-level-flow.svg",
     "DC/05_Wave_Traversal_and_Leader_Election/assets/echo-tarry-comparison.svg",
-    "DC/02_Clocks_and_Event_Ordering/notes/Clocks_and_Event_Ordering.md",
-    "DC/02_Clocks_and_Event_Ordering/sources/02_Logical-Clocks-and-Event-Ordering.pdf",
     "DC/02_Clocks_and_Event_Ordering/assets/matrix-time-definition-slide.jpg",
     "DC/02_Clocks_and_Event_Ordering/assets/causal-communication-slide.jpg",
     "DC/02_Clocks_and_Event_Ordering/assets/matrix-time-slide-figure.jpg",
     "DC/02_Clocks_and_Event_Ordering/assets/matrix-time-evolution.svg",
     "DC/01_Fundamental_Concepts/notes/Fundamental_Concepts.md",
     "DC/02_Clocks_and_Event_Ordering/assets/matrix-time-explained.svg",
-    "DC/01_Fundamental_Concepts/sources/01_Introduction-DC.pdf",
     "DC/00_Course_Guide/MIDTERM_SLIDE_SCOPE.md",
     "tmp/pdfs/ocr_protocols/page-47.jpg",
     "tmp/pdfs/ocr_protocols/page-46.jpg",
     "tmp/pdfs/ocr_protocols/page-45.jpg",
-    "tmp/pdfs/ocr_protocols",
-    "tmp/pdfs/ocr_election",
-    "tmp/pdfs/ocr_clocks",
     "DC/04_Termination_Detection/notes/Termination_Detection.md",
     "DC/09_Distributed_Transactions_and_Concurrency_Control/notes/Distributed_Transactions_and_Concurrency_Control.md",
     "DC/00_Course_Guide/REFERENCES.md",
@@ -318,11 +249,6 @@
     "DC/05_Wave_Traversal_and_Leader_Election/README.md",
     "DC/03_Global_State_and_Snapshots/notes/Global_State_and_Snapshots.md",
     "DC/03_Global_State_and_Snapshots/README.md",
-    "DC/02_Clocks_and_Event_Ordering/README.md",
-    "DC/01_Fundamental_Concepts/README.md",
-    "DC/README.md",
-    "notes/Fundamental_Concepts.md",
-    "DC/10_Past_Questions/README.md",
-    "DC/09_Distributed_Transactions_and_Concurrency_Control/README.md"
+    "DC/02_Clocks_and_Event_Ordering/README.md"
   ]
 }

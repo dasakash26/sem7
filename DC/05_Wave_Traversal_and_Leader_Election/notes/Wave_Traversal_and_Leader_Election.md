@@ -4,13 +4,110 @@
 
 The network is a graph $G=(V,E)$ with $n=|V|$ processes and $m=|E|$ communication links. A process can inspect only its local state and received messages; it cannot directly read another process's memory.
 
-A **configuration** contains all local states and all messages in transit. A **delivery event** places a message in a receiver's input buffer. A **computation event** lets one process consume inputs, change state, and place messages in output buffers.
+A **configuration** is a snapshot of the entire distributed system at one instant:
+
+$$C=(\text{local state and input buffer of each }P_i,\ \text{contents of every channel}).$$
+
+- **Process state:** variables, program position, protocol data such as `parent` or `leaderID`, and messages waiting in the input buffer.
+- **Channel state:** messages sent but not yet delivered.
+
+The global configuration is a mathematical model; no process can inspect it directly.
+
+An execution is a sequence $C_0\rightarrow C_1\rightarrow C_2\rightarrow\cdots$ created by events:
+
+- A **delivery event** removes one in-transit message from a channel and places it in the receiver's input buffer.
+- A **computation event** schedules one process. Using only its local state and buffered messages, it updates its variables and may append new messages to outgoing channels.
+
+Example: if $P_1$ sends `ELECTION(7)` to $P_2$, the state transitions are
+
+$$C_0\xrightarrow{\text{$P_1$ computes/sends}}C_1
+\xrightarrow{\text{deliver to $P_2$}}C_2
+\xrightarrow{\text{$P_2$ computes}}C_3.$$
+
+In $C_1$ the message is still in the channel; in $C_2$ it is waiting in $P_2$'s input buffer; only in the final step does $P_2$ read it, update its state, and perhaps forward another message. Delivery and processing are therefore separate events in the asynchronous model.
 
 ![Processes connected by communication channels](../assets/process-channel-model.png)
 
 In a synchronous execution, computation and message delay have known bounds, so algorithms can be analysed in rounds. A fair asynchronous execution normally assumes that every correct process keeps taking steps and every sent message is eventually delivered, but gives no finite delivery deadline. Fairness therefore supports eventual termination; it does **not** make a timeout proof of failure.
 
-## 2. Wave and traversal algorithms
+## 2. Rooted-tree communication primitives
+
+A rooted spanning tree contains all $n$ processes, has $n-1$ edges, and gives every non-root process one parent.
+
+### Broadcast and convergecast
+
+In a **broadcast**, the root sends a value to its children and each non-root forwards it to its children. It uses $n-1$ messages and has causal depth equal to the tree height $h$.
+
+```text
+Algorithm 1: Spanning tree broadcast algorithm.
+
+Initially (M) is in transit from p_r to all its children in the spanning tree.
+
+Code for p_r:
+1:  upon receiving no message:          // first computation event by p_r
+2:      terminate
+
+Code for p_i, 0 <= i <= n - 1, i != r:
+3:  upon receiving (M) from parent:
+4:      send (M) to all children
+5:      terminate
+```
+
+Each non-root receives exactly once through its parent edge. Every tree edge carries one message, giving $n-1$ messages.
+
+![Broadcast over a rooted spanning tree](../assets/broadcast-example.png)
+
+In a **convergecast**, leaves send toward the root. An internal process waits for all children, combines their values, and sends one result to its parent. It also uses $n-1$ messages and has causal depth $h$.
+
+```text
+leaves send messages to their parents
+
+non-leaves wait to get message from each child,
+then send combined (aggregate) info to parent
+```
+
+The root receives the final aggregate. Every non-root sends exactly once, giving $n-1$ messages.
+
+![Convergecast over a rooted spanning tree](../assets/convergecast-example.png)
+
+Together, broadcast followed by convergecast is a tree wave with $2(n-1)$ messages and causal depth $2h$. Without a message-delay bound, its asynchronous wall-clock time is unbounded.
+
+### Constructing a rooted tree
+
+```text
+Algorithm 2: Modified flooding algorithm to construct a spanning tree.
+Code for processor p_i, 0 <= i <= n - 1.
+
+Initially parent = ⊥, children = ∅, and other = ∅.
+
+1:  upon receiving no message:
+2:      if p_i = p_0 and parent = ⊥ then            // root has not yet sent (M)
+3:          send (M) to all neighbors
+4:          parent := p_0
+
+5:  upon receiving (M) from neighbor p_j:
+6:      if parent = ⊥ then                          // p_i has not received (M) before
+7:          parent := p_j
+8:          send (parent) to p_j
+9:          send (M) to all neighbors except p_j
+10:     else send (already) to p_j
+
+11: upon receiving (parent) from neighbor p_j:
+12:     add p_j to children
+13:     if children ∪ other contains all neighbors except parent then
+14:         terminate
+
+15: upon receiving (already) from neighbor p_j:
+16:     add p_j to other
+17:     if children ∪ other contains all neighbors except parent then
+18:         terminate
+```
+
+With equal one-edge-per-round propagation, the first arrival follows a shortest-hop path and the result is a BFS tree. In an asynchronous execution, a longer path may arrive first, so the tree need not be BFS or DFS.
+
+![Different spanning trees caused by asynchronous delivery order](../assets/spanning-tree-executions.png)
+
+## 3. Wave and traversal algorithms
 
 ### Wave algorithm
 
@@ -19,7 +116,7 @@ A **wave** is a finite distributed computation with at least one decision event 
 1. information diffuses through the network;
 2. evidence that the diffusion is complete returns to the decision process.
 
-Broadcast alone is not a complete wave: the initiator does not yet know that every process has participated. An echo/convergecast supplies that completion evidence.
+Broadcast alone is not a complete wave: the initiator does not know that every process has participated. An echo/convergecast supplies the missing completion evidence.
 
 ### Echo on an arbitrary graph
 
@@ -40,13 +137,15 @@ after a WAVE has arrived on every non-parent edge:
 initiator decides after every incident edge has replied
 ```
 
-The first `WAVE` received by each non-initiator selects its parent. Those parent edges form a spanning tree: every node except the initiator has one parent, and following parents moves toward an earlier event, so a cycle is impossible. On a non-tree edge, the two crossing `WAVE` messages account for each other; on a tree edge, the later message is the returning echo. A node replies to its parent only after every other edge is accounted for, so the initiator's final decision implies that the whole connected graph participated.
+The first `WAVE` received by each non-initiator selects its parent, so echo simultaneously constructs the rooted spanning tree described above. Parent pointers cannot form a cycle because each points toward an earlier first-reception event.
 
-Under the standard formulation, each undirected edge carries at most one message in each direction, so the wave costs at most $2m$ messages. This is a message bound, not a finite asynchronous time bound.
+On a non-tree edge, the two crossing `WAVE` messages account for each other. On a tree edge, the later message is the returning echo. A node replies to its parent only after every other edge is accounted for; therefore the initiator's final decision means that the entire connected graph participated.
+
+Each undirected edge carries at most one message in each direction, so the standard echo wave costs at most $2m$ messages. This is a message bound, not a finite asynchronous time bound.
 
 ### Tarry's traversal algorithm
 
-Echo explores concurrently. **Tarry traversal** instead moves one token at a time.
+Echo explores many branches concurrently. **Tarry traversal** moves exactly one token, so process visits are serialized.
 
 Each process records the edge by which the token first entered and which incident edges have already been used. It forwards the token on an unused edge; a non-initiator uses its entry edge for the return only after its other usable edges are exhausted. The initiator terminates when the token returns and no unused incident edge remains.
 
@@ -66,33 +165,9 @@ Thus every reachable node is visited, the token returns to the initiator, and ea
 | Echo wave | Concurrent exploration, then replies | At the initiator | at most $2m$ |
 | Tarry traversal | One serial token | At the initiator | at most $2m$ |
 
-## 3. Rooted spanning-tree primitives
-
-A rooted spanning tree contains all $n$ processes, has $n-1$ edges, and gives every non-root process one parent.
-
-### Broadcast and convergecast
-
-In a **broadcast**, the root sends a value to its children and each non-root forwards it to its children. It uses $n-1$ messages and has causal depth equal to the tree height $h$.
-
-![Broadcast over a rooted spanning tree](../assets/broadcast-example.png)
-
-In a **convergecast**, leaves send toward the root. An internal process waits for all children, combines their values, and sends one result to its parent. It also uses $n-1$ messages and has causal depth $h$.
-
-![Convergecast over a rooted spanning tree](../assets/convergecast-example.png)
-
-Together, broadcast followed by convergecast is a tree wave with $2(n-1)$ messages and causal depth $2h$. Without a message-delay bound, its asynchronous wall-clock time is unbounded.
-
-### Constructing a tree from a known root
-
-The first `EXPLORE` received fixes a process's parent; later arrivals on other links are rejected or acknowledged. `ACCEPT` senders become children. The process finishes after every incident edge is classified. This is the tree-forming part of echo, so it does not require a second independent explanation.
-
-With equal one-edge-per-round propagation, the first arrival follows a shortest-hop path and the result is a BFS tree. In an asynchronous execution, a longer path may arrive first, so the tree need not be BFS or DFS.
-
-![Different spanning trees caused by asynchronous delivery order](../assets/spanning-tree-executions.png)
-
 ## 4. Leader-election specification
 
-Election does not merely mean that one process says “I am leader.” Under the stated fault and timing model it must satisfy:
+Leader election requires:
 
 - **Validity:** the winner is an eligible member, such as the highest live ID.
 - **Uniqueness/safety:** at most one winner is elected for an election epoch.
@@ -110,7 +185,7 @@ Useful ring terms:
 
 Fault-free election is possible in an asynchronous network with reliable eventual delivery. The impossibility arises when termination must be guaranteed despite crashes: silence cannot distinguish a crashed node from an arbitrarily slow node. Timeout-based recovery therefore needs eventual timing assumptions or a failure detector.
 
-## 5. Synchronous complete-graph election — PYQ supplement
+## 5. Synchronous complete-graph election 
 
 For a complete graph $K_n$ with unique IDs, every process sends its ID to all other processes in round 1. At the end of that round, every process has the same set of IDs and independently selects the maximum.
 
@@ -120,7 +195,7 @@ For $K_5$:
 - information rounds: **1**;
 - winner: the process with the maximum ID.
 
-A second announcement round is optional and redundant because every process already computed the winner. If a question explicitly requires the elected process to broadcast `LEADER`, count 4 more sends and report 2 rounds. State this convention in the answer.
+An optional `LEADER` broadcast adds 4 sends and a second round. It is redundant when every process already computed the maximum.
 
 ## 6. Ring election
 
@@ -129,11 +204,15 @@ A second announcement round is optional and redundant because every process alre
 Assumptions: reliable oriented unidirectional ring, unique comparable IDs, no crashes, and every process initially participates.
 
 ```text
-initially: send own ID clockwise
-on candidate x:
-    x > ownID  -> forward x
-    x < ownID  -> discard x
-    x = ownID  -> declare leader and circulate ELECTED(x)
+send value of own id to the left
+
+when receive an id j (from the right):
+    if j > id then
+        forward j to the left (this processor has lost)
+    if j = id then
+        elect self (this processor has won)
+    if j < id then
+        do nothing
 ```
 
 **Correctness.** The maximum ID can never meet a larger ID, so every process forwards it and it returns to its owner. Every smaller ID meets a larger ID before completing the ring and is discarded. Hence exactly the maximum declares; the subsequent announcement gives agreement.
@@ -150,6 +229,33 @@ transmissions including the final notification. Causal distance to declaration i
 
 Assumptions: reliable bidirectional ring, unique comparable IDs, no crashes, and initially unknown ring size.
 
+```text
+Algorithm 5: Asynchronous leader election: code for processor p_i, 0 <= i < n.
+
+Initially, asleep = true
+
+1:  upon receiving no message:
+2:      if asleep then
+3:          asleep := false
+4:          send <probe, id, 0, 1> to left and right
+
+5:  upon receiving <probe, j, k, d> from left (resp., right):
+6:      if j = id then terminate as the leader
+7:      if j > id and d < 2^k then                  // forward the message
+8:          send <probe, j, k, d + 1> to right (resp., left)
+                                                    // increment hop counter
+9:      if j > id and d >= 2^k then                 // reply to the message
+10:         send <reply, j, k> to left (resp., right)
+                                                    // if j < id, message is swallowed
+
+11: upon receiving <reply, j, k> from left (resp., right):
+12:     if j != id then send <reply, j, k> to right (resp., left)
+                                                    // forward the reply
+13:     else                                         // reply is for own probe
+14:         if already received <reply, j, k> from right (resp., left) then
+15:             send <probe, id, k + 1, 1>           // phase k winner
+```
+
 In phase $k=0,1,2,\ldots$, an active candidate probes distance $2^k$ in both directions. A larger ID suppresses a smaller probe. A probe reaching its radius returns; a candidate receiving both replies survives to the next phase. If its probes meet after covering the ring, it is the maximum and wins.
 
 ![Exponentially expanding probes in Hirschberg-Sinclair](../assets/hs-probes.png)
@@ -164,14 +270,14 @@ The matching $\Omega(n\log n)$ lower bound is for the relevant comparison-based 
 
 ### Failure-triggered ring protocol
 
-This is **not LCR**. It starts after a coordinator is suspected. One or more processes circulate `ELECTION(id, attribute)` clockwise. A larger candidate replaces a smaller candidate; an ID that returns to its owner wins and circulates `ELECTED(id)`.
+Unlike LCR, this protocol starts after a coordinator is suspected. One or more processes circulate `ELECTION(id, attribute)` clockwise. A larger candidate replaces a smaller candidate; an ID that returns to its owner wins and circulates `ELECTED(id)`.
 
 Under this protocol's convention:
 
 - eventual leader starts: $2n$ messages (one election circulation and one announcement);
 - worst initiator position: $3n-1$ messages.
 
-Therefore, for the PYQ with $n=10$, the answer is $3(10)-1=29$ **only if the question means this failure-triggered ring protocol**. It is not LCR's worst-case formula, and standard LCR does not have one chosen initiator.
+For $n=10$, the worst case is $3(10)-1=29$ messages under this protocol. LCR uses a different count and normally starts with every process participating.
 
 With concurrent initiators, a process caches the highest candidate seen and suppresses lower runs. “Fair” here does not mean equal probability of leadership—the highest eligible ID still wins. It means reliable/fair circulation does not permanently starve a live candidacy, and the result does not depend on which live process first noticed the failure.
 
@@ -190,33 +296,61 @@ The highest live ID eventually wins after failures and timing stabilize. When th
 
 $$ (n-1)+(n-2)+\cdots+1=\frac{n(n-1)}2,$$
 
-so total traffic is $O(n^2)$. The often-quoted “five message-transmission times” is one illustrated failure chain, not a universal Bully time bound.
+so total traffic is $O(n^2)$. A five-transmission failure chain is one execution, not a universal Bully time bound.
 
-## 8. Election in arbitrary networks — syllabus supplement
+## 8. Election in arbitrary networks
 
 ### With an existing rooted tree
 
-If a rooted spanning tree already exists, leader selection is easy: convergecast the maximum ID to the root, then broadcast that winner. It costs $2(n-1)$ messages. This is a useful primitive, but it does not solve leader election **from scratch** because the tree already has a distinguished root.
+Convergecast the maximum ID to the root, then broadcast the winner. Cost: $2(n-1)$ messages. This assumes a distinguished root and is not election from scratch.
 
 ### Korach-Kutten-Moran (KKM): modular traversal-to-election transformation
 
-The syllabus includes KKM; the following is a compact scope rather than reconstructed pseudocode.
-
 Model: a connected asynchronous network with reliable bidirectional links, distinct ordered process IDs, and $k$ possible starters; FIFO channels are not required. Assume a serial traversal algorithm costs at most $f(n)$ messages.
 
-Each starter launches a traversal token labelled by its candidate and a **level**. Competing tokens compare level and then candidate ID. Conceptually, a weaker traversal may be annexed, chase a stronger traversal, or wait so that conflicting traversals do not both finish independently. When same-level competition is resolved, the surviving combined territory advances to the next level; lower-level contenders lose to the stronger level. A traversal that completes the whole network without an undefeated competitor elects its initiator.
+Each starter launches a traversal token labelled by its candidate and a **level**. Competing tokens compare level and then candidate ID. A weaker traversal may be annexed, chase a stronger traversal, or wait so that conflicting traversals cannot both finish independently. When same-level competition is resolved, the surviving combined territory advances to the next level; lower-level contenders lose to the stronger level. A traversal that completes the whole network without an undefeated competitor elects its initiator.
 
 The safety idea is that the comparison/absorption rules leave at most one traversal able to complete as winner. The liveness idea is that competition strictly eliminates candidates or raises a level; with $k$ starters there are at most $\log_2 k+1$ levels. The transformation's message bound is
 
 $$\bigl(f(n)+n\bigr)\bigl(\log_2 k+1\bigr),$$
 
-where $f(n)$ is the chosen traversal's message bound and $k$ is the number of starters. The paper also gives a topology-sensitive form using $f(m)$. Exact annexing/chasing state transitions are version-specific and should be learned from the assigned KKM paper if required.
+where $f(n)$ is the traversal's message bound and $k$ is the number of starters. A topology-sensitive form uses $f(m)$.
 
 ![Conceptual KKM token and level flow](../assets/kkm-level-flow.svg)
 
-KKM is distinct from max-ID flooding and from GHS: it transforms traversal into leader election; GHS constructs a minimum spanning tree.
+- KKM transforms a traversal algorithm into leader election.
+- Max-ID flooding directly propagates candidate IDs.
+- GHS constructs a minimum spanning tree.
 
-## 9. Luby's maximal independent set — PYQ supplement
+## 9. Distributed minimum spanning tree
+
+Assumptions: a connected undirected weighted graph, reliable communication, and distinct edge weights or deterministic tie-breaking. A minimum spanning tree (MST) connects all nodes with minimum total edge weight.
+
+The algorithm uses a **GHS-style** fragment construction:
+
+1. every node starts as a one-node level-0 fragment;
+2. a fragment leader broadcasts a search;
+3. nodes test incident edges and reject internal edges;
+4. candidates convergecast so the leader obtains the fragment's minimum-weight outgoing edge (MWOE);
+5. fragments merge across the MWOE and broadcast the new fragment identity;
+6. repeat until the connected graph has one fragment.
+
+![A fragment identifies its outgoing edges](../assets/mwoe-outgoing-edges.png)
+
+The cut property makes the choice safe: an MWOE crossing a fragment's cut belongs to some MST. Equal-level fragments merge into a fragment one level higher; a lower-level fragment can be absorbed by a higher-level fragment. A level-$L$ fragment contains at least $2^L$ nodes, so there are $O(\log n)$ levels.
+
+![Two fragments merge through an MWOE](../assets/mwoe-merge.png)
+
+In the lecture variant, the larger endpoint UID becomes the merged-fragment leader. Bounds:
+
+- time: $O(n\log n)$;
+- communication: $O((n+m)\log n)$.
+
+Classical GHS message complexity is $O(m+n\log n)$. The lecture analysis uses $O((n+m)\log n)$; another equivalent-style presentation may separate edge testing as $O(n\log n+m)$.
+
+After the tree exists, a unique tree leader can be chosen with max-ID convergecast plus broadcast in $2(n-1)$ messages. This final election is separate from constructing the MST.
+
+## 10. Luby's maximal independent set 
 
 An **independent set** contains no adjacent vertices. It is **maximal** if no additional vertex can be added without breaking independence. Maximal does not mean maximum-cardinality.
 
@@ -237,43 +371,15 @@ Topology behaviour depends on the random priorities:
 | Star | If the centre beats every leaf, the centre alone wins. If a leaf beats the centre, winning leaves remove the centre and eventually all leaves form the MIS. |
 | Ring | Non-adjacent local maxima join, their neighbours leave, and gaps repeat. Many MISs are possible; an alternating set is only one example. |
 
-Do not draw a deterministic Luby trace unless the random priorities for each phase are specified.
+A deterministic trace requires the random priorities for every phase.
 
-## 10. Consensus and system examples
+## 11. Consensus and system examples
 
 Election chooses a process; consensus chooses a value. They are related but not identical.
 
 In Paxos, proposers use unique proposal numbers; acceptors durably record promises and accepted values; learners discover a value accepted by a majority. A proposer that receives promises from a majority must adopt the value from the highest-numbered previously accepted proposal, if one exists. Any two majorities intersect, so two different values cannot both be chosen. Paxos safety is asynchronous, while progress needs a reachable majority and eventual communication/stable proposing behaviour.
 
-In Chubby, a majority elects one master, with one vote per replica per run. In a ZooKeeper-style example, increasing sequence IDs are assigned, the highest is chosen, and a process monitors the next-higher participant to reduce all-to-all monitoring. Treat this as a simplified illustration, not a full description of ZooKeeper's production Fast Leader Election/Zab protocol.
-
-## 11. Distributed minimum spanning tree
-
-Assumptions: a connected undirected weighted graph, reliable communication, and distinct edge weights or deterministic tie-breaking. A minimum spanning tree (MST) connects all nodes with minimum total edge weight.
-
-The algorithm uses a **GHS-style** fragment construction:
-
-1. every node starts as a one-node level-0 fragment;
-2. a fragment leader broadcasts a search;
-3. nodes test incident edges and reject internal edges;
-4. candidates convergecast so the leader obtains the fragment's minimum-weight outgoing edge (MWOE);
-5. fragments merge across the MWOE and broadcast the new fragment identity;
-6. repeat until the connected graph has one fragment.
-
-![A fragment identifies its outgoing edges](../assets/mwoe-outgoing-edges.png)
-
-The cut property makes the choice safe: an MWOE crossing a fragment's cut belongs to some MST. Equal-level fragments merge into a fragment one level higher; a lower-level fragment can be absorbed by a higher-level fragment. A level-$L$ fragment contains at least $2^L$ nodes, so there are $O(\log n)$ levels.
-
-![Two fragments merge through an MWOE](../assets/mwoe-merge.png)
-
-Choosing the larger endpoint UID as the merged-fragment leader is a simplification, not the complete classical GHS state machine. Common stated bounds are:
-
-- time: $O(n\log n)$;
-- communication: $O((n+m)\log n)$.
-
-Classical GHS is commonly stated as $O(m+n\log n)$ messages. Other presentations cite $O((n+m)\log n)$ or $O(n\log n+m)$ depending on edge classification and testing assumptions.
-
-After the tree exists, a unique tree leader can be chosen with max-ID convergecast plus broadcast in $2(n-1)$ messages. This final election is separate from constructing the MST.
+In Chubby, a majority elects one master, with one vote per replica per run. In the simplified ZooKeeper-style example, increasing sequence IDs are assigned, the highest is chosen, and each process monitors the next-higher participant. ZooKeeper's production Fast Leader Election/Zab protocol is different.
 
 ## 12. Election comparison
 
@@ -286,8 +392,6 @@ After the tree exists, a unique tree leader can be chosen with max-ID convergeca
 | Bully | known complete membership + usable timeouts | one or more | crash-stop, after stabilization | $O(n^2)$ worst case |
 | Rooted-tree max | existing rooted tree | root coordinates | none | $2(n-1)$ including announcement |
 | KKM | async arbitrary connected graph | $k$ | no crash in base model | $(f(n)+n)(\log_2 k+1)$ |
-
-The table compares only election algorithms. Paxos chooses a value, Luby constructs an MIS, and GHS constructs an MST, so ranking them in the same message-complexity table would be misleading.
 
 ## Sources
 
