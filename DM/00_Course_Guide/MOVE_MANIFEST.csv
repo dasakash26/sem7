@@ -1,0 +1,8 @@
+original_path,new_path,role
+DM/1_DM_Intro.pdf,DM/01_Introduction_and_KDD/sources/1_DM_Intro.pdf,primary lecture source
+DM/2_DM_preprocessing.pdf,DM/02_Data_Preprocessing/sources/2_DM_preprocessing.pdf,primary lecture source
+DM/4_Association_Rules.pdf,DM/03_Association_Rule_Mining/sources/4_Association_Rules.pdf,primary lecture source
+DM/QP_DM_SEM_25.pdf,DM/04_Past_Questions/sources/QP_DM_SEM_25.pdf,past paper
+DM/QP_DM_SEM_26.pdf,DM/04_Past_Questions/sources/QP_DM_SEM_26.pdf,past paper
+DM/Data Warehousing and Data Mining Syllabus.docx,DM/05_Shared_References/Data Warehousing and Data Mining Syllabus.docx,shared reference
+DM/data-mining-concepts-and-techniques-2nd-edition-impressao.pdf,DM/05_Shared_References/data-mining-concepts-and-techniques-2nd-edition-impressao.pdf,shared reference

@@ -8,35 +8,85 @@
         "type": "tabs",
         "children": [
           {
-            "id": "9361a08689ef111a",
+            "id": "9d8f77a7a2cef931",
             "type": "leaf",
             "state": {
-              "type": "markdown",
+              "type": "pdf",
               "state": {
-                "file": "DC/SLIDE_QUICK_REVISION.md",
-                "mode": "source",
-                "source": false
+                "file": "DM/01_Introduction_and_KDD/sources/1_DM_Intro.pdf"
               },
-              "icon": "lucide-file",
-              "title": "SLIDE_QUICK_REVISION"
+              "icon": "lucide-file-text",
+              "title": "1_DM_Intro"
             }
           },
           {
-            "id": "e1e28b1ce01e1175",
+            "id": "671179af7d77d764",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "DM/00_Course_Guide/FORMULA_ALGORITHM_CHECKLIST.md",
+                "file": "DM/01_Introduction_and_KDD/notes/Introduction_and_KDD.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "FORMULA_ALGORITHM_CHECKLIST"
+              "title": "Introduction_and_KDD"
+            }
+          },
+          {
+            "id": "1485cd2532c28726",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "DM/02_Data_Preprocessing/sources/2_DM_preprocessing.pdf"
+              },
+              "icon": "lucide-file-text",
+              "title": "2_DM_preprocessing"
+            }
+          },
+          {
+            "id": "f67bfe4539e4852b",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "DM/02_Data_Preprocessing/notes/Data_Preprocessing.md",
+                "mode": "preview",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Data_Preprocessing"
+            }
+          },
+          {
+            "id": "f8f88467f7051ad8",
+            "type": "leaf",
+            "state": {
+              "type": "pdf",
+              "state": {
+                "file": "DM/03_Association_Rule_Mining/sources/4_Association_Rules.pdf"
+              },
+              "icon": "lucide-file-text",
+              "title": "4_Association_Rules"
+            }
+          },
+          {
+            "id": "563705b88f3e0dcd",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "DM/03_Association_Rule_Mining/notes/Association_Rule_Mining.md",
+                "mode": "source",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Association_Rule_Mining"
             }
           }
         ],
-        "currentTab": 1
+        "currentTab": 3
       }
     ],
     "direction": "vertical"
@@ -98,7 +148,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 245.3671875
+    "width": 229.875
   },
   "right": {
     "id": "8697c88fb17fc811",
@@ -176,7 +226,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "DM/00_Course_Guide/FORMULA_ALGORITHM_CHECKLIST.md",
+                "file": "DM/02_Data_Preprocessing/notes/Data_Preprocessing.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -190,7 +240,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 282.86328125
+    "width": 297.21875
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -203,25 +253,37 @@
       "bases:Create new base": false
     }
   },
-  "active": "e1e28b1ce01e1175",
+  "active": "f67bfe4539e4852b",
   "lastOpenFiles": [
-    "DM/00_Course_Guide/PYQ_TOPIC_INDEX.md",
-    "DM/00_Course_Guide/REVISION_PLAN.md",
+    "DM/02_Data_Preprocessing/sources/2_DM_preprocessing.pdf",
+    "DM/02_Data_Preprocessing/notes/Data_Preprocessing.md",
+    "DM/03_Association_Rule_Mining/sources/4_Association_Rules.pdf",
+    "DM/01_Introduction_and_KDD/notes/Introduction_and_KDD.md",
+    "DM/03_Association_Rule_Mining/notes/Association_Rule_Mining.md",
+    "DM/01_Introduction_and_KDD/sources/1_DM_Intro.pdf",
+    "DM/04_Past_Questions/COVERED_WORKED_EXAMPLES.md",
+    "DM/SLIDE_QUICK_REVISION.md",
+    "DM/DM_EXAM_NOTES.md",
+    "DM/00_Course_Guide/MOVE_MANIFEST.csv",
+    "DM/README.md",
+    "DM/05_Shared_References/README.md",
+    "DM/04_Past_Questions/README.md",
+    "DM/03_Association_Rule_Mining/README.md",
+    "DM/02_Data_Preprocessing/README.md",
+    "DM/01_Introduction_and_KDD/README.md",
     "DM/00_Course_Guide/SYLLABUS_MAP.md",
-    "DM/00_Course_Guide/FORMULA_ALGORITHM_CHECKLIST.md",
-    "DM/2_DM_preprocessing.pdf",
-    "DM/QP_DM_SEM_25.pdf",
-    "DM/data-mining-concepts-and-techniques-2nd-edition-impressao.pdf",
-    "DM/QP_DM_SEM_26.pdf",
     "DM/4_Association_Rules.pdf",
     "DM/1_DM_Intro.pdf",
+    "DM/05_Shared_References/data-mining-concepts-and-techniques-2nd-edition-impressao.pdf",
+    "DM/05_Shared_References/Data Warehousing and Data Mining Syllabus.docx",
+    "DM/05_Shared_References",
+    "DM/04_Past_Questions/sources/QP_DM_SEM_26.pdf",
+    "DM/00_Course_Guide/PYQ_TOPIC_INDEX.md",
+    "DM/00_Course_Guide/FORMULA_ALGORITHM_CHECKLIST.md",
+    "DM/00_Course_Guide/REVISION_PLAN.md",
     "DC/SLIDE_QUICK_REVISION.md",
     "DC/05_Wave_Traversal_and_Leader_Election/notes/Wave_Traversal_and_Leader_Election.md",
     "DC/02_Clocks_and_Event_Ordering/notes/Clocks_and_Event_Ordering.md",
-    "DC/05_Wave_Traversal_and_Leader_Election/sources/07_Distributed-Spanning-Tree.pdf",
-    "DC/05_Wave_Traversal_and_Leader_Election/sources/05_Distributed-Leader-Election-Protocols.pdf",
-    "DC/02_Clocks_and_Event_Ordering/sources/03_Synchronization-of-Clocks.pdf",
-    "DC/05_Wave_Traversal_and_Leader_Election/sources/06_Message-Passing-Algorithms.pdf",
     "DC/05_Wave_Traversal_and_Leader_Election/assets/kkm-level-flow.svg",
     "DC/05_Wave_Traversal_and_Leader_Election/assets/echo-tarry-comparison.svg",
     "DC/02_Clocks_and_Event_Ordering/assets/matrix-time-definition-slide.jpg",
@@ -237,18 +299,6 @@
     "DC/04_Termination_Detection/notes/Termination_Detection.md",
     "DC/09_Distributed_Transactions_and_Concurrency_Control/notes/Distributed_Transactions_and_Concurrency_Control.md",
     "DC/00_Course_Guide/REFERENCES.md",
-    "DC/DC_EXAM_NOTES.md",
-    "DC/00_Course_Guide/PYQ_TOPIC_INDEX.md",
-    "DC/08_Distributed_File_Systems/notes/Distributed_File_Systems.md",
-    "DC/00_Course_Guide/SYLLABUS_MAP.md",
-    "DC/00_Course_Guide/REVISION_PLAN.md",
-    "DC/00_Course_Guide/EXAM_COVERAGE_AUDIT.md",
-    "DC/00_Course_Guide/original_navigation/Distributed_Computing_Complete_Study_Notes_before_rewrite.md",
-    "DC/07_Distributed_Deadlock_Detection/notes/Distributed_Deadlock_Detection.md",
-    "DC/06_Distributed_Mutual_Exclusion/notes/Distributed_Mutual_Exclusion.md",
-    "DC/05_Wave_Traversal_and_Leader_Election/README.md",
-    "DC/03_Global_State_and_Snapshots/notes/Global_State_and_Snapshots.md",
-    "DC/03_Global_State_and_Snapshots/README.md",
-    "DC/02_Clocks_and_Event_Ordering/README.md"
+    "DC/DC_EXAM_NOTES.md"
   ]
 }

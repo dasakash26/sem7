@@ -1,8 +1,10 @@
 # DM notes scope map
 
-Only material present in the three supplied lecture PDFs is in scope.
+Only material present in the three supplied lecture PDFs is in scope. The PDFs now live inside the corresponding topic folders.
 
-## 1 DM Intro
+## 1 Introduction and KDD
+
+Source: [`01_Introduction_and_KDD/sources/1_DM_Intro.pdf`](../01_Introduction_and_KDD/sources/1_DM_Intro.pdf)
 
 | Slides | Topics |
 |---|---|
@@ -15,7 +17,9 @@ Only material present in the three supplied lecture PDFs is in scope.
 | 35-44 | Mean, median, mode, skewness, variance, standard deviation, quartiles, IQR, boxplots, histograms, scatter plots, Loess and correlation patterns |
 | 45 | Data mining vs machine learning |
 
-## 2 DM Preprocessing
+## 2 Data preprocessing
+
+Source: [`02_Data_Preprocessing/sources/2_DM_preprocessing.pdf`](../02_Data_Preprocessing/sources/2_DM_preprocessing.pdf)
 
 | Slides | Topics |
 |---|---|
@@ -27,7 +31,9 @@ Only material present in the three supplied lecture PDFs is in scope.
 | 33-39 | Discretization; concept hierarchies; equal-width/equal-frequency binning; entropy, information gain and best split |
 | 40 | Summary |
 
-## 4 Association Rules
+## 3 Association rule mining
+
+Source: [`03_Association_Rule_Mining/sources/4_Association_Rules.pdf`](../03_Association_Rule_Mining/sources/4_Association_Rules.pdf)
 
 | Slides | Topics |
 |---|---|

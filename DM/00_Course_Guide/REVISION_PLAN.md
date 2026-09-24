@@ -15,17 +15,17 @@ This plan covers only the three supplied lecture-note PDFs.
 
 ### Day 1 - introduction and preprocessing, 5 hours 30 minutes
 
-1. **Introduction - 60 min:** slides 3-14 of `1_DM_Intro.pdf`; definitions, tasks, motivation, applications and system components.
+1. **Introduction - 60 min:** slides 3-14 of `01_Introduction_and_KDD/sources/1_DM_Intro.pdf`; definitions, tasks, motivation, applications and system components.
 2. **KDD, patterns and issues - 60 min:** slides 15-28; reproduce the KDD flow and classify mining functions.
 3. **Statistics and quality - 60 min:** slides 29-44; central tendency, dispersion, boxplots, histograms, scatter plots and correlation patterns.
-4. **Cleaning and transformation - 75 min:** slides 2-25 of `2_DM_preprocessing.pdf`; attributes, missing/noisy data, integration and normalization.
+4. **Cleaning and transformation - 75 min:** slides 2-25 of `02_Data_Preprocessing/sources/2_DM_preprocessing.pdf`; attributes, missing/noisy data, integration and normalization.
 5. **Reduction and discretization - 75 min:** slides 26-40; reduction, sampling, bins, hierarchies, entropy and information gain.
 
 **Exit test:** solve one IQR outlier, one normalization, one bin-smoothing and one entropy-split problem.
 
 ### Day 2 - association rules and PYQs, 6 hours
 
-1. **Association foundations - 60 min:** slides 2-16 of `4_Association_Rules.pdf`; support, confidence, frequent/strong rules and anti-monotonicity.
+1. **Association foundations - 60 min:** slides 2-16 of `03_Association_Rule_Mining/sources/4_Association_Rules.pdf`; support, confidence, frequent/strong rules and anti-monotonicity.
 2. **Apriori - 90 min:** slides 17-25; join/prune, support counting, hash tree and drawbacks. Solve the 2026 Apriori question.
 3. **FP-growth - 75 min:** slides 26-34; build the 2025 FP-tree and conditional pattern bases.
 4. **Rules and condensed patterns - 45 min:** slides 35-43; rule generation, maximal and closed sets.

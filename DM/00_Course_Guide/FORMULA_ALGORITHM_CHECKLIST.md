@@ -12,26 +12,26 @@
 ## Summaries and preprocessing
 
 - Mean, weighted mean, median, mode, midrange, range, variance and standard deviation.
-- Five-number summary and boxplot; `IQR = Q3 - Q1`; fences at `Q1 - 1.5 IQR` and `Q3 + 1.5 IQR`. State the quartile convention used.
+- Five-number summary and boxplot; $\operatorname{IQR}=Q_3-Q_1$; fences at $Q_1-1.5\operatorname{IQR}$ and $Q_3+1.5\operatorname{IQR}$. State the quartile convention used.
 - Explain symmetric, positively skewed and negatively skewed data.
 - Identify nominal, binary, ordinal, interval/ratio, discrete and continuous attributes.
 - Missing values: ignore tuple, manual fill, global constant, mean/class mean or inferred value.
 - Noise: bin means, bin medians, bin boundaries, regression or clustering.
 - Integration: entity identification, redundancy/correlation, tuple duplication and value conflicts.
 - Transformation: smoothing, aggregation, generalization and attribute/feature construction.
-- Min-max normalization: `v' = ((v-minA)/(maxA-minA))(newMax-newMin)+newMin`.
-- Z-score normalization: `v' = (v-meanA)/sdA`.
-- Decimal scaling: `v' = v/10^j` with `max(|v'|) < 1`.
+- Min-max normalization: $v'=\frac{v-\min_A}{\max_A-\min_A}(b-a)+a$.
+- Z-score normalization: $v'=\frac{v-\mu_A}{\sigma_A}$.
+- Decimal scaling: $v'=\frac{v}{10^j}$ with $\max|v'|<1$.
 - Reduction: feature selection; wavelet/PCA dimensionality reduction; regression/log-linear models; aggregation, histograms, clustering and sampling.
 - Equal-width/equal-frequency bins; discretization and concept hierarchies.
-- Entropy: `H(S) = -sum p_i log2(p_i)`.
-- Split information and gain: `Gain = H(S) - weighted child entropy`.
+- Entropy: $H(S)=-\sum_i p_i\log_2p_i$.
+- Split information and gain: $\operatorname{Gain}=H(S)-\sum_j\frac{|S_j|}{|S|}H(S_j)$.
 
 ## Association rules
 
-- For disjoint `X` and `Y`, `support(X -> Y) = count(X union Y)/N`.
-- `confidence(X -> Y) = support(X union Y)/support(X)`.
-- `lift(X -> Y) = confidence(X -> Y)/support(Y)`.
+- For disjoint $X$ and $Y$, $s(X\rightarrow Y)=\frac{\sigma(X\cup Y)}{N}$.
+- $c(X\rightarrow Y)=\frac{\sigma(X\cup Y)}{\sigma(X)}$.
+- $\operatorname{lift}(X\rightarrow Y)=\frac{c(X\rightarrow Y)}{s(Y)}$.
 - Anti-monotone property: an infrequent itemset has no frequent superset.
 - Apriori: find `L1` -> join -> prune -> count -> repeat -> generate rules.
 - Explain hash-tree support counting and Apriori drawbacks.
