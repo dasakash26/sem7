@@ -20,6 +20,8 @@ A binary attribute is **symmetric** when both states are equally important. It i
 
 A **discrete** attribute has a finite or countably infinite set of values. A **continuous** attribute can take any measured value within a range.
 
+The distinction between interval and ratio attributes is determined by the zero point. A zero Celsius reading does not indicate the absence of temperature; consequently, ratios such as $20^\circ\mathrm{C}/10^\circ\mathrm{C}$ are not meaningful. A zero weight indicates the absence of weight, so ratio comparisons are meaningful for ratio-scaled attributes.
+
 ## 2. What goes wrong with raw data?
 
 Raw data usually has one or more of these problems:
@@ -39,6 +41,8 @@ Transformation → change representation or scale
 Reduction      → reduce size while preserving useful information
 Discretization → replace continuous values with intervals
 ```
+
+Cleaning primarily improves quality, whereas reduction primarily improves storage and computational efficiency. Transformation may improve either compatibility or suitability for a specific algorithm.
 
 ## 3. Data cleaning
 
@@ -99,6 +103,8 @@ $$
 
 Other ways to handle noise include regression, clustering, and computer-assisted human inspection.
 
+Regression smoothing replaces a value with that predicted by a fitted relationship. Clustering identifies values that are far from their nearest cluster as possible noise or outliers. These methods are more suitable than simple binning when the data contains a clear trend or natural groups.
+
 ### 3.3 Outliers
 
 An **outlier** is far from the behavior of most observations. It may be:
@@ -122,6 +128,8 @@ This is the **schema and entity-identification problem**. For example, `customer
 
 Attributes may be redundant or strongly correlated. For nominal variables, chi-square can test association. For numerical variables, correlation and covariance show how attributes vary together.
 
+Redundancy is important because repeated information can distort analysis and increase computation. For example, storing both age and date of birth may be redundant when the reference date is known.
+
 ### Are these the same real-world record?
 
 Duplicate tuples may differ slightly because of spelling, abbreviations, or formatting.
@@ -141,6 +149,8 @@ Transformation changes the representation without necessarily discarding the und
 - **Generalization** moves from detailed to higher concepts.
 - **Attribute construction** derives a new useful feature.
 - **Normalization** places numerical attributes on a comparable scale.
+
+For example, daily sales may be aggregated into monthly sales, individual cities may be generalized to states, and a new attribute such as body-mass index may be constructed from height and weight.
 
 ### 5.1 Min-max normalization
 
@@ -204,6 +214,8 @@ Reduction produces a smaller representation that gives the same or nearly the sa
 
 PCA and wavelet transforms may create a lower-dimensional representation, but their detailed algorithms are not developed in the supplied slides.
 
+Feature selection retains original attributes. Dimensionality-reduction methods such as PCA may instead construct new reduced attributes from combinations of the original attributes.
+
 ### 6.2 Reduce the number of stored values or records
 
 - Regression and log-linear models store model parameters.
@@ -212,9 +224,20 @@ PCA and wavelet transforms may create a lower-dimensional representation, but th
 - Aggregation stores higher-level totals.
 - Sampling stores a representative subset.
 
+The objective is not exact reconstruction of every record. The objective is preservation of the information required for the intended mining result.
+
 ### 6.3 Sampling
 
-Simple random sampling may miss a small but important class in skewed data. **Stratified sampling** first divides the data into important subpopulations and samples each one, preserving their approximate proportions.
+Sampling selects a representative subset when processing the complete dataset is expensive.
+
+| Method | Procedure | Suitability |
+|---|---|---|
+| Simple random sampling | Every record has equal selection probability | Uniform data; may miss rare classes |
+| Stratified sampling | Partition into groups, then sample each group separately | Skewed data or important minority classes |
+
+For example, a dataset with 900 regular and 100 fraudulent transactions produces approximately 90 regular and 10 fraudulent transactions in a proportional stratified sample of 100 records. Thus, the original class distribution is preserved.
+
+When a minority class is deliberately over-sampled, the changed class distribution must be considered while interpreting probabilities or support counts.
 
 ## 7. Discretization
 
@@ -229,6 +252,8 @@ w=\frac{x_{\max}-x_{\min}}{k}.
 $$
 
 Every interval has the same width, but the number of observations in each interval may be very different.
+
+For example, when most values lie in a narrow range, equal-width binning may produce one crowded bin and several nearly empty bins. Equal-frequency binning avoids this imbalance but can produce intervals of very unequal widths.
 
 ### 7.2 Equal-frequency binning
 
@@ -257,6 +282,8 @@ $$
 Likewise, exact ages may be replaced by `young`, `middle-aged`, and `senior`.
 
 Discretization forms intervals; a concept hierarchy gives those values or intervals progressively broader meaning.
+
+Concept hierarchies support analysis at different levels of abstraction. For example, a rule concerning a city can be generalized to a state or country when a broader pattern is required.
 
 ## 8. Entropy-based discretization
 
@@ -295,6 +322,8 @@ $$
 $$
 
 Choose the split with **maximum information gain**, which is the same as choosing the minimum weighted child entropy.
+
+The weighting is essential: a very pure child group containing only one record should not dominate the choice of split. Each child entropy is weighted by the fraction of records assigned to that child.
 
 ### 8.3 Worked example
 

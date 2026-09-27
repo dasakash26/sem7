@@ -4,7 +4,7 @@ Applications; design perspective and issues; supervised and unsupervised learnin
 
 ## Available material
 
-- [Intro_to_ML.md](notes/Intro_to_ML.md)
+- [Chapter 1: Introduction to Machine Learning](notes/Intro_to_ML.md)
 
 - [01_ML-UNIT-1-notes.pdf (92 pages)](sources/01_ML-UNIT-1-notes.pdf)
 

@@ -1,279 +1,556 @@
-# Bayesian Learning
+# Evaluating Hypotheses and Bayesian Learning
 
-> **CT source range:** the handwritten sheet marks `Unit-4.pdf` as complete. This note is the concept guide; the entire assigned PDF remains examinable.
+*Chapter 2*
 
-> **Core chain:** prior $P(h)$ → likelihood $P(D\mid h)$ → posterior $P(h\mid D)$ → choose with MAP. For classification, compare $P(x\mid c)P(c)$. Naive Bayes is a restricted Bayesian network whose features are conditionally independent given the class.
+> **Place in the course.** Chapter 1 introduced hypotheses, training data, validation, and generalization. This chapter asks a more precise question: how should a learner compare competing hypotheses when the data and the target are uncertain?
 
-## Introduction
-Bayesian reasoning provides a **probabilistic approach to inference**. Based on the assumption that quantities of interest are governed by probability distributions, and optimal decisions can be made by reasoning about these probabilities with observed data.
+## Learning objectives
 
-## Features of Bayesian Learning Methods
-- Each observed training example can **incrementally decrease/increase** the estimated probability of hypothesis correctness
-- **Prior knowledge** combined with observed data
-- Accommodates hypotheses that make probabilistic predictions
-- New instances classified by combining predictions of **multiple hypotheses, weighted by probabilities**
-- Provides a **standard of optimal decision making** even when computationally intractable
+After studying this chapter, you should be able to:
 
-## Practical Difficulties
-1. Requires initial knowledge of many probabilities
-2. Significant computational cost for Bayes optimal hypothesis in general case
+1. use conditional probability, the product rule, and the total-probability rule;
+2. derive and interpret Bayes' theorem;
+3. distinguish prior, likelihood, evidence, and posterior;
+4. explain MAP, maximum likelihood, version spaces, consistent learners, and MDL;
+5. distinguish a MAP hypothesis from a Bayes-optimal classification;
+6. derive and apply the Naive Bayes classifier;
+7. explain Bayesian networks and their factorization;
+8. describe the role of expectation-maximization.
 
 ---
 
-## Bayes Theorem
+## 2.1 Why probability belongs in learning
+
+Data rarely determine one hypothesis with certainty. Measurements contain noise, examples may be incomplete, and several explanations may agree with the observations.
+
+A deterministic learner may discard every hypothesis that makes one error. A Bayesian learner retains uncertainty by assigning probabilities to hypotheses and updating those probabilities as evidence arrives.
+
+The central question is:
+
+> Given a hypothesis and observed data, how should our belief in that hypothesis change?
+
+Bayes' theorem supplies the answer.
+
+---
+
+## 2.2 Probability tools
+
+For events $A$ and $B$, the conditional probability of $A$ given $B$ is
+
 $$
-P(h|D) = \frac{P(D|h) P(h)}{P(D)}
+P(A\mid B)=\frac{P(A\cap B)}{P(B)},
+\qquad P(B)>0.
 $$
 
-### Key Notations
-| Term      | Meaning                                                        |
-| --------- | -------------------------------------------------------------- |
-| $P(h)$    | Prior probability of hypothesis h                              |
-| $P(D)$    | Prior probability of training data D                           |
-| $P(h\|D)$ | Posterior probability - confidence that h holds after seeing D |
-| $P(D\|h)$ | Likelihood - probability of observing D given h holds          |
+Rearranging gives the product rule:
 
-### Properties
-- $P(h|D)$ increases with $P(h)$ and $P(D|h)$
-- $P(h|D)$ decreases as $P(D)$ increases (less evidence D provides in support of h)
+$$
+P(A\cap B)=P(A\mid B)P(B)=P(B\mid A)P(A).
+$$
 
-### Example: Medical Diagnosis
-- $P(\text{cancer}) = 0.008$
-- $P(+|\text{cancer}) = 0.98$, $P(-|\text{cancer}) = 0.02$
-- $P(+|\neg\text{cancer}) = 0.03$, $P(-|\neg\text{cancer}) = 0.97$
+For mutually exclusive events $A_1,\ldots,A_k$ that cover all possibilities,
 
-With positive test result:
-- $P(+|\text{cancer})P(\text{cancer}) = 0.0078$
-- $P(+|\neg\text{cancer})P(\neg\text{cancer}) = 0.0298$
+$$
+P(B)=\sum_{i=1}^{k}P(B\mid A_i)P(A_i).
+$$
 
-**hMAP = not cancer** (higher probability)
+This is the **law of total probability**. It says that an event's probability can be obtained by partitioning the possible worlds and adding their contributions.
 
-Exact: $P(\text{cancer}|+) = 0.21$, $P(\neg\text{cancer}|+) = 0.79$
+The distinction between $P(A\mid B)$ and $P(B\mid A)$ is crucial. They answer different questions and are generally not equal.
 
 ---
 
-## Basic Probability Formulas
-- **Product Rule**: $P(A \land B) = P(A|B)P(B) = P(B|A)P(A)$
-- **Sum Rule**: $P(A \lor B) = P(A) + P(B) - P(A \land B)$
-- **Theorem of Total Probability**: If $A_1, ..., A_n$ are mutually exclusive: $P(B) = \sum_{i=1}^{n} P(B|A_i)P(A_i)$
+## 2.3 Bayes' theorem
+
+Apply the product rule in two ways:
+
+$$
+P(A\cap B)=P(A\mid B)P(B)
+$$
+
+and
+
+$$
+P(A\cap B)=P(B\mid A)P(A).
+$$
+
+Equating them and dividing by $P(B)$ gives
+
+$$
+\boxed{P(A\mid B)=\frac{P(B\mid A)P(A)}{P(B)}}.
+$$
+
+For a hypothesis $h$ and observed data $D$:
+
+$$
+\boxed{P(h\mid D)=\frac{P(D\mid h)P(h)}{P(D)}}.
+$$
+
+The four terms have different roles:
+
+| Term | Interpretation |
+|---|---|
+| $P(h)$ | prior belief in the hypothesis before seeing $D$ |
+| $P(D\mid h)$ | likelihood of observing $D$ if $h$ were true |
+| $P(D)$ | evidence, or total probability of the observed data |
+| $P(h\mid D)$ | posterior belief after observing $D$ |
+
+In words:
+
+> Posterior belief is proportional to prior belief multiplied by how well the hypothesis predicts the data.
+
+### Example 2.1: A cloudy picnic
+
+Suppose $R$ means “it rains” and $C$ means “the morning is cloudy.” Let
+
+$$
+P(R)=0.10,\qquad P(C\mid R)=0.50,\qquad P(C)=0.40.
+$$
+
+Then
+
+$$
+P(R\mid C)
+=\frac{P(C\mid R)P(R)}{P(C)}
+=\frac{0.50\times0.10}{0.40}
+=0.125.
+$$
+
+The probability of rain given a cloudy morning is $12.5\%$. The conditional probability $P(C\mid R)=50\%$ was not itself the answer.
+
+### Example 2.2: A rare disease
+
+Let $C$ denote cancer and $+$ a positive test. Suppose
+
+$$
+P(C)=0.008,\quad
+P(+\mid C)=0.98,\quad
+P(+\mid\neg C)=0.03.
+$$
+
+The posterior probability is
+
+$$
+P(C\mid +)
+=\frac{P(+\mid C)P(C)}
+{P(+\mid C)P(C)+P(+\mid\neg C)P(\neg C)}.
+$$
+
+Substituting:
+
+$$
+P(C\mid +)
+=\frac{0.98(0.008)}
+{0.98(0.008)+0.03(0.992)}
+\approx0.21.
+$$
+
+Although the test is sensitive, a positive result implies only about a $21\%$ probability of disease because the disease is rare. This is the **base-rate effect**.
 
 ---
 
-## MAP and ML Hypotheses
+## 2.4 Bayesian concept learning
 
-### Maximum A Posteriori (MAP)
-$$h_{MAP} = \underset{h \in H}{\text{argmax}} P(h|D) = \underset{h \in H}{\text{argmax}} P(D|h)P(h)$$
+Let $H$ be a hypothesis space and $D$ the training data. Bayesian concept learning assigns a posterior probability to every $h\in H$:
 
-### Maximum Likelihood (ML)
-When all hypotheses equally probable: $P(h_i) = P(h_j)$
-$$h_{ML} = \underset{h \in H}{\text{argmax}} P(D|h)$$
+$$
+P(h\mid D)\propto P(D\mid h)P(h).
+$$
 
----
+The learner can then:
 
-## Brute-Force MAP Learning Algorithm
-1. For each hypothesis $h$ in $H$, calculate $P(h|D)$
-2. Output $h_{MAP}$ with highest posterior probability
+- select one hypothesis;
+- retain a posterior distribution over hypotheses;
+- average predictions from several hypotheses.
 
-### Assumptions
-- Training data D is **noise free** ($d_i = c(x_i)$)
-- Target concept $c$ is contained in hypothesis space $H$
-- No a priori reason to favor any hypothesis (uniform prior)
+This is more informative than simply declaring one hypothesis “true” when the data do not justify that certainty.
 
-### Result
-- Inconsistent hypotheses get $P(h|D) = 0$
-- Consistent hypotheses share probability equally: $P(h|D) = 1/|VS_{H,D}|$
+### Brute-force Bayes learning
 
----
+For a finite hypothesis space:
 
-## Consistent Learners
-- A learning algorithm is a **consistent learner** if it outputs a hypothesis with zero errors on training examples
-- Under uniform prior and noise-free data, every consistent learner outputs a MAP hypothesis
-- **FIND-S** outputs a MAP hypothesis and favors more specific hypotheses
+1. calculate $P(h\mid D)$ for every $h\in H$;
+2. normalize the values if actual probabilities are required;
+3. choose the hypothesis with the largest posterior, if a single hypothesis is needed.
 
----
+This algorithm is conceptually important but often computationally expensive because the hypothesis space may be enormous.
 
-## Maximum Likelihood & Least-Squared Error
-Under certain assumptions, any learning algorithm that **minimizes squared error** outputs a Maximum Likelihood hypothesis.
+### Version spaces and consistent learners
 
-$$h_{ML} = \underset{h \in H}{\text{argmin}} \sum_{i=1}^{m} (d_i - h(x_i))^2$$
+Under a noise-free setting, assume:
 
-### Assumptions
-- Target value corrupted by random noise drawn from **Normal distribution with zero mean**
-- Training examples mutually independent given h
-- This provides **Bayesian justification** for neural network/curve fitting methods
+1. the target concept is contained in $H$;
+2. examples are labelled correctly;
+3. all hypotheses have the same prior probability.
 
-### Why Normal Distribution?
-1. Mathematically straightforward analysis
-2. Good approximation to many types of noise in physical systems
-3. Central Limit Theorem: sum of many i.i.d. random variables ≈ Normal
+The **version space** is the set of hypotheses consistent with every observed example:
 
----
+$$
+VS_{H,D}=\{h\in H:h(x_i)=y_i\text{ for every training example}\}.
+$$
 
-## Maximum Likelihood for Predicting Probabilities
-For learning nondeterministic (probabilistic) function $f: X \to \{0,1\}$:
-- Want $f'(x) = P(f(x)=1)$
-- Maximum likelihood hypothesis maximizes:
-$$h_{ML} = \underset{h \in H}{\text{argmax}} \sum_{i=1}^{m} [d_i \ln h(x_i) + (1-d_i) \ln(1-h(x_i))]$$
+An inconsistent hypothesis has $P(D\mid h)=0$. Each consistent hypothesis has the same likelihood. Under a uniform prior, the posterior probability is therefore shared equally among the hypotheses in the version space:
 
-### Gradient Ascent Weight Update (sigmoid unit)
-$$w_{jk} \leftarrow w_{jk} + \eta \sum_{i=1}^{m} (d_i - h(x_i)) x_{ijk}$$
+$$
+P(h\mid D)=
+\begin{cases}
+\frac{1}{|VS_{H,D}|},&h\in VS_{H,D},\\
+0,&h\notin VS_{H,D}.
+\end{cases}
+$$
+
+A **consistent learner** returns a hypothesis with zero training error. Under these assumptions, any consistent learner returns a MAP hypothesis. FIND-S is an example: it returns a maximally specific consistent hypothesis.
+
+The assumptions matter. With noisy labels or unequal priors, consistency alone does not determine the best posterior hypothesis.
 
 ---
 
-## Minimum Description Length (MDL) Principle
-Motivated by information theory interpretation of hMAP.
+## 2.5 MAP and maximum likelihood
+
+The **maximum a posteriori** hypothesis is
+
+$$
+h_{MAP}
+=\arg\max_{h\in H}P(h\mid D).
+$$
+
+Using Bayes' theorem and observing that $P(D)$ is constant with respect to $h$:
+
+$$
+\boxed{
+h_{MAP}
+=\arg\max_{h\in H}P(D\mid h)P(h)
+}.
+$$
+
+The **maximum likelihood** hypothesis ignores the prior:
+
+$$
+\boxed{
+h_{ML}
+=\arg\max_{h\in H}P(D\mid h)
+}.
+$$
+
+MAP and ML agree when all hypotheses have equal prior probability. Otherwise, MAP rewards both data fit and prior plausibility.
+
+### Likelihood and least-squares error
+
+Suppose the target is a real value and the observation noise is independent Gaussian noise with mean zero and fixed variance. Maximizing the likelihood is then equivalent to minimizing the sum of squared errors:
+
+$$
+h_{ML}
+=\arg\min_{h\in H}
+\sum_{i=1}^{m}\bigl(y_i-h(x_i)\bigr)^2.
+$$
+
+This result gives a probabilistic interpretation to least-squares fitting. It is not a universal identity; it depends on the noise assumptions.
+
+For probabilistic binary predictions, the likelihood becomes
+
+$$
+\prod_{i=1}^{m}
+h(x_i)^{y_i}\bigl(1-h(x_i)\bigr)^{1-y_i}.
+$$
+
+Taking logarithms turns the product into a sum:
+
+$$
+\sum_{i=1}^{m}
+\left[
+y_i\log h(x_i)
++(1-y_i)\log(1-h(x_i))
+\right].
+$$
+
+Maximizing this log-likelihood is the origin of binary cross-entropy.
+
+---
+
+## 2.6 Minimum Description Length
+
+The **Minimum Description Length (MDL)** principle chooses a hypothesis that gives the shortest total description of:
+
+1. the hypothesis itself;
+2. the data not already explained by that hypothesis.
+
+Because an event with probability $p$ has ideal code length $-\log_2p$,
 
 $$
 \begin{aligned}
-h_{MAP} &= \underset{h \in H}{\text{argmax}} P(D|h)P(h) \\
-&= \underset{h \in H}{\text{argmin}} [-\log_2 P(D|h) - \log_2 P(h)]
+h_{MAP}
+&=\arg\max_h P(D\mid h)P(h)\\
+&=\arg\min_h
+\left[-\log_2P(D\mid h)-\log_2P(h)\right].
 \end{aligned}
 $$
 
-### Key Insight
-- Optimal code length for event with probability $p$ is $-\log_2 p$ bits
-- $-\log_2 P(h)$ = description length of hypothesis $h$
-- $-\log_2 P(D|h)$ = description length of data given $h$
+Thus, under suitable coding choices,
 
-**MDL Principle**: Prefer the hypothesis that minimizes:
-$$\text{length}(h) + \text{length}(\text{misclassifications})$$
+$$
+\text{description length}
+=
+\text{length of hypothesis}
++
+\text{length of unexplained data}.
+$$
 
-### Application to Decision Trees
-- $C_1$: Encoding grows with number of nodes and edges
-- $C_2$: If hypothesis predicts correctly, description length is ZERO; otherwise need to transmit misclassified examples' identities and correct classifications
+MDL expresses a version of Occam's razor: a complicated hypothesis must earn its extra complexity by explaining the data substantially better.
 
----
-
-## Bayes Optimal Classifier
-Instead of asking "most probable hypothesis?", ask "**most probable classification** of new instance?"
-
-$$P(v_j|D) = \sum_{h_i \in H} P(v_j|h_i) P(h_i|D)$$
-
-Bayes optimal classification:
-$$\underset{v_j \in V}{\text{argmax}} \sum_{h_i \in H} P(v_j|h_i) P(h_i|D)$$
-
-### Example
-- $P(h_1|D)=0.4$: classifies +, $P(-|h_1)=0, P(+|h_1)=1$
-- $P(h_2|D)=0.3$: classifies -, $P(-|h_2)=1$
-- $P(h_3|D)=0.3$: classifies -, $P(-|h_3)=1$
-
-$\sum P(+|h_i)P(h_i|D) = 0.4$, $\sum P(-|h_i)P(h_i|D) = 0.6$
-
-Most probable classification is **negative** (different from MAP hypothesis!)
-
-### Gibbs Algorithm (Alternative)
-1. Choose hypothesis $h$ at random, according to $P(h|D)$
-2. Use $h$ to classify
-
-Under conditions: $E[\text{error}_{Gibbs}] \leq 2 \cdot E[\text{error}_{BayesOptimal}]$
+For a decision tree, one code can describe the tree structure and another can describe the misclassified examples. A tree that is larger but makes fewer errors is preferred only when the reduction in error description outweighs the additional tree description.
 
 ---
 
-## Naive Bayes Classifier
+## 2.7 MAP hypothesis versus Bayes-optimal classification
 
-### Core Formula
-$$v_{NB} = \underset{v_j \in V}{\text{argmax}} P(v_j) \prod_i P(a_i|v_j)$$
+MAP selects the single most probable hypothesis. Bayes-optimal classification asks a different question:
 
-### Key Assumption
-**Conditional independence** of attributes given the target value:
-$$P(a_1, ..., a_n | v_j) = \prod_i P(a_i|v_j)$$
+> Which class has the highest posterior probability after averaging over all hypotheses?
 
-### Example: Play Tennis
-| Day | Outlook | Temp | Humidity | Wind | Play |
-|-----|---------|------|----------|------|------|
-| D1  | Sunny   | Hot  | High     | Weak | No   |
-| ... | ...     | ...  | ...      | ...  | ...  |
+For a new instance $x$ and possible class $v$:
 
-New instance: `<Outlook=sunny, Temp=cool, Humidity=high, Wind=strong>`
+$$
+P(v\mid x,D)
+=
+\sum_{h\in H}P(v\mid x,h)P(h\mid D).
+$$
 
-Calculations:
-- $P(\text{Yes}) = 9/14$, $P(\text{No}) = 5/14$
-- $\prod P(a_i|\text{Yes}) \cdot P(\text{Yes}) = 0.0053$
-- $\prod P(a_i|\text{No}) \cdot P(\text{No}) = 0.0206$
+The Bayes-optimal prediction is
 
-**Prediction: No** (with 79.5% confidence)
+$$
+\boxed{
+\hat v
+=
+\arg\max_v
+\sum_{h\in H}P(v\mid x,h)P(h\mid D)
+}.
+$$
 
-### m-Estimate for Zero Probabilities
-When $n_c = 0$, use:
-$$\frac{n_c + mp}{n + m}$$
+The MAP hypothesis can disagree with the Bayes-optimal class because several less-probable hypotheses may collectively support another class.
 
-Where $p = 1/k$ (for $k$ possible values) and $m$ is equivalent sample size.
+### Gibbs classification
 
-### Text Classification
-```
-LEARN_NAIVE_BAYES_TEXT(Examples, V):
-  - Collect vocabulary from all documents
-  - For each class v_j:
-      docs_j = documents with target v_j
-      P(v_j) = |docs_j| / |Examples|
-      Text_j = concatenate all docs_j
-      n = total word positions in Text_j
-      for each word w_k:
-          n_k = count of w_k in Text_j
-          P(w_k|v_j) = (n_k + 1) / (n + |Vocabulary|)
-```
+The Gibbs algorithm samples one hypothesis according to $P(h\mid D)$ and uses it to classify the new instance. It is cheaper than averaging over all hypotheses. Under the standard assumptions from the course, its expected error is at most twice the expected error of the Bayes-optimal classifier:
 
-### Advantages & Disadvantages
-| Pros | Cons |
-|------|------|
-| Easy to implement | Conditional independence assumption |
-| Good results in most cases | Loss of accuracy due to dependencies |
-| Fast/efficient | Cannot model attribute dependencies |
+$$
+E[\operatorname{error}_{Gibbs}]
+\leq
+2E[\operatorname{error}_{Bayes}].
+$$
 
 ---
 
-## Bayesian Belief Networks
-Describes **joint probability distribution** for a set of variables by specifying:
-1. Conditional independence assumptions
-2. Conditional probabilities
+## 2.8 Bayesian classification
 
-### Representation
-- **Directed acyclic graph** (DAG)
-- Each node = random variable
-- Arcs = conditional independence assertions: variable is conditionally independent of non-descendants **given its immediate predecessors**
-- **Conditional Probability Table (CPT)** for each variable
+For class $c_j$ and input $x$, the Bayes/MAP decision rule is
 
-### Network Example (Storm/BusTourGroup/...)
-Variables: Storm, Lightning, Thunder, ForestFire, Campfire, BusTourGroup
+$$
+\hat c
+=
+\arg\max_{c_j}P(c_j\mid x).
+$$
 
-$P(\text{Campfire} = \text{True} | \text{Storm} = \text{True}, \text{BusTourGroup} = \text{True}) = 0.4$
+Applying Bayes' theorem:
 
-### Joint Probability
-$$P(y_1, ..., y_n) = \prod_{i=1}^{n} P(y_i | \text{Parents}(Y_i))$$
+$$
+\hat c
+=
+\arg\max_{c_j}P(x\mid c_j)P(c_j),
+$$
 
-### Conditional Independence
-$X$ is conditionally independent of $Y$ given $Z$ if:
-$$P(X|Y,Z) = P(X|Z)$$
+because $P(x)$ is the same for every candidate class.
 
-### Gradient Ascent Training
-$$w_{ijk} \leftarrow w_{ijk} + \eta \sum_{d \in D} \frac{P_h(y_{ij}, u_{ik}|d)}{w_{ijk}}$$
-
-Then renormalize to ensure probability constraints.
+The prior $P(c_j)$ expresses how common the class is. The likelihood $P(x\mid c_j)$ expresses how compatible the observed features are with that class.
 
 ---
 
-## EM Algorithm (Expectation-Maximization)
-Used when some variables are never directly observed, provided the general form of the probability distribution is known.
+## 2.9 Naive Bayes
 
-### Gaussian Mixture Example
-- Data generated by a mixture of $k$ Normal distributions
-- Two-step process: select distribution → generate instance
-- Task: Find means $\mu_1, ..., \mu_k$ of the distributions
+Naive Bayes makes one strong simplifying assumption: the features are conditionally independent given the class.
 
-### Steps
-1. **E-Step (Expectation)**: Using observed data, estimate values of missing/unobserved variables
-2. **M-Step (Maximization)**: Use complete data to update parameters
-3. Repeat until convergence
+For $x=(x_1,\ldots,x_n)$:
 
-### Applications
-- Filling missing data
-- Basis of unsupervised clustering
-- Estimating HMM parameters
-- Discovering latent variable values
+$$
+P(x_1,\ldots,x_n\mid c)
+=
+\prod_{i=1}^{n}P(x_i\mid c).
+$$
 
-### Pros & Cons
-| Pros | Cons |
-|------|------|
-| Likelihood always increases each iteration | Slow convergence |
-| E and M steps often easy to implement | Converges only to local optima |
-| Closed-form solutions for M-steps | Requires both forward and backward probabilities |
+The decision rule becomes
+
+$$
+\boxed{
+\hat c
+=
+\arg\max_c
+P(c)\prod_{i=1}^{n}P(x_i\mid c)
+}.
+$$
+
+The assumption is often false, but the classifier can still perform well, especially with high-dimensional sparse text features.
+
+### The four-step calculation
+
+For each possible class:
+
+1. estimate the prior $P(c)$;
+2. estimate one likelihood $P(x_i\mid c)$ for each feature;
+3. multiply the prior and likelihoods;
+4. choose the class with the largest score.
+
+The common evidence term $P(x)$ is unnecessary when only the winning class is required.
+
+### Example 2.3: Play Tennis
+
+Suppose a training table contains $14$ days, with $9$ “Yes” outcomes and $5$ “No” outcomes. For the new observation
+
+$$
+x=(\text{Sunny},\text{Cool},\text{High},\text{Strong}),
+$$
+
+the two unnormalized Naive Bayes scores are
+
+$$
+S_{Yes}
+=P(Yes)
+P(Sunny\mid Yes)
+P(Cool\mid Yes)
+P(High\mid Yes)
+P(Strong\mid Yes),
+$$
+
+and
+
+$$
+S_{No}
+=P(No)
+P(Sunny\mid No)
+P(Cool\mid No)
+P(High\mid No)
+P(Strong\mid No).
+$$
+
+Compute both scores using the frequency table and select the larger one. The calculation is a comparison of class scores; normalization is needed only if calibrated posterior probabilities are requested.
+
+### Zero-frequency problem and smoothing
+
+If a feature value never appears with class $c$, its estimated likelihood is zero. Multiplication then makes the entire class score zero.
+
+Laplace smoothing replaces a raw frequency estimate with
+
+$$
+P(w\mid c)
+=
+\frac{count(w,c)+1}
+{\sum_{w'}count(w',c)+|V|},
+$$
+
+where $|V|$ is the number of possible values or vocabulary items. More generally, the m-estimate is
+
+$$
+\frac{n_c+mp}{n+m},
+$$
+
+where $p$ is a prior estimate and $m$ is an equivalent sample size.
+
+### Text classification
+
+For a document represented as a bag of words,
+
+$$
+\hat c
+=
+\arg\max_c
+\left[
+\log P(c)+
+\sum_{w\in d}\log P(w\mid c)
+\right].
+$$
+
+Logarithms prevent numerical underflow and turn a product into a sum. This approach is used in spam filtering, topic classification, and sentiment analysis.
+
+---
+
+## 2.10 Bayesian belief networks
+
+A Bayesian Network represents a joint probability distribution with a directed acyclic graph.
+
+- Each node represents a random variable.
+- A directed edge represents a direct dependency in the model.
+- A conditional probability table specifies a node's distribution for each assignment of its parents.
+- The graph contains no directed cycle.
+
+If $Pa(X_i)$ denotes the parents of $X_i$, the joint distribution factorizes as
+
+$$
+\boxed{
+P(X_1,\ldots,X_n)
+=
+\prod_{i=1}^{n}
+P(X_i\mid Pa(X_i))
+}.
+$$
+
+This factorization is valuable because it replaces one large joint table with smaller local conditional tables.
+
+Conditional independence is a statement about distributions. $X$ is conditionally independent of $Y$ given $Z$ when
+
+$$
+P(X\mid Y,Z)=P(X\mid Z).
+$$
+
+The graph encodes such assumptions, but the meaning of an independence depends on what variables have been observed or conditioned on.
+
+### Naive Bayes as a restricted network
+
+Naive Bayes can be drawn as one class node pointing to every feature node. The features have no edges between them. This graph expresses conditional independence of the features given the class. Naive Bayes is therefore a special, highly constrained Bayesian network.
+
+---
+
+## 2.11 Expectation-maximization
+
+Expectation-maximization (EM) is used when some variables are unobserved or latent, but the form of the probability model is known.
+
+Suppose data were generated by a mixture of $k$ Gaussian distributions, but the identity of the generating component is hidden. EM alternates:
+
+1. **E-step:** using the current parameters, estimate the probability that each observation belongs to each hidden component;
+2. **M-step:** treat those probabilities as responsibilities and update the model parameters to maximize the expected complete-data likelihood.
+
+Repeat the two steps until the likelihood or parameter changes become sufficiently small.
+
+EM can increase likelihood at each iteration, but it may converge to a local optimum and depends on its initialization. Applications include mixture models, missing-data estimation, clustering, and hidden Markov models.
+
+---
+
+## Chapter summary
+
+Bayesian learning keeps uncertainty over competing hypotheses. Bayes' theorem updates a prior using the likelihood of observed data. MAP chooses the most probable hypothesis; maximum likelihood chooses the hypothesis that best explains the data without a prior. Version spaces describe hypotheses consistent with noise-free examples. MDL interprets model selection as a trade-off between describing the model and describing its errors.
+
+Bayes-optimal classification averages predictions across hypotheses. Naive Bayes makes that calculation practical by assuming conditional independence of features given the class. Bayesian networks represent more general dependency structures, while EM estimates models containing hidden variables.
+
+The chapter's central chain is:
+
+> **Prior → likelihood → posterior → model or class decision**
+
+---
+
+## Review questions
+
+1. Derive Bayes' theorem from the product rule.
+2. Explain why $P(+\mid C)$ is not the same as $P(C\mid +)$.
+3. State the assumptions under which every consistent learner is MAP.
+4. Compare MAP and maximum likelihood.
+5. Explain the relation between least-squares error and Gaussian noise.
+6. What does MDL penalize?
+7. Why can Bayes-optimal classification disagree with the MAP hypothesis?
+8. Derive the Naive Bayes decision rule.
+9. Why is Laplace smoothing needed?
+10. Explain how a Bayesian network factorizes a joint distribution.
+11. Describe the E-step and M-step of EM.
+
+---
+
+## Source guide
+
+- Conditional probability, Bayes' theorem, MAP, ML, and Naive Bayes: *Unit-4.pdf* and *bayes.pdf*.
+- Concept learning, version spaces, consistent learners, squared-error likelihood, MDL, Bayes-optimal classification, Gibbs, and Bayesian networks: *lec04-BayesianLearning.pdf*, especially the sections corresponding to the course's Unit 2 scope.

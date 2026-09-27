@@ -20,25 +20,53 @@ language: English
 > [!abstract] Scope
 > These notes now follow the handwritten CT topic sheet supplied by the student. The assessed material includes **Introduction, Bayesian Learning, Artificial Neural Networks, Multilayer Perceptrons/FFNN, Hidden Markov Models and CRFs**. This replaces the earlier assumption that HMMs and CRFs were outside the CT.
 >
-> The exact PDF/page mapping is recorded in [[00_Course_Guide/CT_SCOPE_MAP|CT Scope Map]]. Where the handwriting says “video” or names a web source, these notes explain the required concepts without pretending that an unidentified video or page was verified.
+> The exact PDF/page mapping is recorded in [CT Scope Map](00_Course_Guide/CT_SCOPE_MAP.md). Where the handwriting says “video” or names a web source, these notes explain the required concepts without pretending that an unidentified video or page was verified.
 
 ## Quick navigation
 
-- [[#Module 1 — Introduction]]
-- [[#Module 2 — Bayesian Learning]]
-- [[#Module 3 — Artificial Neural Networks]]
-- [[#Module 4 — Feed Forward Neural Networks]]
-- [[#Module 5 — Hidden Markov Models]]
-- [[#Module 6 — Conditional Random Fields]]
-- [[#HMM vs CRF]]
-- [[#High-yield comparisons]]
-- [[#CT formula sheet]]
-- [[#Likely CT questions]]
-- [[#Final 15-minute revision checklist]]
+- [Module 1 — Introduction](#module-1--introduction)
+- [Module 2 — Bayesian Learning](#module-2--bayesian-learning)
+- [Module 3 — Artificial Neural Networks](#module-3--artificial-neural-networks)
+- [Module 4 — Feed Forward Neural Networks](#module-4--feed-forward-neural-networks)
+- [Module 5 — Hidden Markov Models](#module-5--hidden-markov-models)
+- [Module 6 — Conditional Random Fields](#module-6--conditional-random-fields)
+- [HMM vs CRF](#hmm-vs-crf)
+- [High-yield comparisons](#high-yield-comparisons)
+- [CT formula sheet](#ct-formula-sheet)
+- [Likely CT questions](#likely-ct-questions)
+- [Final 15-minute revision checklist](#final-15-minute-revision-checklist)
 
 ---
 
 # Module 1 — Introduction
+
+> **Read the chapter first:** [Introduction to Machine Learning](01_Introduction_to_ML/notes/Intro_to_ML.md). It turns the lecture material into a continuous account of what a learning problem is, how a project is built, and how generalization is evaluated.
+
+## CT revision capsule
+
+The introductory module answers one question: **what must be true for a machine-learning system to be useful?**
+
+1. Define a task, target, experience, and performance measure.
+2. Obtain data that represent the deployment population.
+3. Prepare and represent those data carefully.
+4. Train a hypothesis without leaking information from validation or test data.
+5. Measure generalization with a metric that reflects the cost of errors.
+6. Deploy and monitor the model as the environment changes.
+
+The essential contrasts are:
+
+| Concept | Meaning |
+|---|---|
+| Parameter | Learned from data |
+| Hyperparameter | Chosen by the designer |
+| Training set | Estimates parameters |
+| Validation set | Selects the model and its settings |
+| Test set | Final, untouched estimate |
+| Underfitting | Model too simple or insufficiently trained |
+| Overfitting | Model fits training-specific noise |
+
+<details>
+<summary><strong>Expanded reference material for Module 1</strong></summary>
 
 ## 1. What is Machine Learning?
 
@@ -348,9 +376,43 @@ F1 is the harmonic mean of precision and recall.
 > [!tip] Choosing a metric
 > Use recall when missing a positive is especially costly. Use precision when a false alarm is especially costly. Use F1 when both matter and the classes are imbalanced.
 
+</details>
+
 ---
 
 # Module 2 — Bayesian Learning
+
+> **Read the chapter first:** [Evaluating Hypotheses and Bayesian Learning](02_Hypothesis_Evaluation_and_Bayesian_Learning/notes/Bayesian_Learning.md). It connects probability, hypothesis evaluation, MAP/ML, Naive Bayes, Bayesian networks, and EM.
+
+## CT revision capsule
+
+Bayesian learning can be reconstructed with one chain:
+
+> **Prior belief → likelihood of the observed data → posterior belief → hypothesis or class decision**
+
+The formulas that carry the chain are:
+
+$$
+P(h\mid D)=\frac{P(D\mid h)P(h)}{P(D)}
+$$
+
+$$
+h_{MAP}=\arg\max_h P(D\mid h)P(h)
+$$
+
+$$
+h_{ML}=\arg\max_h P(D\mid h)
+\quad\text{when priors are equal}
+$$
+
+$$
+\hat c=\arg\max_c P(x\mid c)P(c)
+$$
+
+For a 15-mark answer, define the probability terms, derive Bayes' theorem from the product rule, work one base-rate example, then distinguish MAP, ML, Bayes-optimal classification, and Naive Bayes.
+
+<details>
+<summary><strong>Expanded reference material for Module 2</strong></summary>
 
 ## 1. Probability foundations
 
@@ -583,9 +645,61 @@ $$
 
 Then choose the larger score. The common evidence $P(Overcast)$ need not be calculated when only the winning class is required.
 
+</details>
+
 ---
 
 # Module 3 — Artificial Neural Networks
+
+> **Read this module as a story:** start with [Neural Networks: From One Neuron to a Hidden Layer](03_Artificial_Neural_Networks/notes/Neural_Networks_Basics.md). It connects neuron, perceptron, XOR, hidden layers, and MLP instead of treating them as separate definitions.
+
+## CT revision capsule
+
+### The argument of this module
+
+~~~mermaid
+flowchart LR
+    N["Artificial neuron<br/>z = wᵀx + b"] --> P["Perceptron<br/>step activation"]
+    P --> G["Learns AND/OR<br/>one linear boundary"]
+    G --> X["Fails on XOR"]
+    X --> H["Hidden layer"]
+    H --> M["MLP learns<br/>nonlinear mapping"]
+~~~
+
+The module is one argument, not a list of definitions:
+
+1. a neuron produces a weighted score and activation;
+2. a perceptron uses that neuron as a linear binary classifier;
+3. its learning rule moves the boundary after a mistake;
+4. XOR exposes the limitation of one boundary;
+5. hidden units learn a representation in which the task becomes easier;
+6. this produces the multilayer perceptron.
+
+### Formulas worth retrieving
+
+| Purpose | Formula |
+|---|---|
+| Neuron | $z=\mathbf w^T\mathbf x+b,\ a=g(z)$ |
+| Perceptron prediction | $\hat y=\operatorname{step}(\mathbf w^T\mathbf x+b)$ |
+| Weight update | $\mathbf w\leftarrow\mathbf w+\eta(y-\hat y)\mathbf x$ |
+| Bias update | $b\leftarrow b+\eta(y-\hat y)$ |
+| MLP layer | $\mathbf z^{(l)}=W^{(l)}\mathbf a^{(l-1)}+\mathbf b^{(l)}$ |
+
+### Likely 15-mark construction
+
+For a question on perceptron and MLP:
+
+1. draw and define an artificial neuron;
+2. explain weights, bias, activation, and linear boundary;
+3. write the perceptron learning rule;
+4. verify one logic gate with a table;
+5. show the XOR truth table and explain non-separability;
+6. draw an input-hidden-output MLP;
+7. explain hidden units as learned features;
+8. conclude that nonlinear activations permit nonlinear boundaries.
+
+<details>
+<summary><strong>Expanded reference material for Module 3</strong></summary>
 
 ## 1. Biological inspiration
 
@@ -809,9 +923,80 @@ $$
 
 An MLP can combine simpler boundaries to represent XOR and other nonlinear functions.
 
+</details>
+
 ---
 
 # Module 4 — Feed Forward Neural Networks
+
+> **Continue from Module 3:** use [Multilayer Perceptrons and Backpropagation](04_Feedforward_Networks_and_Graphical_Models/01_FFNN_and_Training/notes/Multilayer_Backpropagation.md) for the continuous forward-pass → loss → backpropagation → update explanation and worked numerical example.
+
+## CT revision capsule
+
+### The training mechanism
+
+~~~mermaid
+flowchart LR
+    F["Forward<br/>compute ŷ"] --> L["Loss<br/>compare ŷ with y"]
+    L --> B["Backpropagation<br/>compute gradients"]
+    B --> U["Optimizer<br/>update W and b"]
+    U -. next batch .-> F
+~~~
+
+Keep the roles separate:
+
+| Part | Job |
+|---|---|
+| Forward propagation | Calculates the prediction |
+| Loss function | Gives the prediction a penalty |
+| Backpropagation | Calculates every parameter gradient |
+| Optimizer | Uses gradients to update parameters |
+
+### Backpropagation skeleton
+
+$$
+\boldsymbol\delta^{(L)}
+=\frac{\partial L}{\partial\mathbf z^{(L)}}
+$$
+
+$$
+\boldsymbol\delta^{(l)}
+=
+\left(W^{(l+1)T}\boldsymbol\delta^{(l+1)}\right)
+\odot\phi'^{(l)}(\mathbf z^{(l)})
+$$
+
+$$
+\frac{\partial L}{\partial W^{(l)}}
+=
+\boldsymbol\delta^{(l)}\mathbf a^{(l-1)T}
+$$
+
+$$
+W^{(l)}
+\leftarrow
+W^{(l)}-\eta\frac{\partial L}{\partial W^{(l)}}
+$$
+
+Read it verbally:
+
+> send output sensitivity backward through the weights, multiply by local responsiveness, assign the resulting delta to each incoming connection, then take a step opposite the gradient.
+
+### Likely 15-mark construction
+
+1. define FFNN and draw its layers;
+2. write forward equations with dimensions;
+3. match the output activation and loss to the task;
+4. define loss and gradient descent;
+5. use the chain rule to define the output delta;
+6. derive the hidden delta;
+7. write weight and bias gradients;
+8. write the update rule;
+9. give the training loop;
+10. finish with one practical concern such as initialization, vanishing gradients, or early stopping.
+
+<details>
+<summary><strong>Expanded reference material for Module 4</strong></summary>
 
 ## 1. Definition
 
@@ -1048,6 +1233,8 @@ For classification, calculate the confusion matrix and use accuracy, precision, 
 - **Metric** is the interpretable quantity used to evaluate performance.
 
 Do not judge generalization from training loss alone.
+
+</details>
 
 ---
 

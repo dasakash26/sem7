@@ -38,6 +38,8 @@ $$
 
 An itemset is **frequent** when its support reaches the chosen minimum support threshold.
 
+Minimum support may be stated as a proportion, percentage, or support count. For a threshold of $30\%$ in a database of five transactions, the minimum support count is two transactions.
+
 ### 2.2 Association rule
 
 An association rule has the form
@@ -67,6 +69,8 @@ Confidence answers: **Among transactions containing $X$, what fraction also cont
 
 A **strong rule** satisfies both minimum support and minimum confidence.
 
+An association rule describes co-occurrence rather than causality. The rule $X\rightarrow Y$ indicates that $Y$ occurs frequently when $X$ occurs; it does not establish that $X$ causes $Y$.
+
 ### Example
 
 Suppose 20 of 100 baskets contain both bread and milk, while 25 contain bread:
@@ -89,6 +93,8 @@ Association mining therefore separates the task into two phases:
 
 1. Find all frequent itemsets using minimum support.
 2. Generate high-confidence rules only from those frequent itemsets.
+
+This separation is valid because every rule $X\rightarrow Y$ has the same support as the itemset $X\cup Y$. An infrequent itemset cannot produce a strong rule.
 
 ## 4. Anti-monotone property of support
 
@@ -120,6 +126,8 @@ Let $C_k$ be the candidate $k$-itemsets and $L_k$ be the frequent $k$-itemsets.
 5. Retain candidates meeting minimum support as $L_k$.
 6. Repeat until $L_k=\varnothing$.
 7. Generate rules from the union of all frequent itemsets.
+
+The itemsets are maintained in lexicographic order during joining so that duplicate candidates are avoided. The pruning test is applied before support counting because an infrequent subset makes the candidate infrequent by the anti-monotone property.
 
 ### A complete small trace
 
@@ -199,6 +207,8 @@ A transaction is a set. Repeating an item inside the same transaction does not i
 
 Apriori still needs to determine which candidates occur in each transaction. A hash tree places candidate itemsets into buckets. For a transaction, the algorithm generates relevant $k$-subsets and follows only the matching hash branches.
 
+Internal nodes of the tree direct the search according to a hash function applied to an item at a particular depth. Leaf nodes contain the actual candidate itemsets and their counters. Only candidates that can be subsets of the current transaction are examined.
+
 This reduces candidate lookup, but it does not solve Apriori's two main problems:
 
 - a very large number of candidates may still be generated;
@@ -207,6 +217,8 @@ This reduces candidate lookup, but it does not solve Apriori's two main problems
 ## 7. FP-growth algorithm
 
 FP-growth avoids explicit candidate generation. It compresses transactions with common prefixes into a **frequent-pattern tree (FP-tree)**.
+
+Each FP-tree node stores an item name and a count. The count represents the number of filtered transactions sharing the prefix from the root to that node. The header table provides a direct link to every node carrying the same item label.
 
 ### 7.1 Constructing the FP-tree
 
@@ -233,6 +245,8 @@ Process suffix items from least frequent to most frequent:
 5. Combine the suffix with patterns found in that conditional tree.
 6. Repeat recursively.
 
+The conditional pattern base contains the prefix information relevant to one suffix item only. Its conditional tree therefore represents the frequent patterns that co-occur with that suffix.
+
 ### Illustrative example
 
 For minimum support count 3, the frequent-item order is
@@ -254,7 +268,7 @@ After filtering and sorting, the transactions are:
 For suffix $p$, the prefix paths are
 
 $$
-\langle f,c,a,m:2\rangle,qquad \langle c,b:1\rangle.
+\langle f,c,a,m:2\rangle,\qquad \langle c,b:1\rangle.
 $$
 
 Only $c$ reaches total count 3 across these paths, so the $p$-conditional tree contains $c:3$. This gives the pattern
@@ -266,7 +280,7 @@ $$
 For suffix $m$, the conditional pattern base is
 
 $$
-\langle f,c,a:2\rangle,qquad \langle f,c,a,b:1\rangle.
+\langle f,c,a:2\rangle,\qquad \langle f,c,a,b:1\rangle.
 $$
 
 After removing infrequent $b$, the conditional tree is the single path
@@ -318,6 +332,8 @@ non-trivial candidate rules.
 
 All rules generated from $F$ already meet minimum support because their support is $s(F)$. Only confidence still needs to be tested.
 
+For example, the frequent itemset $\{A,B,C\}$ generates the six rules $A\rightarrow BC$, $B\rightarrow AC$, $C\rightarrow AB$, $AB\rightarrow C$, $AC\rightarrow B$, and $BC\rightarrow A$. Each has support $s(ABC)$, but each has a different confidence because the antecedent support differs.
+
 If a rule fails minimum confidence, rules derived by moving more items from its antecedent to its consequent can be pruned. The smaller antecedent has equal or greater support, so the confidence cannot improve.
 
 ## 10. Frequent, closed, and maximal itemsets
@@ -348,6 +364,8 @@ $AB$ is not closed because adding $C$ does not reduce its support. If no frequen
 
 Maximal patterns tell us that their subsets are frequent, but not the exact support of each subset.
 
+Closed itemsets are therefore preferred when exact support information is required, whereas maximal itemsets are preferred when a more compact summary is sufficient.
+
 ## 11. Limitation of confidence
 
 Consider this contingency table:
@@ -371,6 +389,8 @@ $$
 Seventy-five percent sounds strong, but coffee is purchased by $80\%$ of all customers. Tea drinkers are actually **less** likely than average to buy coffee.
 
 The problem is that confidence ignores the baseline support of the consequent.
+
+The observed joint support of tea and coffee is $0.15$. Under independence, the expected joint support would be $s(\text{Tea})s(\text{Coffee})=0.20\times0.80=0.16$. Since the observed value is smaller than the expected value, the association is negative.
 
 ## 12. Lift and interest factor
 
@@ -408,6 +428,8 @@ Thus the rule indicates a slight negative association despite its high confidenc
 - **Subjective measures** depend on the user: novelty, usefulness, actionability, or compatibility with domain knowledge.
 
 A statistically strong rule may still be obvious or impossible to act upon.
+
+For example, a rule relating bread to bread packets of another size may have high support and confidence but little marketing value. An unexpected cross-category rule may be less frequent but more actionable.
 
 ## 13. Objective-measure properties
 

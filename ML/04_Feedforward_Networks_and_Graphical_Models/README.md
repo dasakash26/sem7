@@ -4,11 +4,13 @@ Risk minimization; loss functions; backpropagation; initialization; training and
 
 ## Available material
 
+- **Neural-network reading order:** [single neuron → perceptron → XOR → hidden layer](../03_Artificial_Neural_Networks/notes/Neural_Networks_Basics.md), then [forward pass → loss → backpropagation → parameter update](01_FFNN_and_Training/notes/Multilayer_Backpropagation.md).
+
 - [HMM and CRF study notes](02_HMM_CRF_and_Entropy/notes/HMM_and_CRF.md)
 
 - [Feedforward_NN_NLP.md](01_FFNN_and_Training/notes/Feedforward_NN_NLP.md)
 
-- [Multilayer_Backpropagation.md](01_FFNN_and_Training/notes/Multilayer_Backpropagation.md)
+- [Multilayer Perceptrons and Backpropagation](01_FFNN_and_Training/notes/Multilayer_Backpropagation.md)
 
 - [03-4-5.feedforward-nets.pdf (193 pages)](01_FFNN_and_Training/sources/03-4-5.feedforward-nets.pdf)
 

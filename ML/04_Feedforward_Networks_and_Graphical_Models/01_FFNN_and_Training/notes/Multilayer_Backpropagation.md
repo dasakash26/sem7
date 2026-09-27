@@ -1,238 +1,656 @@
-# Multi-Layer Networks & Backpropagation
+# Multilayer Perceptrons, Loss Functions, and Backpropagation
 
-> **CT sources named on the handwritten sheet:** `13_Multilayer_Perceptron.pdf` pages 1–44; `in3050_lecture_07_ffnn_2025.pdf` pages 1–64; an assigned video corresponding to `03-4-5`; plus unidentified complete Medium/freeCodeCamp resources. Use [CT Scope Map](../../../00_Course_Guide/CT_SCOPE_MAP.md) for the source-level transcription.
+*Chapter 4. FFNN means Feedforward Neural Network; MLP means Multilayer Perceptron.*
 
-> **Sign convention used here:** $\delta^{(l)}=\partial L/\partial z^{(l)}$, so parameters update by **subtracting** the gradient. Some slides define delta with the opposite sign and then add it. Both conventions work; never mix them in one derivation.
+> **Prerequisite.** Read [Artificial Neurons, Perceptrons, and Hidden Representations](../../../03_Artificial_Neural_Networks/notes/Neural_Networks_Basics.md) first. It explains why hidden layers are necessary. This chapter explains how a multilayer network makes a prediction and learns its parameters.
 
-## Multi-Layer Perceptron (MLP)
+## Learning objectives
 
-### Architecture
-- **Input Layer**: Receives input features, passes them forward
-- **Hidden Layer(s)**: One or more intermediate layers with non-linear neurons
-- **Output Layer**: Produces final prediction
+After studying this chapter, you should be able to:
 
-### Why Multiple Layers?
-- Single-layer perceptrons can only solve **linearly separable** problems
-- Cannot solve XOR (non-linearly separable)
-- Hidden layers create **convex regions** that can separate complex patterns
-- **Universal Approximation Theorem**: An MLP with a single hidden layer and non-linear activation can approximate any continuous function to arbitrary accuracy
-
-### Mathematical Representation (2-Layer Network)
-$$
-\begin{aligned}
-h &= \sigma(Wx + b) \\
-z &= Uh \\
-y &= \text{softmax}(z)
-\end{aligned}
-$$
-
-Where:
-- $x \in \mathbb{R}^{n_0}$: input vector
-- $h \in \mathbb{R}^{n_1}$: hidden layer output
-- $W \in \mathbb{R}^{n_1 \times n_0}$: input-to-hidden weights
-- $U \in \mathbb{R}^{n_2 \times n_1}$: hidden-to-output weights
-- $y \in \mathbb{R}^{n_2}$: final output (probability distribution)
+1. write the forward equations for a feedforward neural network;
+2. choose a suitable output activation and loss for a task;
+3. explain gradient descent and the chain rule;
+4. derive the backpropagation equations for a one-hidden-layer network;
+5. carry out one numerical forward and backward pass;
+6. describe practical choices in neural-network training.
 
 ---
 
-## The XOR Problem
+## 4.1 The learning problem
 
-### Problem
-Single-layer perceptron **cannot** compute XOR:
-| $x_1$ | $x_2$ | XOR |
-|----|----|-----|
-| 0  | 0  | 0   |
-| 0  | 1  | 1   |
-| 1  | 0  | 1   |
-| 1  | 1  | 0   |
+Chapter 3 ended with an MLP that can represent a nonlinear function. Representation alone is not enough. The network must still discover useful weights and biases from data.
 
-Points (0,1) and (1,0) cannot be separated from (0,0) and (1,1) by a single line.
+For one training example, the learning process has four stages:
 
-### Solution: MLP with Hidden Layer
-A 2-layer ReLU network can solve XOR:
-- Hidden layer transforms input into a **linearly separable space**
-- Inputs [0,1] and [1,0] get mapped to same representation [1,0]
-- The output layer can then linearly separate the classes
+> **Input → prediction → loss → parameter update**
 
----
+The prediction is computed by **forward propagation**. The loss measures disagreement between prediction and target. **Backpropagation** calculates how the loss changes with each parameter. An optimizer, such as gradient descent, uses those derivatives to change the parameters.
 
-## Deep Networks: Forward Propagation
+These terms have different jobs:
 
-General form for $n$-layer network:
-```
-for i in 1,...,n:
-    z[i] = W[i] a[i-1] + b[i]
-    a[i] = g[i](z[i])
-ŷ = a[n]
-```
+| Term | Role |
+|---|---|
+| Forward propagation | Computes the present prediction |
+| Loss function | Measures the quality of that prediction |
+| Backpropagation | Computes derivatives of loss with respect to parameters |
+| Gradient descent | Updates parameters using the derivatives |
 
-Where:
-- $a^{[0]} = x$ (input)
-- $z^{[i]}$: pre-activation at layer $i$
-- $a^{[i]}$: activation at layer $i$
-- $g^{[i]}$: activation function for layer $i$
-- $ŷ$: final output prediction
-
-### Why Non-Linearity is Essential
-Without non-linear activation, multiple layers collapse to a single linear function:
-$$
-\begin{aligned}
-z^{[2]} &= W^{[2]}(W^{[1]}x + b^{[1]}) + b^{[2]} \\
-&= W^{[2]}W^{[1]}x + W^{[2]}b^{[1]} + b^{[2]} \\
-&= W'x + b'
-\end{aligned}
-$$
+Confusing backpropagation with gradient descent is a common error. Backpropagation computes gradients; gradient descent uses them.
 
 ---
 
-## Backpropagation Algorithm
+## 4.2 A one-hidden-layer feedforward network
 
-### Core Idea
-1. **Forward pass**: Compute predictions and loss
-2. **Backward pass**: Propagate errors from output to input, computing gradients for each weight
-3. **Update weights**: Using gradient descent
-
-### Loss Functions
-- **Mean Squared Error (MSE)**: $E = \frac{1}{2}\sum_{n}(ŷ_n - y_n)^2$
-- **Cross-Entropy Loss**: $L_{CE} = - \sum_{k} y_k \log ŷ_k$
-
-### Backpropagation Derivation
-
-For a sigmoid output with half-squared error, using $z$ for preactivation and $a=\sigma(z)$ for activation:
+Let an input have $d$ features, let the hidden layer contain $h$ units, and let the output layer contain $k$ units. The parameters are
 
 $$
-\delta^{(L)}=(a^{(L)}-y)\odot\sigma'(z^{(L)}).
+\mathbf W^{(1)}\in\mathbb R^{h\times d},
+\qquad
+\mathbf b^{(1)}\in\mathbb R^h,
 $$
 
-For sigmoid with binary cross-entropy, or softmax with categorical cross-entropy, the combined output derivative simplifies to:
-
 $$
-\delta^{(L)}=a^{(L)}-y.
-$$
-
-For hidden layers:
-$$
-\delta^{(l)}=((W^{(l+1)})^T\delta^{(l+1)})\odot g'^{(l)}(z^{(l)}).
+\mathbf W^{(2)}\in\mathbb R^{k\times h},
+\qquad
+\mathbf b^{(2)}\in\mathbb R^k.
 $$
 
-Weight update:
-$$\frac{\partial E}{\partial w_{ij}} = \delta_j a_i^{\text{previous layer}}$$
-$$w_{ij} \leftarrow w_{ij} - \eta \frac{\partial E}{\partial w_{ij}}$$
+The network computes:
 
-### Intuition
-- **Output layer**: Error is direct - difference between prediction and target
-- **Hidden layers**: Error is the **weighted sum** of errors from the next layer
-- "Backpropagation" because errors flow **backwards** through the network
+$$
+\mathbf z^{(1)}
+=\mathbf W^{(1)}\mathbf x+\mathbf b^{(1)},
+$$
 
-### The Chain Rule
-The key mathematical tool enabling backpropagation:
-$$\frac{\partial L}{\partial w_{ij}} = \frac{\partial L}{\partial a_j} \cdot \frac{\partial a_j}{\partial w_{ij}}$$
+$$
+\mathbf a^{(1)}
+=g^{(1)}(\mathbf z^{(1)}),
+$$
+
+$$
+\mathbf z^{(2)}
+=\mathbf W^{(2)}\mathbf a^{(1)}+\mathbf b^{(2)},
+$$
+
+$$
+\hat{\mathbf y}
+=g^{(2)}(\mathbf z^{(2)}).
+$$
+
+This is called a feedforward network because values travel from the input layer toward the output layer without a directed cycle.
+
+![Forward propagation and backpropagation through a neural network](https://engines.egr.uh.edu/sites/engines/files/images/page/Backpropagation.jpg)
+
+*Figure 4.1. Reference diagram from the [University of Houston's Engines of Our Ingenuity](https://engines.egr.uh.edu/episode/3357). Read the solid arrows as the forward computation and the returning arrows as the flow of error information used to compute gradients; the notation and update rule are developed below.*
+
+### Reading the equations
+
+We treat individual examples as column vectors. In $\mathbf W^{(1)}$, row $j$ contains all the weights entering hidden neuron $j$. Thus its calculation is
+
+$$
+z_j^{(1)}=\sum_{i=1}^{d}W_{ji}^{(1)}x_i+b_j^{(1)}.
+$$
+
+The matrix equation performs this same sum for every hidden neuron at once. The input layer holds the features; it has no trainable weights of its own.
+
+The first line calculates how strongly each hidden unit responds to the input. The second line turns those scores into hidden features. The third line combines the hidden features into output scores. The final line turns the scores into a prediction with a meaning appropriate to the task.
+
+The letters have a useful convention:
+
+$$
+\mathbf z=\text{value before activation},
+\qquad
+\mathbf a=\text{value after activation}.
+$$
+
+### Parameter count
+
+The first layer has $hd$ weights and $h$ biases. The second layer has $kh$ weights and $k$ biases. Therefore,
+
+$$
+\text{number of parameters}=hd+h+kh+k.
+$$
+
+For example, a network with $d=4$ inputs, $h=5$ hidden units, and $k=3$ outputs has
+
+$$
+4(5)+5+5(3)+3=43
+$$
+
+trainable parameters.
+
+### How are the weights and biases obtained?
+
+For a small logic gate, we can derive parameters by solving inequalities, as in Chapter 3. For a general prediction problem, we usually do not know the required hidden features in advance. We choose the architecture, initialize the parameters, and learn them by minimizing a loss over the training data.
+
+Initial weights are therefore starting values, not a hand-derived solution. Hidden units generally need different random initial weights to avoid learning identical features. Biases can often start at zero. The forward calculation tells us what the current parameters predict; the backward calculation tells us how to improve them.
 
 ---
 
-## Backpropagation Algorithm (Detailed)
+## 4.3 Choosing the output layer and loss
 
-### Steps
-1. **Initialize** weights to small random values
-2. **Present input** and desired output
-3. **Forward propagate**: Compute hidden layer outputs → output layer predictions
-4. **Compute error**: Compare actual output with target
-5. **Backward propagate errors**: 
-   - Calculate $\delta$ for output units
-   - Calculate $\delta$ for hidden units using next layer's $\delta$ values
-6. **Update weights**: $w_{ij} = w_{ij} + \eta \delta_j x_i$
-7. **Repeat** until convergence
+The output activation and loss function should be chosen as a pair because they express the type of target being predicted.
 
-### Stochastic Backpropagation Algorithm
-```
-1. Initialize weights to small random values
-2. Choose pattern x_k and apply to input layer
-3. Propagate signal through network
-4. Compute δ for output layer: δ = f'(net)(t - V)
-5. Compute δ for preceding layers (m = M, M-1, ..., 2):
-   δ^{m-1} = f'(net^{m-1}) Σ W_{ji}^m δ_j^m
-6. Update connections: Δw_ij = η δ_i V_j
-7. w_new = w_old + Δw; goto 2 for next pattern
-```
+| Task | Output activation | Typical loss |
+|---|---|---|
+| Regression | Linear | Mean squared error |
+| Binary classification | Sigmoid | Binary cross-entropy |
+| Multiclass classification | Softmax | Categorical cross-entropy |
+| Multilabel classification | One sigmoid per label | Binary cross-entropy |
 
----
+### Regression
 
-## Practical Considerations
+For a real-valued target, the output can be left linear:
 
-### Weight Initialization
-- Don't initialize all weights to zero (all units become identical)
-- Small random values near zero
-- **Xavier Initialization**: Maintain mean=0 and variance=1 for activations
+$$
+\hat y=z.
+$$
 
-### Learning Rate $\eta$
-- Too large: Oscillation, no convergence
-- Too small: Very slow convergence
-- Use momentum: $\Delta w(t+1) = -\eta \frac{\partial E}{\partial w} + \alpha \Delta w(t)$
-- $\alpha$ typically 0.9
+A common loss is the mean squared error (MSE). For $N$ examples with one target value each:
 
-### Training Modes
-- **Batch**: Use entire training set for each update
-- **Stochastic/Online**: Update after each training example
-- **Mini-batch**: Update after small subset (most common in practice)
+$$
+L=\frac{1}{N}\sum_{i=1}^N(y_i-\hat y_i)^2.
+$$
 
-### Avoiding Overfitting
-- **Early Stopping**: Monitor validation loss; stop when it starts increasing
-- **Dropout**: Randomly drop neurons during training (forces robust learning)
-- **Regularization**: Limit model complexity
+### Binary classification
 
-### Vanishing Gradient Problem
-- Deep networks: Gradients decrease significantly in early layers
-- **Sigmoid/Tanh**: Saturated regions have near-zero derivatives
-- **ReLU**: Avoids vanishing gradient (derivative = 1 for positive inputs)
-- **Xavier Initialization**: Helps prevent vanishing gradients
+For one yes/no target, sigmoid converts the output score into a value between $0$ and $1$:
 
----
+$$
+\hat y=\sigma(z)=\frac{1}{1+e^{-z}},
+$$
 
-## Feature Scaling & Batch Normalization
+where $e\approx 2.71828$ is the base of the natural logarithm. At test time, predict class $1$ when $\hat y\ge 0.5$ and class $0$ otherwise (unless a different threshold is chosen).
 
-### Feature Scaling
-- Bring all features to similar scale (mean=0, variance=1)
-- Error surface changes from elongated ellipse → circle
-- Faster convergence
+Binary cross-entropy is
 
-### Batch Normalization
-- Normalize output of **all layers** (not just input)
-- $\gamma$ and $\beta$ are learnable parameters
-- Backpropagation can undo if needed
+$$
+L=-\left[y\log\hat y+(1-y)\log(1-\hat y)\right].
+$$
 
----
+This loss strongly penalizes a prediction that is both wrong and confident.
 
-## Optimizers
+For example, when $y=1$, the loss reduces to $-\log\hat y$. Predictions of $0.9$ and $0.1$ give losses of about $0.105$ and $2.303$, respectively. The model is penalized much more for assigning a small probability to the correct answer.
 
-| Method | Description |
-|--------|-------------|
-| SGD | Basic gradient descent (slow) |
-| Momentum | Accumulates past gradients for smoother updates |
-| Nesterov | "Look-ahead" gradient at projected next position |
-| AdaGrad | Adaptive learning rates per parameter |
-| AdaDelta | Extension of AdaGrad using RMS |
-| RMSprop | Moving average of squared gradients |
-| Adam | Combines momentum + adaptive learning rates |
+### Multiclass classification
 
----
+If exactly one of $k$ classes is correct, softmax converts the $k$ output scores into a probability distribution:
 
-## Network Performance Analysis
+$$
+\hat y_j=
+\frac{e^{z_j}}{\sum_{r=1}^ke^{z_r}}.
+$$
 
-### Overfitting vs Underfitting
-| Underfitting | Good Fit | Overfitting |
-|:---:|:---:|:---:|
-| Training error high | Both errors low | Training error low, test error high |
-| Model too simple | Right complexity | Model too complex |
+The outputs are non-negative and sum to one. A one-hot target has a $1$ at the correct class and $0$ elsewhere: class 2 of three classes is represented by $(0,1,0)$. For such a target vector $\mathbf y$, categorical cross-entropy is
 
-### Dropout Regularization
-- Randomly drop neurons during training with probability $p$
-- Forces remaining neurons to compensate → better generalization
-- At test time: All neurons retained
+$$
+L=-\sum_{j=1}^ky_j\log\hat y_j.
+$$
+
+The predicted class is the index of the largest softmax probability (equivalently, the largest score):
+
+$$
+\hat c=\arg\max_{j\in\{1,\ldots,k\}}\hat y_j
+      =\arg\max_{j\in\{1,\ldots,k\}}z_j.
+$$
+
+Softmax is therefore the **probability-producing** step; `argmax` is the final **decision** step. During training, keep the full softmax probabilities so that cross-entropy can measure how confident the model was.
+
+In practice, softmax is implemented with a numerical-stability adjustment: the largest score is subtracted from every score before exponentiation. This leaves the probabilities unchanged.
+
+### Multilabel classification
+
+If an image can contain both a cat and a dog, the labels are not mutually exclusive. Use one sigmoid per label and sum or average the binary cross-entropies. Unlike softmax, these output probabilities need not sum to one.
+
+### One example versus a dataset
+
+From this point through the worked example, $L$ means the loss for one example. For a batch containing $B$ examples, the training objective is usually their average:
+
+$$
+J(\theta)=\frac{1}{B}\sum_{i=1}^{B}L_i(\theta).
+$$
+
+Its gradient is the average of the individual gradients. This distinction prevents an accidental change in update scale when batch size changes.
 
 ---
 
-## Universal Approximation Theorem
-- An MLP with a **single hidden layer** and non-linear activation can represent any continuous function
-- However, the hidden layer may need to be **exponentially large**
-- **Deep networks** can represent some functions much more compactly than shallow ones (e.g., parity function)
-- Depth can trade off for exponential growth of width
+## 4.4 Gradient descent
+
+The loss $L(\theta)$ depends on all parameters $\theta$, where $\theta$ represents every weight and bias in the network. Its gradient
+
+$$
+\nabla_\theta L
+$$
+
+points in the direction of steepest local increase in loss. To reduce the loss, gradient descent moves in the opposite direction:
+
+$$
+\theta\leftarrow\theta-\eta\nabla_\theta L.
+$$
+
+The learning rate $\eta$ determines the size of the step.
+
+If $\partial L/\partial w>0$, increasing $w$ would increase loss locally, so gradient descent decreases $w$. If $\partial L/\partial w<0$, increasing $w$ would decrease loss locally, so gradient descent increases $w$.
+
+The difficulty is not the update rule. The difficulty is calculating $\partial L/\partial w$ for every parameter in a deep network. Backpropagation solves that calculation efficiently.
+
+For a simple numerical illustration, let $w=0.5$, $\partial L/\partial w=-0.2$, and $\eta=0.1$. The update is $w_{\text{new}}=0.5-0.1(-0.2)=0.52$. The negative derivative says that increasing the weight decreases loss locally. It does not guarantee that an arbitrarily large increase would help; that is why the step size matters.
+
+---
+
+## 4.5 The chain rule and the idea of backpropagation
+
+Consider the simple dependency
+
+$$
+x\longrightarrow z\longrightarrow a\longrightarrow L.
+$$
+
+If $x$ affects the loss only through $z$ and $a$, then
+
+$$
+\frac{\partial L}{\partial x}
+=
+\frac{\partial L}{\partial a}
+\frac{\partial a}{\partial z}
+\frac{\partial z}{\partial x}.
+$$
+
+This is the chain rule. It decomposes one global question, “How does the loss change with $x$?”, into local questions along the computation.
+
+Backpropagation begins at the final loss and applies the chain rule backward through the network. It reuses quantities already computed during the forward pass, which is why it is efficient.
+
+The useful mental picture is:
+
+$$
+\text{activations move forward; sensitivities move backward.}
+$$
+
+An activation tells the next layer what value it received. A sensitivity tells the previous layer how much the final loss would change if that value were changed slightly.
+
+For a neuron $z=wx+b$, the local derivatives are $\partial z/\partial w=x$ and $\partial z/\partial b=1$. Therefore, once we know $\delta=\partial L/\partial z$, we immediately obtain
+
+$$
+\frac{\partial L}{\partial w}=\delta x,
+\qquad
+\frac{\partial L}{\partial b}=\delta.
+$$
+
+This small result is the foundation of the matrix gradient formulas that follow.
+
+---
+
+## 4.6 Backpropagation for one hidden layer
+
+We use the following convention:
+
+$$
+\boldsymbol\delta^{(l)}
+=
+\frac{\partial L}{\partial\mathbf z^{(l)}}.
+$$
+
+The delta is the sensitivity of the loss to the pre-activation at layer $l$.
+
+### Output layer
+
+First calculate the output delta:
+
+$$
+\boldsymbol\delta^{(2)}
+=
+\frac{\partial L}{\partial\mathbf z^{(2)}}.
+$$
+
+To derive the output delta, begin with one sigmoid output and binary cross-entropy:
+
+$$
+\frac{\partial L}{\partial\hat y}
+=-\frac{y}{\hat y}+\frac{1-y}{1-\hat y},
+\qquad
+\frac{\partial\hat y}{\partial z}
+=\hat y(1-\hat y).
+$$
+
+Multiplying these derivatives gives
+
+$$
+\delta
+=-y(1-\hat y)+(1-y)\hat y
+=\hat y-y.
+$$
+
+For sigmoid output with binary cross-entropy, and for softmax output with categorical cross-entropy, the derivative therefore takes the important form
+
+$$
+\boxed{\boldsymbol\delta^{(2)}=\hat{\mathbf y}-\mathbf y.}
+$$
+
+The output-layer gradients are
+
+$$
+\frac{\partial L}{\partial\mathbf W^{(2)}}
+=
+\boldsymbol\delta^{(2)}(\mathbf a^{(1)})^T,
+$$
+
+$$
+\frac{\partial L}{\partial\mathbf b^{(2)}}
+=
+\boldsymbol\delta^{(2)}.
+$$
+
+The first equation has an intuitive interpretation: the change assigned to a connection depends on the output unit's error signal and the activation that entered the connection.
+
+For a single output connection $W_{ji}^{(2)}$, the chain rule gives
+
+$$
+\frac{\partial L}{\partial W_{ji}^{(2)}}
+=\frac{\partial L}{\partial z_j^{(2)}}
+\frac{\partial z_j^{(2)}}{\partial W_{ji}^{(2)}}
+=\delta_j^{(2)}a_i^{(1)}.
+$$
+
+The outer product collects these individual connection gradients into a matrix. Its shape is $(k\times1)(1\times h)=k\times h$, matching $\mathbf W^{(2)}$.
+
+### Hidden layer
+
+The hidden layer does not have a direct target. Each hidden unit can influence several outputs, so we add its contributions along all those paths. For hidden unit $i$:
+
+$$
+\frac{\partial L}{\partial a_i^{(1)}}
+=\sum_{j=1}^{k}
+\frac{\partial L}{\partial z_j^{(2)}}
+\frac{\partial z_j^{(2)}}{\partial a_i^{(1)}}
+=\sum_{j=1}^{k}\delta_j^{(2)}W_{ji}^{(2)}.
+$$
+
+Then apply the hidden activation derivative:
+
+$$
+\delta_i^{(1)}
+=
+\left(\sum_{j=1}^{k}W_{ji}^{(2)}\delta_j^{(2)}\right)
+g^{(1)\prime}(z_i^{(1)}).
+$$
+
+Writing this calculation for all hidden units at once gives:
+
+$$
+\boxed{
+\boldsymbol\delta^{(1)}
+=
+\left((\mathbf W^{(2)})^T\boldsymbol\delta^{(2)}\right)
+\odot
+g^{(1)\prime}(\mathbf z^{(1)}).
+}
+$$
+
+Here, $\odot$ denotes elementwise multiplication. The transpose appears because sensitivity is being moved in the reverse direction of the forward map.
+
+The first-layer gradients are
+
+$$
+\frac{\partial L}{\partial\mathbf W^{(1)}}
+=
+\boldsymbol\delta^{(1)}\mathbf x^T,
+$$
+
+$$
+\frac{\partial L}{\partial\mathbf b^{(1)}}
+=
+\boldsymbol\delta^{(1)}.
+$$
+
+Finally, update every parameter:
+
+$$
+\mathbf W^{(l)}
+\leftarrow
+\mathbf W^{(l)}
+-\eta\frac{\partial L}{\partial\mathbf W^{(l)}},
+$$
+
+$$
+\mathbf b^{(l)}
+\leftarrow
+\mathbf b^{(l)}
+-\eta\frac{\partial L}{\partial\mathbf b^{(l)}}.
+$$
+
+Calculate every gradient using the parameter values from the same forward pass, then apply the updates. Updating the output weights before calculating the hidden delta would mix two different parameter states.
+
+For a deeper network, the same hidden-layer rule repeats from the output layer back toward the input.
+
+---
+
+## 4.7 Worked example: one complete update
+
+Consider the smallest network that has a hidden layer. It has one input, one hidden sigmoid unit, and one output sigmoid unit:
+
+$$
+x=1,\qquad y=1,
+$$
+
+$$
+w_1=0.5,\quad b_1=0,\qquad
+w_2=0.5,\quad b_2=0.
+$$
+
+These weights are chosen initial values for illustrating one training step. They are not the final solution to the task. To show every activation derivative explicitly, use the half squared-error loss
+
+$$
+L=\frac12(\hat y-y)^2
+$$
+
+and learning rate $\eta=0.1$.
+
+This example deliberately uses squared error rather than binary cross-entropy. Its output delta consequently includes the sigmoid derivative. The shortcut $\delta_2=\hat y-y$ must not be used here.
+
+### Forward pass
+
+At the hidden unit,
+
+$$
+z_1=w_1x+b_1=(0.5)(1)+0=0.5,
+$$
+
+$$
+a_1=\sigma(0.5)\approx0.622459.
+$$
+
+At the output unit,
+
+$$
+z_2=w_2a_1+b_2=(0.5)(0.622459)=0.311230,
+$$
+
+$$
+\hat y=\sigma(0.311230)\approx0.577185.
+$$
+
+The loss is
+
+$$
+L=\frac12(0.577185-1)^2\approx0.089386.
+$$
+
+### Backward pass
+
+For sigmoid with squared error,
+
+$$
+\frac{\partial L}{\partial\hat y}=\hat y-y,
+\qquad
+\frac{\partial\hat y}{\partial z_2}=\hat y(1-\hat y).
+$$
+
+Multiplying gives
+
+$$
+\delta_2
+=(\hat y-y)\hat y(1-\hat y)
+\approx-0.103185.
+$$
+
+Therefore,
+
+$$
+\frac{\partial L}{\partial w_2}
+=\delta_2a_1
+\approx-0.064228,
+\qquad
+\frac{\partial L}{\partial b_2}
+=\delta_2
+\approx-0.103185.
+$$
+
+For the hidden unit,
+
+$$
+\delta_1
+=(w_2\delta_2)a_1(1-a_1)
+\approx-0.012124.
+$$
+
+Thus,
+
+$$
+\frac{\partial L}{\partial w_1}
+=\delta_1x
+\approx-0.012124,
+\qquad
+\frac{\partial L}{\partial b_1}
+=\delta_1
+\approx-0.012124.
+$$
+
+### Update
+
+$$
+w_2\leftarrow0.5-0.1(-0.064228)\approx0.506423,
+$$
+
+$$
+b_2\leftarrow0-0.1(-0.103185)\approx0.010318,
+$$
+
+$$
+w_1\leftarrow0.5-0.1(-0.012124)\approx0.501212,
+$$
+
+$$
+b_1\leftarrow0-0.1(-0.012124)\approx0.001212.
+$$
+
+The target is $1$ while the original prediction is $0.577$. The updated parameters give a prediction of approximately $0.581$ and loss $0.088$, smaller than the previous loss $0.089386$. The update improves this example, but repeated training on the full dataset is needed to learn a useful model.
+
+---
+
+## 4.8 Training over a dataset
+
+The preceding example uses one training case. Real training repeats the same logic for many examples.
+
+1. Initialize weights and biases, usually with small random values.
+2. Select a batch of training examples.
+3. Run forward propagation and calculate the batch loss.
+4. Run backpropagation to calculate batch gradients.
+5. Apply an optimizer update.
+6. Repeat until the chosen stopping criterion is met.
+
+An **epoch** is one complete pass through the training set. An **iteration** is one parameter update. If all examples are used and the final partial batch is kept, a training set with $N$ examples and batch size $B$ has $\lceil N/B\rceil$ iterations per epoch.
+
+For example, with $100$ examples and batch size $20$, one epoch consists of five batch updates. Ten epochs mean ten passes through the data and $50$ updates. An epoch is not one example or necessarily one update.
+
+Three update styles are common:
+
+| Method | Examples used per update | Character |
+|---|---:|---|
+| Batch gradient descent | All examples | Stable but expensive |
+| Stochastic gradient descent | One example | Noisy but frequent |
+| Mini-batch gradient descent | A small group | Standard practical compromise |
+
+---
+
+## 4.9 Practical training considerations
+
+### Input scaling
+
+Features on incompatible scales can make optimization unstable or slow. Standardization is common:
+
+$$
+x'=\frac{x-\mu}{\sigma}.
+$$
+
+The mean $\mu$ and standard deviation $\sigma$ must be calculated on the training set and then reused for validation and test data.
+
+### Initialization
+
+If otherwise interchangeable hidden units begin with identical incoming and outgoing parameters, they receive identical gradients and remain identical. Random weight initialization breaks this symmetry; biases can commonly begin at zero.
+
+Xavier/Glorot initialization is commonly associated with sigmoid or tanh networks. He initialization is commonly associated with Rectified Linear Unit (ReLU) networks. Both aim to keep activations and gradients at reasonable scales across layers.
+
+### Regularization
+
+L2 regularization adds a penalty to the data loss:
+
+$$
+J_{\text{reg}}
+=J_{\text{data}}+\frac{\lambda}{2}\sum_l\|\mathbf W^{(l)}\|_F^2.
+$$
+
+Here $\lambda$ controls the penalty strength and $\|\mathbf W\|_F^2$ is the sum of squared matrix entries. Its additional weight gradient is $\lambda\mathbf W$. The penalty discourages large weights rather than directly rewarding training accuracy.
+
+Dropout randomly removes some hidden activations during training, encouraging the network to avoid depending too heavily on individual units. With inverted dropout, retained activations are rescaled during training and dropout is disabled during inference.
+
+### Overfitting and early stopping
+
+Training performance may improve while validation performance worsens. This is a sign of overfitting: the model is learning idiosyncrasies of the training data rather than a general pattern.
+
+Early stopping retains the parameters from the epoch with the best validation result. Other common controls are L2 regularization, dropout, simpler models, and more training data.
+
+### Vanishing and exploding gradients
+
+Backpropagation multiplies derivatives across layers. Repeated small factors can make early-layer gradients vanish; repeated large factors can make them explode. Suitable activations, careful initialization, normalization, residual connections, and gradient clipping are common remedies.
+
+---
+
+## 4.10 Common examination mistakes
+
+1. Writing a perceptron update in a backpropagation answer without defining a differentiable loss.
+2. Calling backpropagation an optimizer. It calculates gradients; it does not itself choose the update.
+3. Forgetting bias gradients.
+4. Mixing sign conventions. If $\delta=\partial L/\partial z$, then subtract the gradient in the update.
+5. Treating softmax outputs as independent binary probabilities. They compete and sum to one.
+6. Claiming that more layers automatically improve a model. They increase representational capacity but also make optimization and overfitting more difficult.
+
+---
+
+## Chapter summary
+
+An MLP alternates affine transformations and nonlinear activations to form a prediction. A loss function measures the prediction's quality. Gradient descent updates parameters in the direction that reduces loss. Backpropagation computes those gradients by applying the chain rule from the output layer backward through the network.
+
+The complete training chain is:
+
+> **Forward propagation → loss → output delta → hidden deltas → gradients → parameter update**
+
+---
+
+## Review questions
+
+1. Give the dimensions of the two weight matrices in a network with $d$ inputs, $h$ hidden units, and $k$ outputs.
+2. Which output activation and loss would you use for a three-class image classifier? Why?
+3. Explain the difference between a gradient, backpropagation, and gradient descent.
+4. Why does the hidden-delta equation contain a transpose?
+5. Derive the weight gradient for an output unit from the chain rule.
+6. What does it mean when training loss falls but validation loss rises?
+7. Write a 15-mark answer outline for “Explain backpropagation in an MLP.”
+
+---
+
+## Source guide
+
+- Perceptron limitations, MLP structure, activations, forward propagation, losses, and backpropagation: *13_Multilayer_Perceptron.pdf*, pages 4-44.
+- FFNN architecture, output choices, vectorized notation, training, initialization, and early stopping: *in3050_lecture_07_ffnn_2025.pdf*, pages 5-64.
+- A compact derivation of forward propagation and backpropagation: *lec21.notes.pdf*, pages 4-8.

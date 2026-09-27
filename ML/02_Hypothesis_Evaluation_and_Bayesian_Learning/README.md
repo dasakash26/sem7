@@ -4,7 +4,7 @@ Estimating hypothesis accuracy; sampling theory; comparing learning algorithms; 
 
 ## Available material
 
-- [Bayesian_Learning.md](notes/Bayesian_Learning.md)
+- [Chapter 2: Evaluating Hypotheses and Bayesian Learning](notes/Bayesian_Learning.md)
 
 - [Unit-4.pdf (58 pages)](sources/Unit-4.pdf)
 
