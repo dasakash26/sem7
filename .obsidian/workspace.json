@@ -8,77 +8,35 @@
         "type": "tabs",
         "children": [
           {
-            "id": "5580c11c7a5bcb9b",
+            "id": "a7f474471a648c5d",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "ML/00_Course_Guide/CT_SCOPE_MAP.md",
+                "file": "ML/01 - ML Basics/ML Basics.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "CT_SCOPE_MAP"
+              "title": "ML Basics"
             }
           },
           {
-            "id": "563705b88f3e0dcd",
+            "id": "5d4676489390d870",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "ML/03_Artificial_Neural_Networks/notes/Neural_Networks_Basics.md",
-                "mode": "preview",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Neural_Networks_Basics"
-            }
-          },
-          {
-            "id": "cb617b16d5822673",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "ML/04_Feedforward_Networks_and_Graphical_Models/01_FFNN_and_Training/notes/Multilayer_Backpropagation.md",
-                "mode": "preview",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Multilayer_Backpropagation"
-            }
-          },
-          {
-            "id": "5747e6b2adedff1d",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "ML/04_Feedforward_Networks_and_Graphical_Models/01_FFNN_and_Training/notes/Feedforward_NN_NLP.md",
-                "mode": "preview",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Feedforward_NN_NLP"
-            }
-          },
-          {
-            "id": "4323ddadbc2ff375",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "ML/04_Feedforward_Networks_and_Graphical_Models/02_HMM_CRF_and_Entropy/notes/HMM_and_CRF.md",
+                "file": "ML/02 - Evaluation and Bayes/Evaluation and Bayes.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "HMM_and_CRF"
+              "title": "Evaluation and Bayes"
             }
           }
         ],
-        "currentTab": 3
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -98,7 +56,7 @@
               "type": "file-explorer",
               "state": {
                 "sortOrder": "alphabetical",
-                "autoReveal": false,
+                "autoReveal": true,
                 "showSearch": false,
                 "searchQuery": ""
               },
@@ -140,7 +98,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 271.29296875
+    "width": 261.078125
   },
   "right": {
     "id": "8697c88fb17fc811",
@@ -218,7 +176,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "ML/04_Feedforward_Networks_and_Graphical_Models/01_FFNN_and_Training/notes/Feedforward_NN_NLP.md",
+                "file": "ML/02 - Evaluation and Bayes/Evaluation and Bayes.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -232,7 +190,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 297.21875
+    "width": 274.52734375
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -245,52 +203,53 @@
       "bases:Create new base": false
     }
   },
-  "active": "5747e6b2adedff1d",
+  "active": "5d4676489390d870",
   "lastOpenFiles": [
-    "ML/04_Feedforward_Networks_and_Graphical_Models/02_HMM_CRF_and_Entropy/notes/HMM_and_CRF.md",
-    "ML/04_Feedforward_Networks_and_Graphical_Models/01_FFNN_and_Training/notes/Feedforward_NN_NLP.md",
-    "ML/04_Feedforward_Networks_and_Graphical_Models/01_FFNN_and_Training/notes/Multilayer_Backpropagation.md",
-    "ML/04_Feedforward_Networks_and_Graphical_Models/01_FFNN_and_Training/sources/13_Multilayer_Perceptron.pdf",
-    "ML/04_Feedforward_Networks_and_Graphical_Models/01_FFNN_and_Training/sources/chapter4v2.pdf",
-    "ML/04_Feedforward_Networks_and_Graphical_Models/01_FFNN_and_Training/sources/7_BP_21.pdf",
-    "ML/04_Feedforward_Networks_and_Graphical_Models/01_FFNN_and_Training/sources/6.pdf",
-    "ML/04_Feedforward_Networks_and_Graphical_Models/01_FFNN_and_Training/sources/03-4-5.feedforward-nets.pdf",
-    "ML/04_Feedforward_Networks_and_Graphical_Models/02_HMM_CRF_and_Entropy/sources/ml-1-hmm-basic.pdf",
-    "ML/04_Feedforward_Networks_and_Graphical_Models/02_HMM_CRF_and_Entropy/sources/Lecture06.pdf",
-    "ML/04_Feedforward_Networks_and_Graphical_Models/02_HMM_CRF_and_Entropy/sources/HMM.pdf",
-    "ML/04_Feedforward_Networks_and_Graphical_Models/02_HMM_CRF_and_Entropy/sources/crf-tutorial.pdf",
-    "ML/04_Feedforward_Networks_and_Graphical_Models/02_HMM_CRF_and_Entropy/sources/7bf751479f644ef0785964a0151a1180cb48.pdf",
-    "ML/03_Artificial_Neural_Networks/notes/Neural_Networks_Basics.md",
+    "ML/01 - ML Basics/ML Basics.md",
+    "ML/02 - Evaluation and Bayes/Evaluation and Bayes.md",
+    "ML/04 - Feedforward and Graphical Models/Graphical Models/Graphical Models.md",
+    "ML/References/Teacher Chats/CRF - Decoding Examples.md",
+    "ML/References/Teacher Chat Index.md",
+    "ML/readme.md",
+    "ML/04 - Feedforward and Graphical Models/Feedforward Networks/Feedforward Networks.md",
+    "ML.zip",
+    "ML/plan.md",
+    "ML/Semester Practice.md",
+    "ML/02 - Evaluation and Bayes/README.md",
+    "ML/01 - ML Basics/README.md",
+    "ML/References/Syllabus.md",
+    "ML/References/README.md",
+    "ML/References/SEC1609.pdf",
+    "ML/08 - Reinforcement Learning/Reinforcement Learning.md",
+    "ML/08 - Reinforcement Learning/README.md",
+    "ML/06 - Deep Learning/README.md",
+    "ML/03 - Neural Networks/Neural Networks.md",
+    "ML/04 - Feedforward and Graphical Models/README.md",
+    "ML/02 - Evaluation and Bayes/notes/Evaluation and Bayes.md",
+    "ML/07 - Classification/Classification.md",
+    "ML/06 - Deep Learning/Deep Learning.md",
+    "ML/05 - Probabilistic Networks/Probabilistic Networks.md",
+    "ML/08 - Reinforcement Learning/notes/Reinforcement Learning.md",
+    "ML/pyq/ml_26ct1_b.png",
+    "ML/pyq/2026-11-12_18-41-10.png",
+    "ML/pyq",
+    "ML/untitled folder",
+    "ML/07 - Classification/notes/Classification.md",
+    "ML/06 - Deep Learning/notes/Deep Learning.md",
+    "ML/04 - Feedforward and Graphical Models/notes/Feedforward and Graphical Models.md",
+    "ML/04 - Feedforward and Graphical Models/Feedforward Networks/sources/03-4-5.feedforward-nets.pdf",
+    "ML/05 - Probabilistic Networks/supplements",
+    "ML/04 - Feedforward and Graphical Models/supplements",
+    "ML/03 - Neural Networks/supplements",
+    "ML/02 - Evaluation and Bayes/supplements",
+    "ML/01 - ML Basics/supplements",
     "ML/04_Feedforward_Networks_and_Graphical_Models/01_FFNN_and_Training/figures/text_to_ffnn.png",
     "ML/04_Feedforward_Networks_and_Graphical_Models/01_FFNN_and_Training/figures/ffnn_forward_backward.png",
-    "ML/00_Course_Guide/CT_SCOPE_MAP.md",
-    "ML/ct1.md",
-    "ML/02_Hypothesis_Evaluation_and_Bayesian_Learning/notes/Bayesian_Learning.md",
-    "ML/01_Introduction_to_ML/notes/Intro_to_ML.md",
-    "DM/03_Association_Rule_Mining/notes/Association_Rule_Mining.md",
-    "DM/02_Data_Preprocessing/notes/Data_Preprocessing.md",
-    "DM/data-association-share/04-association-rule-mining.md",
     "DM/data-association-share/tmp/pdfs/assets/arm-support.jpg",
     "DM/data-association-share/tmp/pdfs/assets/arm-rule-pruning.jpg",
     "DM/data-association-share/tmp/pdfs/assets/arm-rule-formula.jpg",
     "DM/data-association-share/tmp/pdfs/assets/arm-maximal.jpg",
     "DM/data-association-share/tmp/pdfs/assets/arm-market-basket.jpg",
-    "DM/data-association-share/tmp/pdfs/assets/arm-lift.jpg",
-    "DM/data-association-share/tmp/pdfs/assets/arm-hash-tree.jpg",
-    "DM/data-association-share/tmp/pdfs/assets/arm-fp-tree.jpg",
-    "DM/01_Introduction_and_KDD/notes/Introduction_and_KDD.md",
-    "DM/04-association-rule-mining.md",
-    "DM/04_Past_Questions/COVERED_WORKED_EXAMPLES.md",
-    "DM/SLIDE_QUICK_REVISION.md",
-    "DM/DM_EXAM_NOTES.md",
-    "DM/README.md",
-    "DM/05_Shared_References/README.md",
-    "DM/04_Past_Questions/README.md",
-    "DM/03_Association_Rule_Mining/README.md",
-    "DM/02_Data_Preprocessing/README.md",
-    "DM/01_Introduction_and_KDD/README.md",
-    "DM/00_Course_Guide/SYLLABUS_MAP.md",
-    "DM/00_Course_Guide/PYQ_TOPIC_INDEX.md",
-    "DM/00_Course_Guide/FORMULA_ALGORITHM_CHECKLIST.md"
+    "DM/data-association-share/tmp/pdfs/assets/arm-lift.jpg"
   ]
 }

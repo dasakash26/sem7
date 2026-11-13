@@ -1,0 +1,50 @@
+original_path,current_path,sha256
+01_introduction/01_ML-UNIT-1-notes.pdf,01 - ML Basics/sources/01_ML-UNIT-1-notes.pdf,f00092a08be9c8ca9e8bbffe8ab3c7e2ed7ad62ae2c9632af320896434f50c2f
+02_bayesian_learning/Unit-4.pdf,02 - Evaluation and Bayes/sources/Unit-4.pdf,916bc3bc02a5945c0d73c182da073928ae745f886fef8d7fff4a39b188920361
+02_bayesian_learning/bayes.pdf,02 - Evaluation and Bayes/sources/bayes.pdf,e94ad5a80ac765a505dcb365153adbc4a1ed1fd400de47de631d0bae284c5f50
+02_bayesian_learning/lec04-BayesianLearning.pdf,02 - Evaluation and Bayes/sources/lec04-BayesianLearning.pdf,c319431b67c1c5a115891258e7a18c209a10a45be63090f3cdf62353435d6a19
+02_bayesian_learning/module_5.pdf,02 - Evaluation and Bayes/sources/module_5.pdf,0192bd5eae8cc583543664039543f783e9464fb17592943014a4f088482ea41b
+03_neural_networks/13_Multilayer_Perceptron.pdf,04 - Feedforward and Graphical Models/Feedforward Networks/sources/13_Multilayer_Perceptron.pdf,69e5627242d0cef52179abf7d1e77288a126b0260b707fd3e3b26efa6e4f6a9c
+03_neural_networks/6.pdf,04 - Feedforward and Graphical Models/Feedforward Networks/sources/6.pdf,86fcdfcc61cc13713d91e574ed1043133f302c0400d90466294d780f3d390040
+03_neural_networks/7-nn2-perceptron.pdf,03 - Neural Networks/sources/7-nn2-perceptron.pdf,c329da949b9fdf11e77ff1447dac05832511f6ada17bca53d30c01d341a71620
+03_neural_networks/7_BP_21.pdf,04 - Feedforward and Graphical Models/Feedforward Networks/sources/7_BP_21.pdf,6dec377d4f29f94cd4ab7a59aa32a1278ca0719bc94d033da7562f2d8dbbd4fb
+03_neural_networks/Artificial_Neural_Network.pdf,03 - Neural Networks/sources/Artificial_Neural_Network.pdf,a802903bf864e854fdd506c6e47b4b66e1c0be4efccf5215b78d914cbe5b67c1
+03_neural_networks/L03 Multilayer Perceptrons.pdf,03 - Neural Networks/sources/L03 Multilayer Perceptrons.pdf,f4f5c5fef462bd844c4c1d04bf073fcb24e0ec3b38f01e0e2237ef24150cba2d
+03_neural_networks/SEC1609.pdf,References/SEC1609.pdf,4037cc5d0b25f31203559ef94257763ad73b856afad4564c4fdd6f43433ac752
+03_neural_networks/chapter4v2.pdf,04 - Feedforward and Graphical Models/Feedforward Networks/sources/chapter4v2.pdf,480884984c9a3c04863bf2a2b3ac81aec18f5a5bd10326f8549d657a3e715591
+03_neural_networks/ff.pdf,04 - Feedforward and Graphical Models/Feedforward Networks/sources/ff.pdf,7a2519aaf5dd60dcb66665036e67eae71bb986822aea53564da69a40953e96f8
+03_neural_networks/ffnets-note.pdf,04 - Feedforward and Graphical Models/Feedforward Networks/sources/ffnets-note.pdf,83d5c5f79138aa6d3f36dcece7fea403ca3e554fc0e736bf548befe7c58af79a
+03_neural_networks/in3050_lecture_07_ffnn_2025.pdf,04 - Feedforward and Graphical Models/Feedforward Networks/sources/in3050_lecture_07_ffnn_2025.pdf,8671ab428c12e43f5e0c4b2ba3f5f17a89f2bbf45fee9a93f851343a6e64626a
+03_neural_networks/lec3.learning.pdf,04 - Feedforward and Graphical Models/Feedforward Networks/sources/lec3.learning.pdf,35ac27df4a23c290fdb8d6c02dd7cd6ae02f3ae90923c976ffbf2e33f23da2ca
+04_ff_nn/03-4-5.feedforward-nets.pdf,04 - Feedforward and Graphical Models/Feedforward Networks/sources/03-4-5.feedforward-nets.pdf,e9db6227e747bbed50fa712db1a4bd87e3363dc1c0c21618c68876436ccf5063
+04_ff_nn/7bf751479f644ef0785964a0151a1180cb48.pdf,04 - Feedforward and Graphical Models/Graphical Models/sources/7bf751479f644ef0785964a0151a1180cb48.pdf,65450dee3311dedbe5fed16bc2704bdee5eb76f9305065ecc017edc966131b03
+04_ff_nn/HMM.pdf,04 - Feedforward and Graphical Models/Graphical Models/sources/HMM.pdf,463a4ab16e32a5b694a4a3d454ce9e8d0da178c8c530718fdaee210888101f31
+04_ff_nn/Lecture06.pdf,04 - Feedforward and Graphical Models/Graphical Models/sources/Lecture06.pdf,29416fc2d1718761b1ad489ac96b4c843625718e79394cafa83e2cdcaedd1176
+04_ff_nn/crf-tutorial.pdf,04 - Feedforward and Graphical Models/Graphical Models/sources/crf-tutorial.pdf,df7bcaa035e7bf5fa410e9b8a6b2b8790140e146eeb4a29d93f625da69328118
+04_ff_nn/lec21.notes.pdf,04 - Feedforward and Graphical Models/Feedforward Networks/sources/lec21.notes.pdf,67b79e23ba92b546159ff5b2d39242afb16294b325c5c39cf44f2bad9b73e124
+04_ff_nn/ml-1-hmm-basic.pdf,04 - Feedforward and Graphical Models/Graphical Models/sources/ml-1-hmm-basic.pdf,7f3262723ad55f6098190fa4dc0af874c7f36e7ef4a91dc547fc011847dfc5af
+notes/Intro_to_ML.md,01 - ML Basics/ML Basics.md,d5da525ac1bbbea91fef233f25cc64c33f5ac4cc52171bc694d365a06e90e43f
+notes/Bayesian_Learning.md,02 - Evaluation and Bayes/Evaluation and Bayes.md,cb43dfa30d75af4a95f9e6b5bfbda74bfb0c5ed7f56992197a4a15ded6512f12
+notes/Neural_Networks_Basics.md,03 - Neural Networks/Neural Networks.md,b62267b722ece1560bfabcc8db081c35b23999d3e9e30a743fb97b2a9a12b537
+notes/Multilayer_Backpropagation.md,04 - Feedforward and Graphical Models/Feedforward Networks/Feedforward Networks.md,7a77826a2d132f370ce3b0e363bf3df4577850186dbfb95ecf663fb475551b48
+notes/Feedforward_NN_NLP.md,04 - Feedforward and Graphical Models/Feedforward Networks/Feedforward Networks.md,7a77826a2d132f370ce3b0e363bf3df4577850186dbfb95ecf663fb475551b48
+notes/Advanced_NN_Architectures.md,05 - Probabilistic Networks/Probabilistic Networks.md,e0306f639859157d34c78aaba64eb4953e923aaaa98f024d1b91450717c51df8
+../new_sources/14.1 Autoencoders.pdf,05 - Probabilistic Networks/sources/14.1 Autoencoders.pdf,e516e1a9ffde97b26272426f0f38dcbd2de7ccc4af36fba300cbc16b9f8210b1
+../new_sources/Lecture_Autoencoder_2019.pdf,05 - Probabilistic Networks/sources/Lecture_Autoencoder_2019.pdf,0110ff2fdde34963daae73cf03f0e6f28920d2f00be6e29112e109910f985d8b
+../new_sources/lec25.Hopfield.pdf,05 - Probabilistic Networks/sources/lec25.Hopfield.pdf,0064d9efbca6c7ec70534edef2851f40fc82a47a564052254cb542d7aec9dec2
+../new_sources/lec26.hopfieldBM.pdf,05 - Probabilistic Networks/sources/lec26.hopfieldBM.pdf,a18996d0ae61acb6237e62abcc582d027556d045b24466750141916e86e74088
+../new_sources/lecx3.boltzmann.pdf,05 - Probabilistic Networks/sources/lecx3.boltzmann.pdf,53bf0c5716546541cd3f635530646df3dc022fdcccc2f7ad3aeadd8c46c46cdb
+../new_sources/1_DEEP LEARNING _ DFFNN.pdf,06 - Deep Learning/sources/1_DEEP LEARNING _ DFFNN.pdf,c4bbbbfce7718937ea37beb176db451f55f85f296b2c31c19212a8d4c75017a5
+../new_sources/3_dl-regularization_B.pdf,06 - Deep Learning/sources/3_dl-regularization_B.pdf,f47834d05876a46c29ddb436c2a072e757577c01d485303f8b76538c4ab72f7f
+../new_sources/4_DL-regularization and optimization_A.pdf,06 - Deep Learning/sources/4_DL-regularization and optimization_A.pdf,9cf19edc5f01fc0bf085ef9e5535a747ce3b5b8ccf8f8d158c5ce0353264455d
+../new_sources/5_whole DL.pdf,06 - Deep Learning/sources/5_whole DL.pdf,735754eba40c1404c86bd8e21e42c157095d505db15884b31d6c53255a7d0dee
+../new_sources/6_RNN-Sequence modelling.pdf,06 - Deep Learning/sources/6_RNN-Sequence modelling.pdf,58a47cc8c12c4c3812ba4c2b3212729b06e28d6ee846bc5f07265f8f3b098d87
+../new_sources/RNN_AndrejKarpathy.pdf,06 - Deep Learning/sources/RNN_AndrejKarpathy.pdf,28f2ed035be22c6fff3cf2fb01379ac595ac4b7c6207e57564be069456cacc28
+../new_sources/1_LDA.pdf,07 - Classification/sources/1_LDA.pdf,8aa6d88cb3f3c078939bb4e616f5f3626c06ad42b56986a88412cfdf1edd012c
+../new_sources/3_SVM classifier.pdf,07 - Classification/sources/3_SVM classifier.pdf,c08e313c7d936c52d3af2bd37ea534468d69495a617f9b264b175e8fdaa38451
+../new_sources/4_ Logistic Regression and Linear Regression.pdf,07 - Classification/sources/4_ Logistic Regression and Linear Regression.pdf,871621467fd8de167f6e35ff43a8dc85d2a99f223c64bc0fc44d53afad5eb2b1
+../new_sources/5_logistic_regression1.pdf,07 - Classification/sources/5_logistic_regression1.pdf,a7e6e34b7a391f7c7827c2fc6baf3c2d84ebb6065f77d1b9b13c0cedac9c728c
+../new_sources/6_ML UNIT-II NOTES_1.pdf,07 - Classification/sources/6_ML UNIT-II NOTES_1.pdf,a26149b3f55e259c150a4f2cb7264f13c6d102e3d644a6583e9e7259e3049992
+../new_sources/7_LDA-LDF.pdf,07 - Classification/sources/7_LDA-LDF.pdf,dbacd204b1d4b785520486ac7b8ca8c97c0da2152f89d06e353caf7040c27d2e
+../new_sources/9_svm.pdf,07 - Classification/sources/9_svm.pdf,5950d9038159b3af3599dd070809e986d3966a020fc45b2acd42832d5c717a22
+../new_sources/notes_LogisticRegression.pdf,07 - Classification/sources/notes_LogisticRegression.pdf,c6d1defd1a1d0adac8b3a3d9a13ab674d91aa02365d67cd054a3d9cf3e62d22c
