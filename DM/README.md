@@ -1,31 +1,19 @@
-# Data Mining
+# Data Warehousing and Data Mining
 
-Exam-focused notes distilled from the three supplied lecture PDFs. The textbook and syllabus are references only and do not expand the note scope.
+| Chapter | Notes |
+|---|---|
+| 1 | [Data Mining Foundations](01_Data_Mining_Foundations/Data_Mining_Foundations.md) |
+| 2 | [Data Preprocessing](02_Data_Preprocessing/Data_Preprocessing.md) |
+| 3 | [Data Warehousing](03_Data_Warehousing/Data_Warehousing.md) |
+| 4 | [Association Rule Mining](04_Association_Rule_Mining/Association_Rule_Mining.md) |
+| 5 | [Classification and Prediction](05_Classification_and_Prediction/Classification_and_Prediction.md) |
+| 6 | [Clustering and Outlier Analysis](06_Clustering_and_Outlier_Analysis/Clustering_and_Outlier_Analysis.md) |
+| 7 | [Application-Oriented Mining](07_Application_Oriented_Mining/Application_Oriented_Mining.md) |
 
-## Start here
+**CT 2 covers Chapters 3, 5, and 6.** For one-day preparation, use the [10-hour CT 2 guide with YouTube lectures](00_Course_Guide/CT2_10_HOUR_GUIDE.md). Read Chapters 1–7 in order for the full course.
 
-- [Complete exam notes](DM_EXAM_NOTES.md)
-- [Last-minute quick revision](SLIDE_QUICK_REVISION.md)
-- [Revision plan](00_Course_Guide/REVISION_PLAN.md)
-- [Formula and algorithm checklist](00_Course_Guide/FORMULA_ALGORITHM_CHECKLIST.md)
-- [Past-question overlap index](00_Course_Guide/PYQ_TOPIC_INDEX.md)
-- [Worked covered PYQs](04_Past_Questions/COVERED_WORKED_EXAMPLES.md)
-- [File move manifest](00_Course_Guide/MOVE_MANIFEST.csv)
+[Important topics](00_Course_Guide/IMPORTANT_TOPICS.md) · [Past-question index](00_Course_Guide/PYQ_TOPIC_INDEX.md) · [Syllabus map](00_Course_Guide/SYLLABUS_MAP.md)
 
-## Topic notes
+Original lectures are in each chapter's `sources/` folder; used figures are in `assets/`. Each chapter ends with a short source note.
 
-| Unit | Focus | Exam note |
-|---|---|---|
-| 1 | Data mining, KDD, mining functions, issues, quality, statistics | [Introduction and KDD](01_Introduction_and_KDD/notes/Introduction_and_KDD.md) |
-| 2 | Cleaning, integration, normalization, reduction, discretization | [Data preprocessing](02_Data_Preprocessing/notes/Data_Preprocessing.md) |
-| 3 | Support/confidence, Apriori, FP-growth, closed/maximal patterns, lift | [Association rule mining](03_Association_Rule_Mining/notes/Association_Rule_Mining.md) |
-| 4 | 2025 and 2026 papers, filtered to covered questions | [Past questions](04_Past_Questions/README.md) |
-| 5 | Syllabus and textbook; clarification only | [Shared references](05_Shared_References/README.md) |
-
-## Scope boundary
-
-Covered: introduction, KDD, mining tasks, descriptive statistics, preprocessing, reduction, discretization, entropy-based splitting, association rules, Apriori, FP-growth, closed/maximal itemsets, and rule evaluation.
-
-Not covered by the supplied lecture notes: data warehouses/ETL/OLAP, decision-tree construction, KNN, confusion matrices, detailed clustering algorithms, text mining, biological mining, and time-series mining.
-
-Brief definitions in the slides do not make a full algorithm examinable. Use the [scope map](00_Course_Guide/SYLLABUS_MAP.md) when in doubt.
+Reference material: [2025 paper](90_Past_Questions/sources/QP_DM_SEM_25.pdf), [2026 paper](90_Past_Questions/sources/QP_DM_SEM_26.pdf), [course syllabus](99_References/Data%20Warehousing%20and%20Data%20Mining%20Syllabus.docx), and [textbook](99_References/data-mining-concepts-and-techniques-2nd-edition-impressao.pdf). Selected textbook sections support topics beyond the lecture decks; applications are covered at overview depth.

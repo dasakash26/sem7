@@ -45,6 +45,16 @@ The bias gradients are the corresponding deltas. Calculate all deltas using the 
 | Weight gradients | $\delta_oh\approx-0.2376$ and $\delta_hx\approx-0.0639$ |
 | Update at $\eta=0.1$ | Output and hidden weights become $1.0238$ and $1.0064$. Their biases become $0.0325$ and $0.0064$ |
 
+**Two passes through one calculation.** The backward pass uses the weights from the forward pass.
+
+```text
+Forward values
+x = 1 -> h = 0.7311 -> y_hat = 0.6750 -> loss = 0.3930
+
+Backward derivatives with respect to pre-activations
+hidden delta = -0.0639 <- output delta = -0.3250 <- loss
+```
+
 ### The chain rule in a deeper network
 
 For layer $\ell$, let $z^\ell=W^\ell a^{\ell-1}+b^\ell$ and $a^\ell=g_\ell(z^\ell)$. Backpropagation first computes the output derivative, then repeats the same local rule from the final hidden layer back to the first:

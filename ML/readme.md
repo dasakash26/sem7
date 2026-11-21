@@ -19,6 +19,19 @@ For a written answer, define the model and state its assumptions. Draw the archi
 
 [CT2 study plan](plan.md) · [Semester practice](Semester%20Practice.md) · [References](References/README.md)
 
+## Past questions
+
+[CT1 Set B paper](pyq/ml_26ct1_b.png) · 30 marks, 1 hour. The worked answers are in the relevant chapters.
+
+| Question | Where to read the answer |
+|---|---|
+| 1(a) Feature engineering and dimensionality reduction | [Why feature engineering matters](01%20-%20ML%20Basics/ML%20Basics.md#why-feature-engineering-matters) |
+| 1(b) Total probability and the meningitis calculation | [Total probability and a diagnostic test](02%20-%20Evaluation%20and%20Bayes/Evaluation%20and%20Bayes.md#total-probability-and-a-diagnostic-test) |
+| 1(c) Neural network topologies and activation functions | [From a threshold neuron to an MLP](03%20-%20Neural%20Networks/Neural%20Networks.md#31-from-a-threshold-neuron-to-an-mlp) |
+| 2(a) NAND using a perceptron | [Worked NAND gate](03%20-%20Neural%20Networks/Neural%20Networks.md#worked-nand-gate) |
+| 2(b) Day 11 weather and observable versus hidden states | [Worked weather prediction](04%20-%20Feedforward%20and%20Graphical%20Models/Graphical%20Models/Graphical%20Models.md#worked-weather-prediction-with-a-markov-chain) |
+| 2(c) CRF applications and comparison with HMMs | [Linear-chain CRFs](04%20-%20Feedforward%20and%20Graphical%20Models/Graphical%20Models/Graphical%20Models.md#45-linear-chain-crfs) |
+
 ## Chapter sources
 
 The notes group repeated material by topic and retain representative worked examples. Chapters 1–7 have local lecture PDFs. Chapter 8 follows the syllabus and the textbook and paper linked below. The shared [SEC1609 compilation](References/SEC1609.pdf) includes neural networks on pp. 2–46 and separate fuzzy logic units on pp. 47–72. The fuzzy logic units remain in the source PDF.

@@ -55,6 +55,10 @@ $$
 
 Use the equivalent direction $(1,1)$. The projected means are $8/3$ and $26/3$. With equal priors and equal projected variances, the midpoint threshold is $17/3$. Predict B when $x_1+x_2>17/3$.
 
+![Six points shown in two dimensions and scored by x1+x2. A mean is 8/3, B mean is 26/3, and the cutoff is 17/3.](../Figures/lda-projection.svg)
+
+Different points can receive the same score. The bottom axis shows the sum $x_1+x_2$, so the midpoint of the two class means is $17/3$.
+
 Gaussian LDA models each class with a Gaussian mean, a shared covariance $\Sigma$, and prior $\pi_k$. It selects the largest score $x^T\Sigma^{-1}\mu_k-\frac12\mu_k^T\Sigma^{-1}\mu_k+\log\pi_k$. The common quadratic term cancels, producing linear boundaries. Unequal priors can shift the threshold.
 
 ### How LDA compares with nearby methods
@@ -85,6 +89,10 @@ For soft margin, the smallest feasible slack is $\xi_i=\max(0,1-y_if(x_i))$, the
 **Worked maximum-margin boundary.** Two apples lie at $(1,2)$ and $(2,1)$, and the nearest orange is at $(4,4)$. The apple hull touches the margin on the segment joining those apples. The nearest point on that segment to the orange is $(1.5,1.5)$. The line between these two hull points has direction $(1,1)$, so write $w=(a,a)$. The margin equations are $3a+b=-1$ and $8a+b=1$. Subtracting gives $a=0.4$ and then $b=-2.2$.
 
 The center line is $x_1+x_2=5.5$. The margin lines are $x_1+x_2=3$ and $x_1+x_2=8$, and their separation is $2/\sqrt{0.32}\approx3.54$. In general, solve the constrained optimization. In the dual solution, points with positive multipliers $\alpha_i$ are support vectors and contribute to $w=\sum_i\alpha_i y_ix_i$.
+
+![The apples lie on score −1 and the orange lies on score +1. A perpendicular arrow toward increasing score spans the margin, about 3.54.](../Figures/svm-margin.svg)
+
+The arrow spans the two margin lines along the direction of $w$. The center line lies halfway between them.
 
 A kernel evaluates a feature-space inner product without explicitly constructing the feature vector. Prediction uses $f(x)=\sum_i\alpha_i y_i K(x_i,x)+b$. An RBF kernel is $K(x,z)=\exp(-\gamma\lVert x-z\rVert^2)$. Use $\gamma>0$ for the RBF kernel. Its decision boundary can be curved in the original space. Soft margin can also be used with a kernel.
 

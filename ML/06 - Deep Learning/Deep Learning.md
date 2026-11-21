@@ -71,6 +71,10 @@ A convolutional layer slides learned filters across the input, sums elementwise 
 
 **Worked filter.** Take a $3\times3$ image with every row $(1,0,1)$ and a $2\times2$ filter with both rows $(1,-1)$. With stride 1, no padding, and zero bias, the first patch scores $1+1=2$ and the next patch scores $-1-1=-2$. Both feature-map rows are $(2,-2)$. ReLU gives rows $(2,0)$ and a $2\times2$ max pool gives 2.
 
+![The top-left 2 by 2 patch scores 2. The feature map has rows (2, −2), ReLU gives rows (2, 0), and max pooling gives 2.](../Figures/cnn-filter.svg)
+
+The shaded patch produces the top-left feature-map value. Sliding the same filter produces the other three values.
+
 For input height $H$, padding $P$, kernel height $K_h$, and stride $S$, the output height with unit dilation is $\lfloor(H+2P-K_h)/S\rfloor+1$. Width uses the corresponding dimensions. A layer has $(K_hK_wC_{\mathrm{in}}+1)C_{\mathrm{out}}$ trainable parameters when each filter has a bias. For a $32\times32\times3$ image with 16 filters of size $3\times3$, stride 1 and padding 1, the convolution gives $32\times32\times16$. A $2\times2$ pool with stride 2 gives $16\times16\times16$. Flattening yields 4,096 values. The convolution learns $(3\cdot3\cdot3+1)16=448$ parameters because each filter is reused at every position.
 
 Activation functions also affect the feature map. ReLU clips negative values to zero. Leaky ReLU keeps a small negative-side slope. Sigmoid and tanh can saturate at large input magnitudes. At the classifier output, softmax converts logits into mutually exclusive class probabilities.
@@ -100,6 +104,17 @@ A simple recurrent neural network (RNN) reuses $h_t=\tanh(W_xx_t+W_hh_{t-1}+b_h)
 | $-0.762$ from negative context | $-0.300$ | $0.354$ |
 
 Unroll three steps as $h_1\to h_2\to h_3$. The third prediction depends on the first input through that chain. Backpropagation carries the third-step loss back along the same chain and adds its contributions to the shared weights. In a language model, softmax over vocabulary logits converts the final state into next-token probabilities.
+
+**Read an RNN across time.** Each input uses the same input weights. Each state transition uses the same recurrent weights.
+
+```text
+x1          x2          x3
+| W_x       | W_x       | W_x
+v           v           v
+h1 --W_h--> h2 --W_h--> h3    forward states
+
+h1 <------- h2 <------- h3    backward gradients
+```
 
 A long short-term memory network (LSTM) controls its cell state with gates and uses $c_t=f_t\odot c_{t-1}+i_t\odot\tilde c_t$. The forget gate can preserve part of an earlier state and the input gate can write new information. A recursive network instead combines child representations to build a parent representation, such as a phrase representation in a parse tree.
 

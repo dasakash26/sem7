@@ -1,49 +1,27 @@
-# Revision plan
+# DC CT2 plan
 
-## Midterm - seven supplied slide decks
+| Order | Deck                                                                                                          | Study and practise                                                                                                                            |
+| ----- | ------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------------------------------------------------------------------------------------------- |
+| 1     | [Global Snapshot Part I](../03_Global_State_and_Snapshots/sources/Global-Snapshot-Part-I.pdf)                 | Local and channel states, cuts, frontiers, and consistency. Draw a cut with a message in transit.                                             |
+| 2     | [Global Snapshot Part II](../03_Global_State_and_Snapshots/sources/Global-Snapshot-Part-II.pdf)               | Linearization, the two recording issues, Chandy–Lamport rules and proof, trading and token-ring traces, and stable predicates.                                   |
+| 3     | [Distributed Mutual Exclusion](../06_Distributed_Mutual_Exclusion/sources/Distributed-Mutual%20Exclusion.pdf) | Requirements and metrics. Trace Lamport, Ricart–Agrawala, Maekawa including its deadlock remedy, and Suzuki–Kasami. Derive each message cost. |
 
-Use the [midterm scope map](MIDTERM_SLIDE_SCOPE.md) and study in this order:
+In the [snapshot chapter](../03_Global_State_and_Snapshots/Global%20State%20and%20Snapshots.md), read from Global state through Applications of snapshots. In the [mutual exclusion chapter](../06_Distributed_Mutual_Exclusion/Distributed%20Mutual%20Exclusion.md), read the requirements and the four algorithms in the table. For CT2, study termination and deadlock as snapshot applications and deadlock as a failure mode of basic Maekawa.
 
-1. Fundamentals: coupling, transparency, models, assumptions, and correctness.
-2. Physical clocks: drift, synchronization formulas, Berkeley, and NTP.
-3. Logical clocks: happened-before, Lamport, vectors, differential vectors, and matrix time.
-4. Causal delivery: both BSS conditions and the supplied SES scope.
-5. Message passing and rooted trees: executions, broadcast, convergecast, and tree construction.
-6. Leader election: impossibility, LCR, Hirschberg-Sinclair, ring failures, and Bully.
-7. Consensus/MST: Paxos safety rule and the GHS-style MWOE construction.
+## YouTube lectures
 
-For each major algorithm, recall its assumptions, mechanism, correctness idea, and complexity. The sections below are for the full-semester examination.
+| Watch | Practise |
+|---|---|
+| [Consistent cuts and Chandy–Lamport](https://www.youtube.com/watch?v=moSWS1Gha2g) | Start from basics, then trace the marker example. |
+| [Lamport](https://www.youtube.com/watch?v=1502Ol30WCw) | Update each request queue. |
+| [Ricart–Agrawala](https://www.youtube.com/watch?v=7ZSn6--8DZM) | Decide who defers a reply. |
+| [Maekawa](https://www.youtube.com/watch?v=eTF9FdVws58) | Check quorum intersections and trace [how a voter gets its vote back](../06_Distributed_Mutual_Exclusion/Distributed%20Mutual%20Exclusion.md#resolving-partial-grants). |
+| [Suzuki–Kasami](https://www.youtube.com/watch?v=9vPAtfk1ufY) | Update the request numbers and token queue. |
 
-## Full semester - if you have one day
+**Revision:** [Consistent global state from 3:05](https://www.youtube.com/watch?v=moSWS1Gha2g&t=185s) and [IIT Delhi’s mutual exclusion recap](https://www.youtube.com/watch?v=90DChePW5wI).
 
-1. Read the rapid revision tables in [DC_EXAM_NOTES.md](../DC_EXAM_NOTES.md).
-2. Study clocks/causality, snapshots, mutual exclusion, deadlock, file systems, and transactions in that order.
-3. For every algorithm, write from memory: assumptions, message types, steps, correctness, and cost.
-4. Solve the 2025 semester paper using the [PYQ index](PYQ_TOPIC_INDEX.md).
-5. Finish with leader election and physical-clock formulas.
+## Past-paper practice within scope
 
-## Full semester - if you have three days
-
-- **Day 1:** Fundamentals; clocks; causal delivery; snapshots; termination.
-- **Day 2:** Wave/traversal/election; all mutual-exclusion families; deadlock models and algorithms.
-- **Day 3:** NFS; GFS; 2PC; 2PL; timestamp and optimistic concurrency; two full papers.
-
-## Answer template for a 10-mark algorithm
-
-1. Model and assumptions - 1 mark.
-2. State maintained and message types - 2 marks.
-3. Numbered algorithm - 3 marks.
-4. Correctness: safety and liveness - 2 marks.
-5. Complexity and limitation - 1 mark.
-6. Small trace/diagram - 1 mark.
-
-## Non-negotiable comparisons
-
-- Lamport scalar clock vs vector clock.
-- FIFO vs non-FIFO snapshot.
-- Lamport vs Ricart-Agrawala vs Maekawa mutual exclusion.
-- Permission vs token mutual exclusion.
-- AND cycle vs OR knot deadlock.
-- NFS vs GFS.
-- 2PC vs 2PL.
-- Timestamp ordering vs optimistic concurrency control.
+- [2024 CT2 Q1](../10_Past_Questions/sources/DC_CT2_2024.pdf) — classify messages and explain the marker rules.
+- [2021 semester Q3(b)](../10_Past_Questions/sources/Distributed%20ComputingSemester2021.pdf) — trace Ricart–Agrawala with timestamps 47 and 32.
+- [2025 semester CO3 (i), (ii), and (vi)](../10_Past_Questions/sources/Distributed%20Computing%20sem%20paper.pdf#page=2) — metrics, Lamport fairness, and Suzuki–Kasami correctness.

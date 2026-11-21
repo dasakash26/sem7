@@ -54,6 +54,16 @@ For sampled prediction, both Monte Carlo and TD(0) use $V(s)\leftarrow V(s)+\alp
 
 **One value-iteration backup.** From state S, action Stop pays 2 and terminates. Action Continue pays 1 and deterministically reaches a state currently valued at 4. At $\gamma=0.9$, the backup chooses $\max(2,1+0.9\cdot4)=4.6$.
 
+**One Bellman backup.** Compare the immediate reward plus the discounted value of the next state.
+
+```text
+State S
+|-- Stop -----> terminal, V = 0   : 2 + 0.9(0) = 2
+`-- Continue -> next state, V = 4 : 1 + 0.9(4) = 4.6
+
+Choose Continue for this backup.
+```
+
 **One Q-learning update.** If $Q(s,a)=2$, reward is 1, the best next-state action value is 4, $\gamma=0.9$, and $\alpha=0.5$, then
 
 $$

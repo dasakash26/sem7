@@ -28,17 +28,17 @@
   <path d="M610 160 L695 160" class="arrow"/>
   <rect x="700" y="85" width="250" height="150" class="box"/>
   <text x="725" y="120" class="head">Resolve competition</text>
-  <text x="725" y="150" class="text">Lower token is annexed,</text>
-  <text x="725" y="174" class="text">chases, or waits; equal-level</text>
-  <text x="725" y="198" class="text">survivors combine at level + 1.</text>
+  <text x="722" y="150" class="text">Same phase: chase or wait.</text>
+  <text x="722" y="174" class="text">A meeting consumes both</text>
+  <text x="722" y="198" class="text">and starts a higher phase.</text>
 
   <path d="M955 160 L1040 160" class="arrow"/>
   <rect x="1045" y="105" width="110" height="110" class="box"/>
   <text x="1067" y="140" class="head">Finish</text>
-  <text x="1064" y="170" class="text">One token</text>
-  <text x="1062" y="194" class="text">covers G.</text>
+  <text x="1064" y="168" class="text">Finishing</text>
+  <text x="1064" y="192" class="text">node wins.</text>
 
   <path d="M825 240 C825 280 465 280 465 225" class="arrow"/>
-  <text x="485" y="312" class="text">Each level eliminates or absorbs competitors; at most log₂ k + 1 levels for k starters.</text>
+  <text x="485" y="312" class="text">Each promotion consumes two tokens. At most ⌊log₂ k⌋ + 1 phases for k starters.</text>
   <text x="45" y="360" class="text">Conceptual flow only: KKM is a traversal-to-election transformation, not a flooding or MST algorithm.</text>
 </svg>

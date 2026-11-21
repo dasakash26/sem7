@@ -4,39 +4,24 @@
     "type": "split",
     "children": [
       {
-        "id": "bc64c62d69eedd54",
+        "id": "9373716126e923f5",
         "type": "tabs",
         "children": [
           {
-            "id": "a7f474471a648c5d",
+            "id": "6524959bf591c247",
             "type": "leaf",
             "state": {
               "type": "markdown",
               "state": {
-                "file": "ML/01 - ML Basics/ML Basics.md",
+                "file": "ML/readme.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "ML Basics"
-            }
-          },
-          {
-            "id": "5d4676489390d870",
-            "type": "leaf",
-            "state": {
-              "type": "markdown",
-              "state": {
-                "file": "ML/02 - Evaluation and Bayes/Evaluation and Bayes.md",
-                "mode": "source",
-                "source": false
-              },
-              "icon": "lucide-file",
-              "title": "Evaluation and Bayes"
+              "title": "readme"
             }
           }
-        ],
-        "currentTab": 1
+        ]
       }
     ],
     "direction": "vertical"
@@ -56,7 +41,7 @@
               "type": "file-explorer",
               "state": {
                 "sortOrder": "alphabetical",
-                "autoReveal": true,
+                "autoReveal": false,
                 "showSearch": false,
                 "searchQuery": ""
               },
@@ -70,7 +55,7 @@
             "state": {
               "type": "search",
               "state": {
-                "query": "",
+                "query": "leader",
                 "matchingCase": false,
                 "explainSearch": false,
                 "collapseAll": false,
@@ -98,7 +83,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 261.078125
+    "width": 260.875
   },
   "right": {
     "id": "8697c88fb17fc811",
@@ -176,7 +161,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "ML/02 - Evaluation and Bayes/Evaluation and Bayes.md",
+                "file": "ML/readme.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -190,7 +175,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 274.52734375
+    "width": 256.9609375
   },
   "left-ribbon": {
     "hiddenItems": {
@@ -203,53 +188,53 @@
       "bases:Create new base": false
     }
   },
-  "active": "5d4676489390d870",
+  "active": "6524959bf591c247",
   "lastOpenFiles": [
-    "ML/01 - ML Basics/ML Basics.md",
-    "ML/02 - Evaluation and Bayes/Evaluation and Bayes.md",
-    "ML/04 - Feedforward and Graphical Models/Graphical Models/Graphical Models.md",
-    "ML/References/Teacher Chats/CRF - Decoding Examples.md",
-    "ML/References/Teacher Chat Index.md",
-    "ML/readme.md",
-    "ML/04 - Feedforward and Graphical Models/Feedforward Networks/Feedforward Networks.md",
-    "ML.zip",
     "ML/plan.md",
-    "ML/Semester Practice.md",
-    "ML/02 - Evaluation and Bayes/README.md",
-    "ML/01 - ML Basics/README.md",
-    "ML/References/Syllabus.md",
-    "ML/References/README.md",
-    "ML/References/SEC1609.pdf",
-    "ML/08 - Reinforcement Learning/Reinforcement Learning.md",
-    "ML/08 - Reinforcement Learning/README.md",
-    "ML/06 - Deep Learning/README.md",
-    "ML/03 - Neural Networks/Neural Networks.md",
-    "ML/04 - Feedforward and Graphical Models/README.md",
-    "ML/02 - Evaluation and Bayes/notes/Evaluation and Bayes.md",
-    "ML/07 - Classification/Classification.md",
-    "ML/06 - Deep Learning/Deep Learning.md",
-    "ML/05 - Probabilistic Networks/Probabilistic Networks.md",
-    "ML/08 - Reinforcement Learning/notes/Reinforcement Learning.md",
-    "ML/pyq/ml_26ct1_b.png",
-    "ML/pyq/2026-11-12_18-41-10.png",
-    "ML/pyq",
-    "ML/untitled folder",
-    "ML/07 - Classification/notes/Classification.md",
-    "ML/06 - Deep Learning/notes/Deep Learning.md",
-    "ML/04 - Feedforward and Graphical Models/notes/Feedforward and Graphical Models.md",
-    "ML/04 - Feedforward and Graphical Models/Feedforward Networks/sources/03-4-5.feedforward-nets.pdf",
-    "ML/05 - Probabilistic Networks/supplements",
-    "ML/04 - Feedforward and Graphical Models/supplements",
-    "ML/03 - Neural Networks/supplements",
-    "ML/02 - Evaluation and Bayes/supplements",
-    "ML/01 - ML Basics/supplements",
-    "ML/04_Feedforward_Networks_and_Graphical_Models/01_FFNN_and_Training/figures/text_to_ffnn.png",
-    "ML/04_Feedforward_Networks_and_Graphical_Models/01_FFNN_and_Training/figures/ffnn_forward_backward.png",
-    "DM/data-association-share/tmp/pdfs/assets/arm-support.jpg",
-    "DM/data-association-share/tmp/pdfs/assets/arm-rule-pruning.jpg",
-    "DM/data-association-share/tmp/pdfs/assets/arm-rule-formula.jpg",
-    "DM/data-association-share/tmp/pdfs/assets/arm-maximal.jpg",
-    "DM/data-association-share/tmp/pdfs/assets/arm-market-basket.jpg",
-    "DM/data-association-share/tmp/pdfs/assets/arm-lift.jpg"
+    "ML/01 - ML Basics/ML Basics.md",
+    "DM/00_Course_Guide/SYLLABUS_MAP.md",
+    "DM/00_Course_Guide/CT2_10_HOUR_GUIDE.md",
+    "DM/05_Classification_and_Prediction/sources/5_Classification.pdf",
+    "DM/05_Classification_and_Prediction/Classification_and_Prediction.md",
+    "DM/06_Clustering_and_Outlier_Analysis/sources/6_Clustering.pdf",
+    "DM/06_Clustering_and_Outlier_Analysis/Clustering_and_Outlier_Analysis.md",
+    "DM/06_Clustering_and_Outlier_Analysis/assets/kmeans-nonglobular-shapes.png",
+    "DM/06_Clustering_and_Outlier_Analysis/assets/dbscan-direct-reachability.png",
+    "DM/03_Data_Warehousing/Data_Warehousing.md",
+    "DM/03_Data_Warehousing/sources/3_Data_Warehouse.pdf",
+    "DM/00_Course_Guide/PYQ_TOPIC_INDEX.md",
+    "DM/01_Data_Mining_Foundations/Data_Mining_Foundations.md",
+    "DM/00_Course_Guide/IMPORTANT_TOPICS.md",
+    "DM/04_Association_Rule_Mining/Association_Rule_Mining.md",
+    "DM/07_Application_Oriented_Mining/Application_Oriented_Mining.md",
+    "DM/02_Data_Preprocessing/Data_Preprocessing.md",
+    "DM/04_Association_Rule_Mining/sources/4_Association_Rules.pdf",
+    "DM/04_Association_Rule_Mining/README.md",
+    "DM/00_Course_Guide/FORMULA_ALGORITHM_CHECKLIST.md",
+    "DM/00_Course_Guide/REVISION_PLAN.md",
+    "DM/06_Data_Warehousing/Data_Warehousing.md",
+    "DM/07_Application_Oriented_Mining/sources",
+    "DM/07_Application_Oriented_Mining/assets",
+    "DM/07_Application_Oriented_Mining",
+    "DM/99_References/data-mining-concepts-and-techniques-2nd-edition-impressao.pdf",
+    "DM/99_References/README.md",
+    "DM/99_References/Data Warehousing and Data Mining Syllabus.docx",
+    "DM/99_References",
+    "DM/90_Past_Questions/README.md",
+    "DM/90_Past_Questions/COVERED_WORKED_EXAMPLES.md",
+    "DM/03_Data_Warehousing/assets/three-tier-architecture.png",
+    "DM/01_Data_Mining_Foundations/README.md",
+    "DM/06_Data_Warehousing/assets/three-tier-architecture.png",
+    "DM/08_Cluster_Analysis/Cluster_Analysis.md",
+    "DC/06_Distributed_Mutual_Exclusion/Distributed Mutual Exclusion.md",
+    "DM/07_Classification_and_Prediction/Classification_and_Prediction.md",
+    "DM/data-association-share/04-association-rule-mining.md",
+    "DM/08_Cluster_Analysis/assets/dbscan-direct-reachability.png",
+    "DM/08_Cluster_Analysis/assets/kmeans-nonglobular-shapes.png",
+    "DM/DM_EXAM_NOTES.md",
+    "DC/03_Global_State_and_Snapshots/assets/chandy-lamport-flowchart.png",
+    "DC/03_Global_State_and_Snapshots/assets/fifo-marker-boundary.png",
+    "DC/06_Distributed_Mutual_Exclusion/assets/suzuki-kasami-token-handoff.png",
+    "DC/06_Distributed_Mutual_Exclusion/assets/maekawa-vote-deadlock.png"
   ]
 }

@@ -1,54 +1,29 @@
-# DM notes scope map
+# Syllabus Map
 
-Only material present in the three supplied lecture PDFs is in scope. The PDFs now live inside the corresponding topic folders.
+Read Chapters 1–7 in order. University module numbers follow a different sequence.
 
-## 1 Introduction and KDD
+| Module                           | Chapter                                                                                                                                                                                  | Required topics                                                                                                                                                                                                    |
+| -------------------------------- | ---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ |
+| 1. Data Warehousing              | [Chapter 3](../03_Data_Warehousing/Data_Warehousing.md#1-data-warehouse-concepts)                                                                                                        | Warehouse characteristics and components; ETL; marts and metadata; dimensional models and schemas; cubes and measures; OLAP; ROLAP/MOLAP/HOLAP; design, implementation, and preliminary cube computation           |
+| 2. Foundations and Preprocessing | [Chapter 1](../01_Data_Mining_Foundations/Data_Mining_Foundations.md#1-definition-and-scope) and [Chapter 2](../02_Data_Preprocessing/Data_Preprocessing.md#1-begin-with-the-data-model) | Mining history, KDD, tasks, issues, characterization/discrimination, evolution; attribute types, statistical summaries, quality, cleaning, integration, transformation, reduction, discretization, and hierarchies |
+| 3. Association Mining            | [Chapter 4](../04_Association_Rule_Mining/Association_Rule_Mining.md#1-market-basket-model)                                                                                              | Apriori, FP-growth, scalable and vertical methods; rule generation; closed/maximal patterns; multilevel and multidimensional rules; correlation, constraints, and high-dimensional patterns                        |
+| 4. Classification and Prediction | [Chapter 5](../05_Classification_and_Prediction/Classification_and_Prediction.md#1-the-classification-problem)                                                                           | KNN, trees and split criteria, Bayes, rules and associative classification, backpropagation, regression, evaluation/model selection, accuracy improvement, multiclass, and semi-supervised learning                |
+| 5. Clustering and Outliers       | [Chapter 6](../06_Clustering_and_Outlier_Analysis/Clustering_and_Outlier_Analysis.md#1-clusters-and-types-of-clustering)                                                                 | Data types and distances; k-means, PAM, CLARA/CLARANS; hierarchies, BIRCH, Chameleon; DBSCAN, OPTICS, DENCLUE; STING, CLIQUE; outlier types, challenges, statistical, proximity, and high-dimensional methods      |
+| 6. Applications                  | [Chapter 7](../07_Application_Oriented_Mining/Application_Oriented_Mining.md#1-a-common-framework-for-specialized-data)                                                                  | Overview of text, biological, and time-series mining; sequential patterns for the past-paper short note                                                                                                            |
 
-Source: [`01_Introduction_and_KDD/sources/1_DM_Intro.pdf`](../01_Introduction_and_KDD/sources/1_DM_Intro.pdf)
+**CT 2 covers Chapters 3, 5, and 6.** Latest exam guidance: warehouse slide theory; all classification algorithms and numericals/metrics; k-means modifications/numericals plus short clustering theory. **PAM is excluded from CT 2** but remains in the full-course syllabus. Follow the [updated 10-hour guide](CT2_10_HOUR_GUIDE.md).
 
-| Slides | Topics |
-|---|---|
-| 3-5 | Data mining/KDD; regression, classification, clustering, association and sequential-pattern tasks |
-| 6-14 | Motivation, data growth, related fields, applications and mining-system components |
-| 15-18 | KDD process: cleaning, integration, selection, transformation, mining, evaluation and presentation |
-| 19-26 | Mineable data; descriptive/predictive mining; characterization/discrimination; frequent patterns, classification/regression, clustering and outliers |
-| 27-28 | Technologies and major issues: methodology, interaction, scalability, data diversity, privacy and social impact |
-| 29-34 | Data-quality dimensions and preprocessing overview |
-| 35-44 | Mean, median, mode, skewness, variance, standard deviation, quartiles, IQR, boxplots, histograms, scatter plots, Loess and correlation patterns |
-| 45 | Data mining vs machine learning |
+## Lecture Sources
 
-## 2 Data preprocessing
+| Lecture PDF | PDF pages checked | Main location |
+|---|---:|---|
+| `1_DM_Intro.pdf` | 45 | Chapter 1; quality and descriptive statistics are in Chapter 2 |
+| `2_DM_preprocessing.pdf` | 40 | Chapter 2 |
+| `3_Data_Warehouse.pdf` | 46 | Chapter 3 |
+| `4_Association_Rules.pdf` | 54 | Chapter 4 |
+| `5_Classification.pdf` | 73 | Chapter 5 |
+| `6_Clustering.pdf` | 91 | Chapter 6 |
 
-Source: [`02_Data_Preprocessing/sources/2_DM_preprocessing.pdf`](../02_Data_Preprocessing/sources/2_DM_preprocessing.pdf)
+Original PDFs are in each chapter's `sources/` folder. The lectures do not develop every syllabus topic: selected textbook sections support warehouse implementation, association extensions, additional classifiers, advanced clustering/outliers, and applications. Each chapter records its sources and any corrected formulas or explicit assumptions. Applications are covered at overview depth.
 
-| Slides | Topics |
-|---|---|
-| 2-7 | Data objects/datasets; nominal, binary, ordinal, quantitative, discrete and continuous attributes |
-| 8-13 | Dirty data, preprocessing need, quality dimensions and major tasks |
-| 14-20 | Cleaning; missing values; noisy data; bin-mean/median/boundary smoothing; outlier removal |
-| 21-25 | Integration; entity matching, redundancy, correlation/covariance, duplicates and conflicts; transformation; min-max, z-score and decimal-scaling normalization |
-| 26-32 | Reduction; feature selection; dimensionality-reduction overview; regression/log-linear models; histograms, clustering and sampling |
-| 33-39 | Discretization; concept hierarchies; equal-width/equal-frequency binning; entropy, information gain and best split |
-| 40 | Summary |
-
-## 3 Association rule mining
-
-Source: [`03_Association_Rule_Mining/sources/4_Association_Rules.pdf`](../03_Association_Rule_Mining/sources/4_Association_Rules.pdf)
-
-| Slides | Topics |
-|---|---|
-| 2-16 | Market basket; transactions/itemsets; support; association rules; confidence; frequent/strong rules; anti-monotonicity; horizontal/vertical representation |
-| 17-25 | Apriori; join/prune; support counting; hash tree/subset operation; drawbacks |
-| 26-34 | FP-growth; frequency order; FP-tree/header table; conditional pattern bases and conditional trees |
-| 35-37 | Rule generation from frequent itemsets |
-| 38-43 | Maximal and closed frequent itemsets |
-| 44-53 | Interestingness; contingency tables; support/confidence limitations; lift/interest factor; correlation, IS/cosine, inversion and null-addition properties |
-
-## Explicitly out of scope
-
-- Data warehousing, ETL, schemas, cubes and OLAP.
-- Decision-tree induction, Bayesian classification, KNN, confusion matrices and neural networks.
-- k-means, k-medoids/PAM, hierarchical clustering, DBSCAN and other clustering algorithms.
-- Bag of words, detailed text mining, biological mining and time-series mining.
-
-Brief mentions do not make a full algorithm examinable. For example, the notes define classification, clustering and sequential patterns but do not teach KNN, k-means or a sequential-pattern algorithm.
+The six decks contain **349 PDF pages**, including covers and repeated illustrations. The coverage check includes definitions, distinctions, formulas, algorithm steps, diagram meanings, examples, and limitations. Important slide content is developed in the chapters; repeated slide builds are consolidated. Incorrect formulas and overgeneralizations are corrected rather than reproduced.

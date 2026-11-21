@@ -1,41 +1,17 @@
-# Distributed Computing - start here
+# Distributed Computing
 
-Course: **IT/PC/B/T/413 - Distributed Computing**
+**IT/PC/B/T/413** · [Official syllabus, pp. 40–41](01_Fundamental_Concepts/sources/01_Introduction-DC.pdf#page=40)
 
-This folder follows the order of the official syllabus. Start with the syllabus map, then study the numbered topic folders. Each topic README says what is examinable, which notes to read, and which original PDFs support it.
+[CT2 plan, videos, and practice](00_Course_Guide/REVISION_PLAN.md) · [Past papers](00_Course_Guide/PYQ_TOPIC_INDEX.md)
 
-## Midterm path - supplied slides only
-
-1. [Seven-deck scope and study order](00_Course_Guide/MIDTERM_SLIDE_SCOPE.md)
-2. [Fundamental concepts](01_Fundamental_Concepts/notes/Fundamental_Concepts.md)
-3. [Clocks and event ordering](02_Clocks_and_Event_Ordering/notes/Clocks_and_Event_Ordering.md)
-4. [Message passing, leader election, and spanning trees](05_Wave_Traversal_and_Leader_Election/notes/Wave_Traversal_and_Leader_Election.md)
-
-## Full-semester path
-
-1. [Full syllabus map](00_Course_Guide/SYLLABUS_MAP.md)
-2. [Exam coverage audit](00_Course_Guide/EXAM_COVERAGE_AUDIT.md)
-3. [Past-question index](00_Course_Guide/PYQ_TOPIC_INDEX.md)
-4. [Complete exam notes](DC_EXAM_NOTES.md)
-5. [Revision plan](00_Course_Guide/REVISION_PLAN.md)
-6. [Source and supplementary references](00_Course_Guide/REFERENCES.md)
-
-## Syllabus folders
-
-- [1. Fundamental concepts](01_Fundamental_Concepts/README.md)
-- [2. Clocks and event ordering](02_Clocks_and_Event_Ordering/README.md)
-- [3. Global state and snapshots](03_Global_State_and_Snapshots/README.md)
-- [4. Termination detection](04_Termination_Detection/README.md)
-- [5. Wave, traversal, and leader election](05_Wave_Traversal_and_Leader_Election/README.md)
-- [6. Distributed mutual exclusion](06_Distributed_Mutual_Exclusion/README.md)
-- [7. Distributed deadlock detection](07_Distributed_Deadlock_Detection/README.md)
-- [8. Distributed file systems](08_Distributed_File_Systems/README.md)
-- [9. Distributed transactions and concurrency control](09_Distributed_Transactions_and_Concurrency_Control/README.md)
-- [10. Past questions](10_Past_Questions/README.md)
-
-## Source policy
-
-- Files under `sources/` are the supplied course PDFs and are preserved byte-for-byte.
-- Notes state when a topic comes from the official syllabus or past papers but is absent from the supplied lecture PDFs.
-- The old single-file notes are archived in `00_Course_Guide/original_navigation/`; use the rewritten notes instead.
-- `MOVE_MANIFEST.csv` records every moved source and its SHA-256 checksum.
+| Chapter | Topics |
+|---|---|
+| [1. Fundamental concepts](01_Fundamental_Concepts/Fundamental%20Concepts.md) | Models, transparency, faults, complexity, and correctness |
+| [2. Clocks and event ordering](02_Clocks_and_Event_Ordering/Clocks%20and%20Event%20Ordering.md) | Logical and physical clocks, vector time, and causal delivery |
+| [3. Global state and snapshots](03_Global_State_and_Snapshots/Global%20State%20and%20Snapshots.md) | Consistent cuts, channel state, FIFO and non-FIFO recording |
+| [4. Termination detection](04_Termination_Detection/Termination%20Detection.md) | Snapshot predicate, work acknowledgements, and ring detection |
+| [5. Message passing, traversal, and leader election](05_Wave_Traversal_and_Leader_Election/Message%20Passing,%20Traversal,%20and%20Leader%20Election.md) | Waves, spanning trees, ring and arbitrary-network election |
+| [6. Distributed mutual exclusion](06_Distributed_Mutual_Exclusion/Distributed%20Mutual%20Exclusion.md) | Permission, quorum, and token protocols |
+| [7. Distributed deadlock detection](07_Distributed_Deadlock_Detection/Distributed%20Deadlock%20Detection.md) | Wait-for graphs, request models, probes, and graph reduction |
+| [8. Distributed file systems](08_Distributed_File_Systems/Distributed%20File%20Systems.md) | NFS, caching, and the original Google File System |
+| [9. Distributed transactions and concurrency control](09_Distributed_Transactions_and_Concurrency_Control/Distributed%20Transactions%20and%20Concurrency%20Control.md) | Execution plans, two-phase commit, and serializability |

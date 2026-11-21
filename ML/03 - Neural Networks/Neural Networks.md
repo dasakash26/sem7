@@ -4,14 +4,14 @@
 
 ## 3.1 From a threshold neuron to an MLP
 
-A McCulloch–Pitts neuron uses a threshold on binary inputs. A perceptron adds a learning rule for its weights. A modern unit computes a weighted sum $z=w^Tx+b$ and an activation $a=g(z)$. The vector $w$ is normal to the decision boundary $w^Tx+b=0$, and $b$ shifts that boundary.
+A McCulloch–Pitts neuron uses a threshold on binary inputs. A perceptron adds a learning rule for its weights. A modern unit computes a weighted sum $z=w^Tx+b$ and an activation $a=g(z)$. The **activation function** $g$ determines how the score becomes an output. It can make a binary decision, produce a bounded value, or pass positive scores through. The vector $w$ is normal to the decision boundary $w^Tx+b=0$, and $b$ shifts that boundary.
 
-| Activation | Formula | Use or limitation |
-|---|---|---|
-| Step | $\mathbf 1[z\ge0]$ | Binary threshold decision. The classical perceptron uses a mistake-driven update |
-| Sigmoid | $\sigma(z)=1/(1+e^{-z})$ | Output in $(0,1)$. Derivative $\sigma(z)(1-\sigma(z))$ can become small |
-| Tanh | $\tanh(z)$ | Zero-centered output with derivative $1-\tanh^2(z)$ |
-| ReLU | $\max(0,z)$ | Common hidden activation with derivative 1 for positive inputs and 0 for negative inputs |
+| Activation | Formula                  | Use or limitation                                                                        |
+| ---------- | ------------------------ | ---------------------------------------------------------------------------------------- |
+| Step       | $\mathbf 1[z\ge0]$       | Binary threshold decision. The classical perceptron uses a mistake-driven update         |
+| Sigmoid    | $\sigma(z)=1/(1+e^{-z})$ | Output in $(0,1)$. Derivative $\sigma(z)(1-\sigma(z))$ can become small                  |
+| Tanh       | $\tanh(z)$               | Zero-centered output with derivative $1-\tanh^2(z)$                                      |
+| ReLU       | $\max(0,z)$              | Common hidden activation with derivative 1 for positive inputs and 0 for negative inputs |
 
 **Worked neuron.** For $x=(2,3)$, $w=(0.4,0.3)$, and $b=-0.5$, the pre-activation is $0.4(2)+0.3(3)-0.5=1.2$. A step unit returns 1 and a sigmoid unit returns about $0.769$. In two dimensions, for $w_2\ne0$, the boundary is $x_2=-(w_1/w_2)x_1-b/w_2$. This shows how the weights set the slope and how the bias changes the intercept.
 
@@ -21,14 +21,17 @@ A multilayer perceptron (MLP) stacks layers of learned units in a feedforward ne
 
 The biological analogy supplies a vocabulary: dendrites receive signals, the cell body integrates them, and the axon transmits an output. An artificial unit summarizes this with inputs, weights, a bias, and an activation.
 
-| Model or topology | Defining idea |
-|---|---|
-| McCulloch–Pitts unit | A fixed binary threshold implements a Boolean rule. |
-| Perceptron | Learns weights from mistakes on a hard-threshold prediction. |
-| ADALINE | Learns using squared error on the linear score before thresholding. Its delta rule uses $y-z$, even when the final class is already correct. |
-| Single-layer feedforward network | One learned map connects inputs to outputs. Several outputs still count as one layer. |
-| Multilayer feedforward network | Hidden layers create features before the output layer. |
-| Recurrent or modular network | Recurrent connections carry state. Modular networks combine specialized subnetworks. |
+A **neuron model** describes how one unit computes or learns. A **network topology** describes how units or subnetworks connect.
+
+| Model or topology | How it works | Example |
+|---|---|---|
+| McCulloch–Pitts unit | Applies a fixed threshold to binary inputs. | An AND unit activates only when both inputs are on. |
+| Perceptron | Applies a threshold to a weighted sum and updates its weights after a classification mistake. | Learn a line that separates two classes. |
+| ADALINE | Updates its weights using the squared error of the linear score before thresholding. | Adjust the score even when the predicted class is correct. |
+| Single-layer feedforward network | Maps inputs directly to outputs in one learned layer. | Several output units can each score a different class. |
+| Multilayer feedforward network | Passes inputs through nonlinear hidden layers to the output, with no feedback connections. | Two hidden units compute OR and NAND for XOR. |
+| Recurrent neural network (RNN) | Combines the current input with the previous hidden state using the same weights at each step. | The state carries context so *good* can be interpreted differently in *not good* and *very good*. |
+| Modular neural network (MNN) | Uses specialized subnetworks that exchange selected outputs. Modules can process separate inputs, combine lower-level results, or refine an earlier prediction. | Separate image and text modules contribute to a product classification. |
 
 The early progression was from fixed logical units to Rosenblatt’s trainable perceptron and then to linear adaptive units. MADALINE combined several ADALINE units. Differentiable hidden layers and backpropagation made it practical to learn the internal representations of an MLP.
 
@@ -55,7 +58,24 @@ A false negative moves the boundary toward classifying the example positive. A f
 
 For AND, the threshold on the weighted sum before adding the bias must accept 2 and reject 0 and 1. With unit weights, choosing $b=-1.5$ does exactly that. For OR, use a threshold between 0 and 1. This method derives the parameters from the truth table and works for other linearly separable gates.
 
+### Worked NAND gate
+
+Use one perceptron with weights $w_1=w_2=-1$, bias $b=1.5$, and output $1$ when $z\ge 0$. Then $z=1.5-x_1-x_2$.
+
+| $x_1$ | $x_2$ | Score $z$ | NAND output |
+|---:|---:|---:|---:|
+| 0 | 0 | 1.5 | 1 |
+| 0 | 1 | 0.5 | 1 |
+| 1 | 0 | 0.5 | 1 |
+| 1 | 1 | −0.5 | 0 |
+
+Only the input $(1,1)$ pushes the score below zero. NAND can also serve as one of the hidden units in a network for XOR.
+
 **XOR.** The two positive corners and the two negative corners each lie on crossing diagonals. One line cannot separate the classes. Use OR and NAND as two hidden units, then take their AND at the output. On input $(1,1)$ the hidden outputs are $(1,0)$, so the output is 0.
+
+![XOR has positive corners at (0,1) and (1,0). Both inputs feed OR and NAND, whose outputs feed AND.](../Figures/xor.svg)
+
+The two class diagonals cross. The hidden units supply two intermediate decisions that the final AND combines.
 
 ### Several outputs and expressive power
 

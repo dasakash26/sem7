@@ -68,9 +68,23 @@ A feature is a measurable input available when the prediction is made. The aim i
 | Selection | Which existing inputs should the model retain? | Keep purchase amount and quantity if validation shows that receipt ID adds no value. |
 | Scaling | How can we put numeric inputs on comparable scales? | Express purchase amount and quantity in standard deviations from their respective training means. |
 
+### Why feature engineering matters
+
+The price-per-item feature above helps the model distinguish a large order from an expensive item. When several inputs carry similar information, a smaller representation can also reduce noise and computation.
+
+**Dimensionality reduction** represents each example with fewer input variables while retaining information useful for the task. Feature selection keeps some original columns. Feature extraction can replace several columns with fewer derived ones. For example, principal component analysis (PCA) can turn three correlated measurements into one score by projecting them onto the direction of greatest variance. That score retains the main variation and discards variation in the other directions. Validate whether it also preserves information useful for prediction.
+
 **Interaction features.** Suppose you want to predict delivery time. An extra kilometre might add 2 minutes off-peak but 5 minutes at rush hour. A linear model with separate inputs for distance and rush hour gives distance the same effect in both cases. Add a feature equal to distance × rush-hour flag, where the flag is 1 during rush hour and 0 otherwise. The new feature is zero off-peak and grows with distance during rush hour. This lets the model learn a different rate for each case.
 
 **Worked example.** For a model that flags unusual purchases at checkout, split timestamps into hour and weekday, combine amount and quantity into unit price when quantity is positive, and count purchases in the preceding seven days. For 2, 4, and 6 prior purchases across three successive weeks, a three-week mean is 4. The count and mean must stop before the current purchase. A chargeback posted tomorrow would leak the outcome.
+
+**Read the timeline from left to right.** The cutoff is the moment the model makes its prediction.
+
+```text
+Past 7 days           Checkout / predict       Tomorrow
+[count past orders] -> [use current price] ----> [chargeback]
+   available              available               too late
+```
 
 Compare the engineered features with a simple baseline on the same validation split. Keep a transformation only if it improves the relevant metric or yields a useful gain in interpretability or cost. Fit learned bins, imputers, scalers, selectors, and projections inside each training fold, then apply them to held-out data. Use the same transformations at inference. A scikit-learn pipeline, for example, can keep preprocessing and model fitting together during cross-validation.
 

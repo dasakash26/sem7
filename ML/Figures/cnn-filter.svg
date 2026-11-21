@@ -1,0 +1,62 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="338" viewBox="0 0 520 338" role="img" aria-labelledby="title desc"><title id="title">From input patch to pooled output</title><desc id="desc">A 2 by 2 filter slides over a 3 by 3 image. The left patch scores 2. Cross-correlation gives rows 2,-2; ReLU gives rows 2,0; max pooling gives 2.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8 Z" fill="#172537"/></marker></defs>
+<rect width="520" height="338" rx="12" fill="#f8fafc"/><g font-family="Arial, sans-serif">
+<text x="18" y="30" text-anchor="start" font-size="20" font-weight="700" fill="#172537">From input patch to pooled output</text>
+<text x="20" y="62" text-anchor="start" font-size="16" font-weight="700" fill="#172537">Input (3 × 3)</text>
+<text x="202" y="62" text-anchor="start" font-size="16" font-weight="700" fill="#172537">Filter (2 × 2)</text>
+<rect x="20" y="75" width="35" height="35" rx="5" fill="#dbeafe" stroke="#a9b9ca"/>
+<text x="37.5" y="98.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">1</text>
+<rect x="55" y="75" width="35" height="35" rx="5" fill="#dbeafe" stroke="#a9b9ca"/>
+<text x="72.5" y="98.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">0</text>
+<rect x="90" y="75" width="35" height="35" rx="5" fill="#fff" stroke="#a9b9ca"/>
+<text x="107.5" y="98.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">1</text>
+<rect x="20" y="110" width="35" height="35" rx="5" fill="#dbeafe" stroke="#a9b9ca"/>
+<text x="37.5" y="133.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">1</text>
+<rect x="55" y="110" width="35" height="35" rx="5" fill="#dbeafe" stroke="#a9b9ca"/>
+<text x="72.5" y="133.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">0</text>
+<rect x="90" y="110" width="35" height="35" rx="5" fill="#fff" stroke="#a9b9ca"/>
+<text x="107.5" y="133.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">1</text>
+<rect x="20" y="145" width="35" height="35" rx="5" fill="#fff" stroke="#a9b9ca"/>
+<text x="37.5" y="168.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">1</text>
+<rect x="55" y="145" width="35" height="35" rx="5" fill="#fff" stroke="#a9b9ca"/>
+<text x="72.5" y="168.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">0</text>
+<rect x="90" y="145" width="35" height="35" rx="5" fill="#fff" stroke="#a9b9ca"/>
+<text x="107.5" y="168.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">1</text>
+<rect x="202" y="75" width="35" height="35" rx="5" fill="#fff" stroke="#a9b9ca"/>
+<text x="219.5" y="98.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">1</text>
+<rect x="237" y="75" width="35" height="35" rx="5" fill="#fff" stroke="#a9b9ca"/>
+<text x="254.5" y="98.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">−1</text>
+<rect x="202" y="110" width="35" height="35" rx="5" fill="#fff" stroke="#a9b9ca"/>
+<text x="219.5" y="133.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">1</text>
+<rect x="237" y="110" width="35" height="35" rx="5" fill="#fff" stroke="#a9b9ca"/>
+<text x="254.5" y="133.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">−1</text>
+<text x="306" y="93" text-anchor="start" font-size="16" font-weight="700" fill="#172537">Top-left patch</text>
+<text x="306" y="119" text-anchor="start" font-size="15" font-weight="400" fill="#172537">1×1 + 0×(−1)</text>
+<text x="306" y="141" text-anchor="start" font-size="15" font-weight="400" fill="#172537">+ 1×1 + 0×(−1) = 2</text>
+<text x="202" y="173" text-anchor="start" font-size="14" font-weight="400" fill="#43536a">Stride 1 · no padding · zero bias</text>
+<line x1="20" y1="193" x2="500" y2="193" stroke="#a9b9ca" stroke-width="1.6" stroke-dasharray=""/>
+<text x="20" y="221" text-anchor="start" font-size="16" font-weight="700" fill="#172537">Feature map</text>
+<text x="209" y="221" text-anchor="start" font-size="16" font-weight="700" fill="#172537">After ReLU</text>
+<text x="386" y="221" text-anchor="start" font-size="16" font-weight="700" fill="#172537">After max pool</text>
+<rect x="20" y="234" width="35" height="35" rx="5" fill="#fff" stroke="#a9b9ca"/>
+<text x="37.5" y="257.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">2</text>
+<rect x="55" y="234" width="35" height="35" rx="5" fill="#fff" stroke="#a9b9ca"/>
+<text x="72.5" y="257.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">−2</text>
+<rect x="20" y="269" width="35" height="35" rx="5" fill="#fff" stroke="#a9b9ca"/>
+<text x="37.5" y="292.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">2</text>
+<rect x="55" y="269" width="35" height="35" rx="5" fill="#fff" stroke="#a9b9ca"/>
+<text x="72.5" y="292.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">−2</text>
+<rect x="209" y="234" width="35" height="35" rx="5" fill="#fff" stroke="#a9b9ca"/>
+<text x="226.5" y="257.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">2</text>
+<rect x="244" y="234" width="35" height="35" rx="5" fill="#fff" stroke="#a9b9ca"/>
+<text x="261.5" y="257.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">0</text>
+<rect x="209" y="269" width="35" height="35" rx="5" fill="#fff" stroke="#a9b9ca"/>
+<text x="226.5" y="292.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">2</text>
+<rect x="244" y="269" width="35" height="35" rx="5" fill="#fff" stroke="#a9b9ca"/>
+<text x="261.5" y="292.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">0</text>
+<rect x="414" y="234" width="35" height="35" rx="5" fill="#dbeafe" stroke="#a9b9ca"/>
+<text x="431.5" y="257.5" text-anchor="middle" font-size="16" font-weight="700" fill="#172537">2</text>
+<line x1="115" y1="269" x2="186" y2="269" stroke="#172537" stroke-width="1.6" stroke-dasharray="" marker-end="url(#arrow)"/>
+<line x1="305" y1="269" x2="384" y2="269" stroke="#172537" stroke-width="1.6" stroke-dasharray="" marker-end="url(#arrow)"/>
+<text x="386" y="306" text-anchor="start" font-size="14" font-weight="400" fill="#43536a">2 × 2 window</text>
+</g></svg>

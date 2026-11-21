@@ -18,6 +18,16 @@ A flip changes $s_i$ from the opposite sign of $h_i$ to its sign, giving $\Delta
 
 Discrete Hopfield units have binary or bipolar states, depending on the formulation. Continuous Hopfield models use continuous activations. The single-bit energy argument above applies to discrete asynchronous updates. Recall capacity is limited because stored patterns can interfere.
 
+**One Hopfield update.** Only the second bit changes in this step.
+
+```text
+Before: (1, -1, -1, 1, -1)
+             |
+       bit 2 field = +4
+             v
+After:  (1, +1, -1, 1, -1)    Energy change = -8
+```
+
 ### Interference and memory capacity
 
 Each Hebbian outer product favors states that align with its stored pattern. When several patterns contribute to the same weights, their effects add. For two bipolar patterns, their dot product measures overlap. Orthogonal patterns have zero dot product, while highly overlapping patterns can introduce cross-talk. The network can converge to a mixture or another spurious minimum. For a recall question, check the actual fields and the update order instead of assuming that the closest stored pattern will always win.
@@ -50,6 +60,17 @@ $$
 3. Compute $P(h^1=1\mid v^1)=\sigma(2)\approx0.881$. A draw of $0.8$ gives $h^1=1$.
 4. For the second weight, $v_2^0h^0-v_2^1h^1=0-1=-1$. A sampled CD-1 update with $\eta=0.1$ takes $w_2$ from 1 to $0.9$. This reduces the model's tendency to activate the second visible bit with that hidden state.
 
+**Sample both pairs before updating.** The second visible bit is off in the data pair and on in the reconstructed pair.
+
+```text
+v0 = (1,0) -> h0 = 1 -> v1 = (1,1) -> h1 = 1
+[     data pair    ]    [ reconstructed pair ]
+
+Data product: 0 x 1 = 0
+Reconstructed product: 1 x 1 = 1
+w2 update: 1 + 0.1(0 - 1) = 0.9
+```
+
 The two products record whether the visible and hidden units are active together in each sampled pair. The data pair contributes positively and the reconstructed pair negatively. CD-1 uses the reconstruction to approximate the equilibrium model term. This example samples both hidden states. Some implementations use hidden activation probabilities to estimate the corresponding averages. [Hinton’s RBM training guide](https://www.cs.toronto.edu/~hinton/absps/guideTR.pdf)
 
 ## 5.3 Sigmoid networks and autoencoders
@@ -66,6 +87,17 @@ An **autoencoder** learns to reproduce its input. The encoder computes $z=f_\the
 | 2 | $0.1z_1+0.7z_2-0.1$ | $0.6047$ |
 | 3 | $0.6z_1+0.4z_2$ | $0.6675$ |
 | 4 | $0.2z_1+0.9z_2-0.2$ | $0.6289$ |
+
+**Follow the dimensions.** The decoder predicts four values from the two-value code. The loss compares its output with the original input.
+
+```text
+x (4 values) -> encoder -> z (2 values)
+                            |
+                            v
+x_hat (4 values) <- decoder
+
+Reconstruction loss compares x_hat with x.
+```
 
 Subtract each target from its reconstruction, square the differences, and average.
 

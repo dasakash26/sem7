@@ -26,9 +26,34 @@ Initialize $\alpha_1(j)=\pi_j B_j(x_1)$. Recur with $\alpha_t(j)=B_j(x_t)\sum_i\
 - $\alpha_2(2)=0.2(0.30\cdot0.3+0.08\cdot0.6)=0.0276$.
 - Therefore $P(aa)=0.1486$. The best single path is $1\to1$ with joint probability $0.105$.
 
+![HMM state and observation arrows with a four-edge trellis. Forward sums end at 0.121 and 0.0276. The best path is state 1 to state 1.](../../Figures/hmm-trellis.svg)
+
+The trellis shows both possible states at each time step. The highlighted edge belongs to the best path. Each final forward value includes **both** incoming paths.
+
 ### Markov chains and tagging
 
 A Markov chain has observable states and transition matrix $A$. If $\mu_t$ is a row vector of state probabilities, $\mu_{t+1}=\mu_t A$. A stationary distribution $\mu$ satisfies $\mu=\mu A$ and $\sum_i\mu_i=1$. A finite irreducible, aperiodic chain converges to its unique stationary distribution. Estimate transition rows by dividing each outgoing transition count by the total count out of that state.
+
+### Worked weather prediction with a Markov chain
+
+Let S denote Sunny, R Rainy, and C Cloudy. The ten observed days are:
+
+~~~text
+S -> S -> S -> R -> R -> C -> C -> S -> S -> S
+~~~
+
+1. **Count adjacent transitions.** Ten days give nine transitions. Day 10 has no observed successor, so it contributes to the current state but not to the transition counts.
+2. **Normalize each row.** Divide each count by the total transitions out of that state.
+
+| From state | To S | To R | To C | Total departures | Transition probabilities (S, R, C) |
+|---|---:|---:|---:|---:|---|
+| S | 4 | 1 | 0 | 5 | $(4/5,1/5,0)$ |
+| R | 0 | 1 | 1 | 2 | $(0,1/2,1/2)$ |
+| C | 1 | 0 | 1 | 2 | $(1/2,0,1/2)$ |
+
+3. **Predict from the last observed state.** Day 10 is Sunny. Use the S row, so day 11 is predicted **Sunny**, with estimated probabilities $0.8$ Sunny, $0.2$ Rainy, and $0$ Cloudy. A zero count in this short record does not establish that a transition is impossible.
+
+This calculation assumes the reports directly reveal the weather. The transition counts are observable, so prediction only needs the current state and its transition row. If the reports are noisy clues about the true weather, treating those reports as exact states can distort the transition estimates. An HMM separates the true state from the observed report and models the uncertainty through emission probabilities.
 
 In an HMM part-of-speech tagger, words are observed and tags are hidden. A bigram tagger uses one previous tag. A trigram tagger can use a pair of previous tags as its state. Add start and end transitions when the model includes them. Sparse transition and emission counts often need smoothing or an unknown-word rule.
 
@@ -73,6 +98,8 @@ $$
 
 Both can decode with Viterbi. An HMM scores transitions and emissions with probabilities. A CRF uses feature scores and normalizes over label sequences for the given input. Dense linear-chain inference costs $O(nK^2)$ for $n$ positions and $K$ labels.
 
+These dependencies are useful when nearby output labels should be consistent. In named-entity recognition they label spans such as people and locations. In part-of-speech tagging they use words and nearby tags as clues. Grid CRFs can also link neighboring pixels or regions for image segmentation. The next example shows how token and transition scores work together in named-entity recognition.
+
 ### Worked decoding. “Riya lives in Kolkata”
 
 Use P for person, O for outside, and L for location. The table gives the token scores and best prefix scores in P, O, L order. Transition rows in the same order are $(-0.5,1.5,-0.5)$, $(-0.5,0.7,1.2)$, and $(-0.5,0.3,-0.5)$.
@@ -85,6 +112,14 @@ Use P for person, O for outside, and L for location. The table gives the token s
 | Kolkata | $(-1.0,0.1,2.8)$ | $(5.0,7.3,10.5)$ |
 
 Initialize $V_1=E_1$. For each next token, compute $V_t(b)=E_t(b)+\max_a[V_{t-1}(a)+T(a,b)]$. At “in”, the L entry is $5.0+1.2-0.5=5.7$, from the preceding O. For the final L entry, the best predecessor is O, giving $6.5+1.2+2.8=10.5$. Following the stored predecessors gives **P, O, O, L**. Since $Z(x)$ is shared by all labelings of this sentence, decoding can maximize the score directly.
+
+**Traceback starts at the best final label.** Each arrow follows a stored predecessor.
+
+```text
+Riya(P) <- lives(O) <- in(O) <- Kolkata(L)
+  2.5        5.0       6.5        10.5
+             Best prefix scores along the chosen path
+```
 
 ### Worked training step. From scores to expected counts
 

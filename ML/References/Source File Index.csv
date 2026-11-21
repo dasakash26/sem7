@@ -23,12 +23,12 @@ original_path,current_path,sha256
 04_ff_nn/crf-tutorial.pdf,04 - Feedforward and Graphical Models/Graphical Models/sources/crf-tutorial.pdf,df7bcaa035e7bf5fa410e9b8a6b2b8790140e146eeb4a29d93f625da69328118
 04_ff_nn/lec21.notes.pdf,04 - Feedforward and Graphical Models/Feedforward Networks/sources/lec21.notes.pdf,67b79e23ba92b546159ff5b2d39242afb16294b325c5c39cf44f2bad9b73e124
 04_ff_nn/ml-1-hmm-basic.pdf,04 - Feedforward and Graphical Models/Graphical Models/sources/ml-1-hmm-basic.pdf,7f3262723ad55f6098190fa4dc0af874c7f36e7ef4a91dc547fc011847dfc5af
-notes/Intro_to_ML.md,01 - ML Basics/ML Basics.md,d5da525ac1bbbea91fef233f25cc64c33f5ac4cc52171bc694d365a06e90e43f
-notes/Bayesian_Learning.md,02 - Evaluation and Bayes/Evaluation and Bayes.md,cb43dfa30d75af4a95f9e6b5bfbda74bfb0c5ed7f56992197a4a15ded6512f12
-notes/Neural_Networks_Basics.md,03 - Neural Networks/Neural Networks.md,b62267b722ece1560bfabcc8db081c35b23999d3e9e30a743fb97b2a9a12b537
-notes/Multilayer_Backpropagation.md,04 - Feedforward and Graphical Models/Feedforward Networks/Feedforward Networks.md,7a77826a2d132f370ce3b0e363bf3df4577850186dbfb95ecf663fb475551b48
-notes/Feedforward_NN_NLP.md,04 - Feedforward and Graphical Models/Feedforward Networks/Feedforward Networks.md,7a77826a2d132f370ce3b0e363bf3df4577850186dbfb95ecf663fb475551b48
-notes/Advanced_NN_Architectures.md,05 - Probabilistic Networks/Probabilistic Networks.md,e0306f639859157d34c78aaba64eb4953e923aaaa98f024d1b91450717c51df8
+notes/Intro_to_ML.md,01 - ML Basics/ML Basics.md,2f90b83ed55cb9d567faf656746e9a974e598932be7d4e130bd30109f28781f9
+notes/Bayesian_Learning.md,02 - Evaluation and Bayes/Evaluation and Bayes.md,3ef98d8d0748c7479102f54be6257a7fb27ff748d744f0f9c6fe559cc2c5e821
+notes/Neural_Networks_Basics.md,03 - Neural Networks/Neural Networks.md,67fc18ad876e13d9cabeaf5c4edeb479969c8821599ff69e83a9b7e0db604847
+notes/Multilayer_Backpropagation.md,04 - Feedforward and Graphical Models/Feedforward Networks/Feedforward Networks.md,21ac64bc3ac6f2e8fad2441230890dd98781d2e13e5866163269c74a5e8dfe0f
+notes/Feedforward_NN_NLP.md,04 - Feedforward and Graphical Models/Feedforward Networks/Feedforward Networks.md,21ac64bc3ac6f2e8fad2441230890dd98781d2e13e5866163269c74a5e8dfe0f
+notes/Advanced_NN_Architectures.md,05 - Probabilistic Networks/Probabilistic Networks.md,c741a9085f403581702f3655fc289c71e6816c5b784cf4fc93ae02b4c88d00af
 ../new_sources/14.1 Autoencoders.pdf,05 - Probabilistic Networks/sources/14.1 Autoencoders.pdf,e516e1a9ffde97b26272426f0f38dcbd2de7ccc4af36fba300cbc16b9f8210b1
 ../new_sources/Lecture_Autoencoder_2019.pdf,05 - Probabilistic Networks/sources/Lecture_Autoencoder_2019.pdf,0110ff2fdde34963daae73cf03f0e6f28920d2f00be6e29112e109910f985d8b
 ../new_sources/lec25.Hopfield.pdf,05 - Probabilistic Networks/sources/lec25.Hopfield.pdf,0064d9efbca6c7ec70534edef2851f40fc82a47a564052254cb542d7aec9dec2

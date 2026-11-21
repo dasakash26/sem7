@@ -1,18 +1,6 @@
-# Past-question topic index
+# Past-question index
 
-Use this file to choose questions after studying a topic. The wording is normalized only enough to repair obvious OCR errors; consult the linked scan for diagrams and exact phrasing.
-
-## Topic recurrence
-
-| Topic | Papers in supplied set | Priority |
-|---|---:|---:|
-| Logical/vector clocks and causal delivery | 2021, 2024 CT1, 2025 | Very high |
-| Snapshots/consistent cuts/global state | undated CT1, 2023, 2024 CT2, 2024, 2025 | Very high |
-| Leader election/MIS | 2022 re-test, 2023, 2024 CT1, 2024, 2025 | High |
-| Mutual exclusion | undated CT1, 2022 CT2, 2023, 2024 CT1, 2024, 2025 | Very high |
-| Distributed deadlock | 2021, 2022 CT2/re-test, 2023, 2024 CT2, 2024, 2025 | Very high |
-| NFS/GFS/cache/replication | 2021, 2023, 2024, 2025 | Very high |
-| Transactions/2PC/serializability | 2021, 2024, 2025 | Very high |
+For this sitting, use the [CT2 practice list](REVISION_PLAN.md#past-paper-practice-within-scope).
 
 ## 2021 semester - 100 marks
 
@@ -135,12 +123,3 @@ Use this file to choose questions after studying a topic. The wording is normali
 | CO4 | 10 | Knot and probe-based deadlock pseudocode, or CMH trace and cycle proof |
 | CO5 | 15 | GFS design, scale/faults, metadata, replication, chunk size, write path |
 | CO6 | 15 | Global/local transaction plan and 2PC failures/limits |
-
-## Practice order
-
-1. 2025 paper - broadest and most recent supplied coverage.
-2. 2021 paper - strongest algorithm traces for clocks, deadlock, NFS, and transactions.
-3. 2024 CT1/CT2 - precise conceptual traps.
-4. 2024 semester - cache and termination emphasis.
-5. 2023/2022 papers - additional election, mutual-exclusion, and generalized-deadlock practice.
-

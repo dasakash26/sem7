@@ -1,0 +1,42 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="520" height="337" viewBox="0 0 520 337" role="img" aria-labelledby="title desc"><title id="title">Two observations, four hidden paths</title><desc id="desc">Directed HMM structure and trellis for observations a,a. Forward totals 0.1486. Viterbi picks state 1 to state 1 with joint probability 0.105.</desc>
+<defs><marker id="arrow" markerWidth="8" markerHeight="8" refX="7" refY="4" orient="auto" markerUnits="userSpaceOnUse"><path d="M0,0 L8,4 L0,8 Z" fill="#172537"/></marker></defs>
+<rect width="520" height="337" rx="12" fill="#f8fafc"/><g font-family="Arial, sans-serif">
+<text x="18" y="30" text-anchor="start" font-size="20" font-weight="700" fill="#172537">Two observations, four hidden paths</text>
+<text x="20" y="60" text-anchor="start" font-size="16" font-weight="700" fill="#172537">Model structure</text>
+<rect x="28" y="94" width="73" height="31" rx="5" fill="#ffffff" stroke="#a9b9ca"/>
+<text x="64.5" y="115" text-anchor="middle" font-size="16" font-weight="400" fill="#172537">y₁</text>
+<rect x="141" y="94" width="73" height="31" rx="5" fill="#ffffff" stroke="#a9b9ca"/>
+<text x="177.5" y="115" text-anchor="middle" font-size="16" font-weight="400" fill="#172537">y₂</text>
+<rect x="28" y="155" width="73" height="31" rx="5" fill="#ffffff" stroke="#a9b9ca"/>
+<text x="64.5" y="176" text-anchor="middle" font-size="16" font-weight="400" fill="#172537">x₁ = a</text>
+<rect x="141" y="155" width="73" height="31" rx="5" fill="#ffffff" stroke="#a9b9ca"/>
+<text x="177.5" y="176" text-anchor="middle" font-size="16" font-weight="400" fill="#172537">x₂ = a</text>
+<line x1="101" y1="109" x2="139" y2="109" stroke="#172537" stroke-width="1.6" stroke-dasharray="" marker-end="url(#arrow)"/>
+<line x1="64" y1="125" x2="64" y2="153" stroke="#172537" stroke-width="1.6" stroke-dasharray="" marker-end="url(#arrow)"/>
+<line x1="177" y1="125" x2="177" y2="153" stroke="#172537" stroke-width="1.6" stroke-dasharray="" marker-end="url(#arrow)"/>
+<text x="24" y="215" text-anchor="start" font-size="14" font-weight="400" fill="#43536a">y: hidden state</text>
+<text x="24" y="238" text-anchor="start" font-size="14" font-weight="400" fill="#43536a">x: observed symbol</text>
+<line x1="230" y1="54" x2="230" y2="257" stroke="#a9b9ca" stroke-width="1.6" stroke-dasharray=""/>
+<text x="250" y="60" text-anchor="start" font-size="16" font-weight="700" fill="#172537">Forward trellis</text>
+<text x="292" y="87" text-anchor="middle" font-size="16" font-weight="400" fill="#172537">t = 1</text>
+<text x="458" y="87" text-anchor="middle" font-size="16" font-weight="400" fill="#172537">t = 2</text>
+<line x1="335" y1="118" x2="412" y2="118" stroke="#16569a" stroke-width="2.4" stroke-dasharray="" marker-end="url(#arrow)"/>
+<line x1="335" y1="123" x2="412" y2="217" stroke="#43536a" stroke-width="1.25" stroke-dasharray="" marker-end="url(#arrow)"/>
+<line x1="335" y1="217" x2="412" y2="123" stroke="#43536a" stroke-width="1.25" stroke-dasharray="" marker-end="url(#arrow)"/>
+<line x1="335" y1="222" x2="412" y2="222" stroke="#43536a" stroke-width="1.25" stroke-dasharray="" marker-end="url(#arrow)"/>
+<rect x="250" y="98" width="85" height="41" rx="5" fill="#ffffff" stroke="#a9b9ca"/>
+<text x="292.5" y="114" text-anchor="middle" font-size="13" font-weight="400" fill="#172537">State 1</text>
+<text x="292.5" y="131" text-anchor="middle" font-size="14" font-weight="700" fill="#172537">0.30</text>
+<rect x="250" y="202" width="85" height="41" rx="5" fill="#ffffff" stroke="#a9b9ca"/>
+<text x="292.5" y="218" text-anchor="middle" font-size="13" font-weight="400" fill="#172537">State 2</text>
+<text x="292.5" y="235" text-anchor="middle" font-size="14" font-weight="700" fill="#172537">0.08</text>
+<rect x="414" y="98" width="85" height="41" rx="5" fill="#ffffff" stroke="#a9b9ca"/>
+<text x="456.5" y="114" text-anchor="middle" font-size="13" font-weight="400" fill="#172537">State 1</text>
+<text x="456.5" y="131" text-anchor="middle" font-size="14" font-weight="700" fill="#172537">0.121</text>
+<rect x="414" y="202" width="85" height="41" rx="5" fill="#ffffff" stroke="#a9b9ca"/>
+<text x="456.5" y="218" text-anchor="middle" font-size="13" font-weight="400" fill="#172537">State 2</text>
+<text x="456.5" y="235" text-anchor="middle" font-size="14" font-weight="700" fill="#172537">0.0276</text>
+<text x="250" y="262" text-anchor="start" font-size="14" font-weight="400" fill="#43536a">Boxes show forward sums (α).</text>
+<text x="20" y="288" text-anchor="start" font-size="16" font-weight="700" fill="#172537">Forward: sum the final column → 0.1486</text>
+<text x="20" y="313" text-anchor="start" font-size="16" font-weight="700" fill="#172537">Viterbi: best path 1 → 1, joint probability 0.105</text>
+</g></svg>
