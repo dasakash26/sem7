@@ -2,11 +2,29 @@
 
 [Contents](../readme.md)
 
-**CT2 reading order:** §§7.1–7.6 cover the supplied Module 7 outline, including Lecture 29. Work through the calculations before the comparison tables. [CT2 guide and checklist](../CT2%20Guide.md).
+[Logistic regression](#71-linear-classification-and-logistic-regression) · [LDA](#72-fisher-lda-and-gaussian-lda) · [SVM](#73-support-vector-machines) · [KNN](#74-k-nearest-neighbors) · [K-means](#75-k-means-clustering) · [Trees](#76-decision-trees) · [Exercises](#exercises)
+
+Examples are represented by **features**, such as study hours and attendance. In **supervised learning**, examples also have known targets $y$: classification predicts a category, whereas regression predicts a numerical quantity. **Clustering** instead groups unlabeled examples by similarity.
+
+A linear score $w^Tx+b$ combines the features using learned weights and a bias. For example, $w=(1,0.5)$, $x=(2,3)$ and $b=-2$ give score $2+1.5-2=1.5$. Training learns weights from examples; prediction applies the learned rule to new inputs.
 
 ## 7.1 Linear classification and logistic regression
 
-A linear classifier uses the sign of $f(x)=w^Tx+b$. For $w\ne0$, the normal is $w$ and the signed distance to the boundary is $f(x)/\lVert w\rVert$. Logistic regression uses $p=\sigma(f(x))$, so the log-odds equal $f(x)$. Here the binary target is coded as $y\in\{0,1\}$. At probability threshold $0.5$, the boundary is $f(x)=0$. Linear regression predicts an unrestricted real value and commonly fits squared error.
+A **decision boundary** separates predicted classes. A weighted sum changes sign at $w^Tx+b=0$: this is a point in one dimension, a line in two, a plane in three and a **hyperplane** in higher dimensions. The vector $w$ points perpendicular to that boundary. Its length, or norm, is $\|w\|=\sqrt{\sum_jw_j^2}$. Data are linearly separable when some such boundary separates the classes without mistakes.
+
+**From score to prediction**
+
+| Model | Output | Decision rule |
+|---|---|---|
+| Linear classifier | $f(x)=w^Tx+b$ | Use the score's sign. |
+| Logistic regression | $p=\sigma(f(x))$ | Predict class 1 at $p\ge0.5$; labels are $0/1$. |
+| Linear regression | Unrestricted real-valued prediction | Fit a numeric target, commonly with squared loss. |
+
+For $w\ne0$, signed distance from the boundary is $f(x)/\|w\|$. Logistic regression has linear log-odds and boundary $f(x)=0$ at threshold 0.5.
+
+Logistic regression turns a score into a probability with sigmoid, $\sigma(z)=1/(1+e^{-z})$. Score 0 gives probability 0.5, so thresholding at 0.5 uses the same zero-score boundary. A **Bernoulli target** has two values, 0 and 1. The probability assigned to the observed answer is $p$ when $y=1$ and $1-p$ when $y=0$.
+
+Multiplying these probabilities across examples gives their likelihood; training seeks a large likelihood. Taking its negative logarithm produces an additive loss and heavily penalizes confidently wrong answers.
 
 For a Bernoulli target $y$, the likelihood of one example is $p^y(1-p)^{1-y}$. Its negative log is
 
@@ -14,11 +32,21 @@ $$
 \ell=-y\ln p-(1-y)\ln(1-p).
 $$
 
-The gradients for a single example are $(p-y)x$ and $p-y$ with respect to $w$ and $b$. The optimizer fits both parameters and thereby learns the boundary. At $x=2,y=1,w=b=0$, $p=0.5$ and the gradients are $(-1,-0.5)$. One step at $\eta=0.1$ gives $(w,b)=(0.1,0.05)$ and shifts the one-dimensional boundary to $x=-0.5$.
+### Worked example Logistic learning
 
-At initialization $w=b=0$, all scores are zero and there is no unique separating boundary. After the stated update, solve $0.1x+0.05=0$ for $x=-0.5$. One example's update does not establish a useful boundary for the entire dataset. Batch training averages $(p_i-y_i)x_i$ and $p_i-y_i$ over the batch, then updates both parameters. A model $z=2x-7$ has boundary $x=3.5$; at $x=4.5$, $p=\sigma(2)=0.8808$. A linear regressor predicting marks might instead use $\hat m=10x+20$, giving 65 marks at 4.5 hours. The targets differ.
+For one logistic example, differentiating sigmoid and log loss gives $(p-y)x$ for $w$ and $p-y$ for $b$. Gradient descent subtracts the gradient times a positive learning rate $\eta$. The optimizer fits both parameters and thereby learns the boundary. At $x=2,y=1,w=b=0$, $p=0.5$ and the gradients are $(-1,-0.5)$. One step at $\eta=0.1$ gives $(w,b)=(0.1,0.05)$ and shifts the one-dimensional boundary to $x=-0.5$.
 
-**Worked log-loss calculation.** For $(y,p)=(1,0.9),(0,0.2),(1,0.3)$, the losses are $0.1054,0.2231,1.2040$. Their mean is $0.5108$. The last example contributes the most because it gives the lowest probability to the correct class.
+At $w=b=0$, every point has score zero. The first update produces a boundary but need not separate the full dataset. Batch training averages both parameter gradients over the current batch. A model $z=2x-7$ has boundary $x=3.5$; at $x=4.5$, $p=\sigma(2)=0.8808$. A linear regressor predicting marks might instead use $\hat m=10x+20$, giving 65 marks at 4.5 hours. The targets differ.
+
+**Log loss**
+
+| Target $y$ | Predicted probability $p$ | Loss |
+|---:|---:|---:|
+| 1 | 0.9 | 0.1054 |
+| 0 | 0.2 | 0.2231 |
+| 1 | 0.3 | 1.2040 |
+
+Mean loss is **0.5108**. The last prediction contributes most because it assigns the lowest probability to the correct class.
 
 ### Thresholds, features, and model selection
 
@@ -30,6 +58,8 @@ A threshold $\tau$ predicts positive when $p\ge\tau$, equivalent to a score thre
 
 ## 7.2 Fisher LDA and Gaussian LDA
 
+Two classes may overlap when viewed along one feature but separate when features are combined. **Projection** replaces a point $x$ by one number $z=w^Tx$: for $w=(1,1)$, point $(2,3)$ becomes 5. LDA chooses a direction that keeps class centers far apart while keeping each class's projected points tightly grouped.
+
 Fisher's linear discriminant projects classes to directions with large separation between class means and small scatter within classes. Compute each class mean $\mu_k$ and scatter $S_k=\sum_{x\in k}(x-\mu_k)(x-\mu_k)^T$. With $S_W=S_A+S_B$ and $d=\mu_B-\mu_A$,
 
 $$
@@ -37,6 +67,32 @@ J(w)=\frac{(w^Td)^2}{w^TS_Ww},\qquad w\propto S_W^{-1}d
 $$
 
 when $S_W$ is invertible. The solution is a direction. Scaling it by a positive constant scales the projected scores and the decision threshold together. The multiclass version uses generalized eigenvectors and at most $C-1$ discriminant directions for $C$ classes.
+
+**Reading Fisher's criterion**
+
+- **Class mean:** $\mu_k$ is the coordinatewise average.
+- **Within-class scatter:** deviations from that mean measure spread. In $(x-\mu_k)(x-\mu_k)^T$, diagonal entries are squared deviations; off-diagonal entries capture joint variation.
+- **Numerator of $J(w)$:** squared separation of projected means.
+- **Denominator:** projected within-class scatter.
+
+A larger ratio indicates cleaner separation.
+
+The inverse $S_W^{-1}$ compensates for spread and dependence between features. For a diagonal scatter matrix, it divides each mean difference by the corresponding scatter. The general matrix operation also accounts for features varying together.
+
+![Original LDA slide comparing projection along class means with Fisher projection and their resulting class overlap.](../Figures/slides/fisher-projection-p022.png)
+
+*Fisher projection accounts for within-class scatter, reducing overlap that remains when projecting along the line between class means.*
+
+### Fisher direction derivation
+
+Let $d=\mu_B-\mu_A$ and use $S_{\rm between}=dd^T$ up to a positive constant. Since Fisher's ratio is unchanged by rescaling $w$, maximize $(w^Td)^2$ subject to $w^TS_Ww=1$. A Lagrange multiplier $\lambda$ incorporates that constraint into an expression that can be differentiated:
+
+$$
+\mathcal L=(w^Td)^2-\lambda(w^TS_Ww-1),\qquad
+\nabla_w\mathcal L=2dd^Tw-2\lambda S_Ww=0.
+$$
+
+Thus $(w^Td)d=\lambda S_Ww$, so a nondegenerate solution has $w\propto S_W^{-1}d$ when $S_W$ is invertible. Large within-class variation reduces a direction's usefulness. For $S_W=\operatorname{diag}(100,1)$ and $d=(1,1)^T$, $w\propto(0.01,1)^T$: the noisy first coordinate receives less weight.
 
 **Worked Fisher projection.** Take $A=\{(1,1),(2,1),(1,2)\}$ and $B=\{(4,4),(5,4),(4,5)\}$. The means are $(4/3,4/3)$ and $(13/3,13/3)$. Each class scatter has diagonal $2/3$ and off-diagonal $-1/3$. For class A the deviations are $(-1,-1)/3$, $(2,-1)/3$, and $(-1,2)/3$. Sum their outer products to obtain $S_A$.
 
@@ -52,22 +108,35 @@ $$
 B is a translation of A, so $S_B=S_A$.
 
 $$
-S_W=\begin{bmatrix}4/3&-2/3\\-2/3&4/3\end{bmatrix},
-\qquad
-S_W^{-1}d=\begin{bmatrix}4.5\\4.5\end{bmatrix}.
+S_W=\begin{bmatrix}4/3&-2/3\\-2/3&4/3\end{bmatrix}.
+$$
+
+Inverting $S_W$ and applying it to the mean difference gives
+
+$$
+S_W^{-1}=\begin{bmatrix}1&1/2\\1/2&1\end{bmatrix},\quad
+S_W^{-1}(3,3)^T=(4.5,4.5)^T.
 $$
 
 Use the equivalent direction $(1,1)$. The projected means are $8/3$ and $26/3$. With equal priors and equal projected variances, the midpoint threshold is $17/3$. Predict B when $x_1+x_2>17/3$.
 
-![Six points shown in two dimensions and scored by x1+x2. A mean is 8/3, B mean is 26/3, and the cutoff is 17/3.](../Figures/lda-projection.svg)
+**Projection results**
 
-Different points can receive the same score. The bottom axis shows the sum $x_1+x_2$, so the midpoint of the two class means is $17/3$.
+| Quantity | Result |
+|---|---|
+| Class A scores | $(2,3,3)$ |
+| Class B scores | $(8,9,9)$ |
+| New point $(2,3)$ | Score 5 → class A |
+
+The boundaries $x_1+x_2=6$ (a valid separator), $17/3$ (this LDA threshold) and 5.5 (the SVM solution) all separate the training points. Their selection rules differ.
+
+![Six points shown in two dimensions and scored by x1+x2. A mean is 8/3, B mean is 26/3, and the cutoff is 17/3.](../Figures/lda-projection.svg)
 
 Gaussian LDA models each class with a Gaussian mean, a shared covariance $\Sigma$, and prior $\pi_k$. It selects the largest score $x^T\Sigma^{-1}\mu_k-\frac12\mu_k^T\Sigma^{-1}\mu_k+\log\pi_k$. The common quadratic term cancels, producing linear boundaries. Unequal priors can shift the threshold.
 
-### How LDA compares with nearby methods
+### Comparison with related methods
 
-| Method | What it uses | What to watch |
+| Method | Basis | Interpretation |
 |---|---|---|
 | PCA | Unlabeled feature variance | A high-variance direction may not separate classes. |
 | Fisher LDA | Labels and within-class versus between-class scatter | Center points at their own class means for $S_W$. If $S_W$ is singular, consider shrinkage or reducing dimension. |
@@ -75,31 +144,19 @@ Gaussian LDA models each class with a Gaussian mean, a shared covariance $\Sigma
 | Logistic regression | Conditional class probability fitted directly | Does not require Gaussian features. It assumes linear log-odds in the chosen features. |
 | Least-squares discriminant | Fits numeric class codes and classifies using the fitted scores | Squared error treats deviations in class codes as numeric residuals. Scores need not be probabilities. |
 
-For $C$ classes, define $S_B=\sum_k n_k(\mu_k-\mu)(\mu_k-\mu)^T$. Fisher directions solve $S_Bw=\lambda S_Ww$. Select directions with large generalized eigenvalues. The rank of $S_B$ is at most $C-1$.
-
-### Fisher direction derivation
-
-Let $d=\mu_B-\mu_A$ and use $S_{\rm between}=dd^T$ up to a positive constant. This avoids confusing between-class scatter with the class-B scatter matrix also denoted $S_B$ above. Since Fisher's ratio is unchanged by rescaling $w$, maximize $(w^Td)^2$ subject to $w^TS_Ww=1$. With multiplier $\lambda$,
-
-$$
-\mathcal L=(w^Td)^2-\lambda(w^TS_Ww-1),\qquad
-\nabla_w\mathcal L=2dd^Tw-2\lambda S_Ww=0.
-$$
-
-Thus $(w^Td)d=\lambda S_Ww$, so a nondegenerate solution has $w\propto S_W^{-1}d$ when $S_W$ is invertible. Large within-class variation reduces a direction's usefulness. For $S_W=\operatorname{diag}(100,1)$ and $d=(1,1)^T$, $w\propto(0.01,1)^T$: the noisy first coordinate receives less weight.
-
-For the worked example,
-
-$$
-S_W^{-1}=\begin{bmatrix}1&1/2\\1/2&1\end{bmatrix},\quad
-S_W^{-1}(3,3)^T=(4.5,4.5)^T.
-$$
-
-With direction $(1,1)$, class A projects to $(2,3,3)$ and B to $(8,9,9)$. The midpoint of their means is $17/3$. A new point $(2,3)$ scores 5 and is assigned A. A valid separating hyperplane such as $x_1+x_2=6$, an LDA threshold $17/3$, and an SVM boundary 5.5 can all separate these training points while coming from different selection rules.
+For $C$ classes, define $S_{\rm between}=\sum_k n_k(\mu_k-\mu)(\mu_k-\mu)^T$. Fisher directions solve $S_{\rm between}w=\lambda S_Ww$; the largest eigenvalues select the directions. The rank is at most $C-1$.
 
 ## 7.3 Support vector machines
 
+Many lines may separate two classes. A **support vector machine** chooses the separator with the widest clear gap to the nearest training points. This **margin** makes the decision less sensitive to small input changes. The points that determine the fitted separator are **support vectors**. Hard margin requires perfect separation; soft margin allows violations at a cost.
+
 The SVM convention here uses labels $y_i\in\{-1,+1\}$. The score $f(x)$ determines the side of the boundary. The product $y_if(x_i)$ is the signed score relative to the true label.
+
+Multiplying all score parameters by a positive constant leaves the class predictions unchanged. SVM fixes that arbitrary scaling by placing the margin planes at scores $+1$ and $-1$. Then $y_if(x_i)\ge1$ means example $i$ is on the correct side and beyond its margin. The objective $\frac12\|w\|^2$ is the quantity minimized; the constraints state which solutions are allowed. In soft margin, $\xi_i\ge0$ records a shortfall from the margin and $C>0$ sets its cost.
+
+![Original SVM slide comparing candidate linear boundaries for two classes.](../Figures/slides/svm-boundary-choice-p009.png)
+
+*Compare the candidate boundaries: maximum margin favors the separator with the largest minimum distance to the training points.*
 
 | Model | Objective and constraints |
 |---|---|
@@ -118,11 +175,15 @@ The center line is $x_1+x_2=5.5$. The margin lines are $x_1+x_2=3$ and $x_1+x_2=
 
 The arrow spans the two margin lines along the direction of $w$. The center line lies halfway between them.
 
+A curved pattern can become separable after adding useful features. For example, $(x_1,x_2)$ may be expanded to $\phi(x)=(x_1,x_2,x_1x_2)$, using a feature map $\phi$. Kernel methods calculate the transformed dot product directly, often avoiding a large explicit feature vector.
+
 A kernel evaluates a feature-space inner product without explicitly constructing the feature vector. Prediction uses $f(x)=\sum_i\alpha_i y_i K(x_i,x)+b$. An RBF kernel is $K(x,z)=\exp(-\gamma\lVert x-z\rVert^2)$. Use $\gamma>0$ for the RBF kernel. Its decision boundary can be curved in the original space. Soft margin can also be used with a kernel.
 
-**Worked nonlinear boundary.** For XOR, map $(x_1,x_2)$ to $(x_1,x_2,x_1x_2)$. The linear score in this space is $2x_1+2x_2-4x_1x_2-1$. It gives $(-1,+1,+1,-1)$ on $(0,0),(1,0),(0,1),(1,1)$. The interaction term changes the score only when both inputs are 1, which a linear score on the original inputs cannot do.
+![Original SVM slide showing data transformed into squared and interaction features to obtain linear separation.](../Figures/slides/svm-feature-transformation-p025.png)
 
-### Full mapped XOR derivation and KKT verification
+*This separate example uses z₁ = x₁² and z₂ = x₁x₂. Its transformed coordinates allow a linear separator; the XOR example below uses a different map.*
+
+### Worked example Mapped XOR
 
 Take $(0,0),(0,1),(1,0),(1,1)$ with labels $(-1,+1,+1,-1)$ and map to $z=(x_1,x_2,x_1x_2)$. Hard-margin feasibility gives
 
@@ -130,22 +191,39 @@ $$
 b\le-1,\quad w_2+b\ge1,\quad w_1+b\ge1,\quad w_1+w_2+w_3+b\le-1.
 $$
 
+XOR assigns opposite-corner points to the same class. The added product is 1 only at $(1,1)$, allowing that corner's score to change independently of the other three. Each inequality above comes from substituting one labeled point into $y_if(x_i)\ge1$.
+
+**Constrained optimization.** Introduce nonnegative Lagrange multipliers $\alpha_i$, one per constraint. The Lagrangian combines the objective with those weighted constraints.
+
+| KKT condition | Required check |
+|---|---|
+| Stationarity | Lagrangian derivatives are zero. |
+| Primal feasibility | Original constraints are satisfied. |
+| Dual feasibility | Multipliers are nonnegative. |
+| Complementary slackness | Each multiplier–constraint product is zero. |
+
+A nonzero multiplier therefore requires a tight margin constraint.
+
 Use the Lagrangian
 
 $$
-\mathcal L=\frac12(w_1^2+w_2^2+w_3^2)
-+\alpha_1(1+b)+\alpha_2(1-w_2-b)
-+\alpha_3(1-w_1-b)+\alpha_4(1+w_1+w_2+w_3+b).
+\begin{aligned}
+\mathcal L={}&\frac12(w_1^2+w_2^2+w_3^2)\\
+&+\alpha_1(1+b)+\alpha_2(1-w_2-b)\\
+&+\alpha_3(1-w_1-b)+\alpha_4(1+w_1+w_2+w_3+b).
+\end{aligned}
 $$
 
-The first term is $\alpha_1(1+b)$; the saved teacher chat prints $\alpha_1(b-1)$ there, which does not represent the first constraint. Stationarity gives
+Stationarity gives
 
 $$
-w_1=\alpha_3-\alpha_4,\quad w_2=\alpha_2-\alpha_4,\quad
-w_3=-\alpha_4,\quad \alpha_1-\alpha_2-\alpha_3+\alpha_4=0.
+\begin{aligned}
+w_1&=\alpha_3-\alpha_4, & w_2&=\alpha_2-\alpha_4,\\
+w_3&=-\alpha_4, & \alpha_1-\alpha_2-\alpha_3+\alpha_4&=0.
+\end{aligned}
 $$
 
-Try the candidate with all four constraints tight: $b=-1$, $w_1=w_2=2$, $w_3=-4$. The stationarity equations give $\alpha_4=4$, $\alpha_2=\alpha_3=6$, $\alpha_1=8$. Verify rather than assume optimality:
+Setting all four constraints to equality gives the candidate $b=-1$, $w_1=w_2=2$, $w_3=-4$. The stationarity equations give $\alpha_4=4$, $\alpha_2=\alpha_3=6$, $\alpha_1=8$. The candidate satisfies the KKT conditions:
 
 - All constraints hold with equality, and all multipliers are nonnegative.
 - Stationarity holds, including $-8+6+6-4=0$, the sum $\sum_i\alpha_i y_i$.
@@ -162,7 +240,14 @@ These KKT conditions certify the optimum of the convex hard-margin problem. The 
 | RBF | $K(x,z)=e^{-\gamma\|x-z\|^2}$, $\gamma>0$ |
 | Sigmoid | $K(x,z)=\tanh(\gamma x^Tz+r)$; validity depends on parameters and the input domain |
 
-For illustrative support points $x_1=0,y_1=-1$, $x_2=2,y_2=+1$, coefficients $\alpha_1=\alpha_2=1$, bias 0 and RBF $\gamma=1$, the score at $x=1.5$ is $-e^{-2.25}+e^{-0.25}\approx0.67340$, predicting +1. Coefficients and bias are supplied for this inference exercise; training must solve the optimization to learn them. The raw score is not a class probability.
+**Kernel prediction example**
+
+- **Support points:** $x_1=0,y_1=-1$ and $x_2=2,y_2=+1$.
+- **Supplied parameters:** $\alpha_1=\alpha_2=1$, bias 0, RBF $\gamma=1$.
+- **Query:** $x=1.5$.
+- **Score:** $-e^{-2.25}+e^{-0.25}\approx0.67340$ → class $+1$.
+
+The coefficients are supplied for this inference exercise; training learns them by optimization. The raw score is not a class probability.
 
 Soft margin permits margin violations. A nonlinear feature map or kernel permits a nonlinear boundary in the original coordinates. For concentric data, adding $z_3=x_1^2+x_2^2$ makes a circular boundary $x_1^2+x_2^2=R^2$ a plane $z_3=R^2$. Keep radius and squared-radius thresholds consistent.
 
@@ -183,7 +268,16 @@ Written explicitly, the dual maximizes $\sum_i\alpha_i-\frac12\sum_{i,j}\alpha_i
 
 ## 7.4 K nearest neighbors
 
-KNN is a supervised lazy learner. Store labeled training data; for a query, calculate distances, sort, take the K nearest and vote. Lazy means that most prediction work is deferred until a query arrives. Small K can be sensitive to noise; very large K can blur local class structure. Choose K with validation and scale numeric features when units differ.
+**KNN prediction procedure**
+
+1. Store the labeled training examples.
+2. Calculate distances from the query and sort them.
+3. Select the K nearest examples.
+4. Predict their majority class.
+
+KNN is a **lazy learner** because most work is deferred until prediction. Small K is noise-sensitive; very large K blurs local structure. Choose K with validation.
+
+Distance compares feature vectors. For $(1,1)$ and $(0,2)$, Euclidean distance is $\sqrt{1^2+(-1)^2}=\sqrt2$; Manhattan distance is $|1|+|-1|=2$. Numeric features should be put on comparable scales, or a large-unit feature can dominate proximity.
 
 $$
 d_E(x,z)=\sqrt{\sum_j(x_j-z_j)^2},\quad d_M(x,z)=\sum_j|x_j-z_j|,
@@ -193,7 +287,7 @@ $$
 d_p(x,z)=\left(\sum_j|x_j-z_j|^p\right)^{1/p}\quad(p\ge1).
 $$
 
-Minkowski with $p=1$ is Manhattan and $p=2$ is Euclidean. Hamming counts mismatched categorical/binary coordinates. Odd K avoids an unweighted two-class vote tie, but not every multiclass or distance tie; state a tie rule if needed.
+Minkowski with $p=1$ is Manhattan and $p=2$ is Euclidean. Hamming counts mismatched categorical/binary coordinates. Odd K avoids an unweighted two-class vote tie; multiclass votes and boundary distances may still require a tie rule.
 
 **Worked KNN prediction.** Query $q=(1,1)$, with training points:
 
@@ -206,22 +300,36 @@ Minkowski with $p=1$ is Manhattan and $p=2$ is Euclidean. Hamming counts mismatc
 | $(6,5)$ | B | 41 |
 | $(5,6)$ | B | 41 |
 
-Taking square roots does not change distance order. At K=3 all neighbors vote A. At K=6 the vote ties 3–3, so another rule is required. Distance calculation alone is not the final answer: name the selected neighbors and predicted class.
+Taking square roots does not change distance order. At K=3 all neighbors vote A. At K=6 the vote ties 3–3, so another rule is required.
 
 ## 7.5 K means clustering
 
-K-means groups unlabeled points into K clusters. Initialize centers, assign each point to its nearest center using squared Euclidean distance, recompute each center as the assigned points' arithmetic mean, and repeat. Stop when assignments stabilize, center changes become small or an iteration limit is reached.
+**K-means procedure**
+
+1. **Initialize:** choose K centers for unlabeled data.
+2. **Assign:** put each point in its nearest center's cluster using squared Euclidean distance.
+3. **Update:** replace each center by its assigned points' mean.
+4. **Repeat:** stop when assignments stabilize, center changes become small or the iteration limit is reached.
+
+The **centroid** $\mu_k$ is the mean of the points assigned to cluster $C_k$. WCSS adds each point's squared distance from its own center, measuring cluster compactness. The mean is used because it minimizes squared distances for a fixed group; for one-dimensional points 2 and 4, center 3 gives total squared distance 2, while center 2 gives 4.
 
 $$
 \mu_k=\frac1{|C_k|}\sum_{x\in C_k}x,\qquad
 J=\operatorname{WCSS}=\sum_k\sum_{x\in C_k}\|x-\mu_k\|^2.
 $$
 
-Each standard assignment/mean-update cycle cannot increase this objective, but it can settle at a local solution. Initialization, K, feature scaling and outliers matter. An empty cluster needs a stated reinitialization rule. KNN's K counts neighbors; K-means' K counts clusters.
+**Convergence and limitations**
 
-**Worked two-iteration calculation.** Use the six points from the KNN example without labels. Start at $\mu_1=(0,0)$, $\mu_2=(5,5)$:
+- **Objective:** each standard assignment/mean-update cycle cannot increase WCSS.
+- **Local solution:** another initialization may produce a better grouping.
+- **Sensitivity:** K, initialization, scaling and outliers affect the result.
+- **Empty cluster:** its center can be reinitialized.
 
-| Point | Squared distance to initial center 1 | Squared distance to initial center 2 | Assignment |
+K counts clusters here; in KNN it counts neighbors.
+
+**Worked two-iteration calculation.** Use the six points from the KNN example without labels. Start at $\mu_1=(0,0)$, $\mu_2=(5,5)$. Distances in both tables are squared:
+
+| Point | To initial center 1 | To initial center 2 | Cluster |
 |---|---:|---:|---|
 | $(0,0)$ | 0 | 50 | 1 |
 | $(0,2)$ | 4 | 34 | 1 |
@@ -232,7 +340,7 @@ Each standard assignment/mean-update cycle cannot increase this objective, but i
 
 Update to $\mu_1=(2/3,2/3)$ and $\mu_2=(16/3,16/3)$. In the next assignment pass:
 
-| Point | Squared distance to updated center 1 | Squared distance to updated center 2 | Assignment |
+| Point | To updated center 1 | To updated center 2 | Cluster |
 |---|---:|---:|---|
 | $(0,0)$ | $8/9$ | $512/9$ | 1 |
 | $(0,2)$ | $20/9$ | $356/9$ | 1 |
@@ -241,11 +349,31 @@ Update to $\mu_1=(2/3,2/3)$ and $\mu_2=(16/3,16/3)$. In the next assignment pass
 | $(6,5)$ | $425/9$ | $5/9$ | 2 |
 | $(5,6)$ | $425/9$ | $5/9$ | 2 |
 
-Assignments are unchanged, so the next mean update leaves both centers unchanged. Final WCSS is $(8+20+20)/9+(2+5+5)/9=20/3\approx6.6667$. Initial WCSS was $4+4+1+1=10$. Use squared distances for WCSS, not ordinary distances.
+Assignments are unchanged, so the next mean update leaves both centers unchanged. Final WCSS is $(8+20+20)/9+(2+5+5)/9=20/3\approx6.6667$. Initial WCSS was $4+4+1+1=10$. WCSS uses squared distances.
+
+![Two K-means clusters with data assignments and final centroids.](../Figures/kmeans-centroids.svg)
 
 ## 7.6 Decision trees
 
-A decision tree tests features at internal nodes and predicts at leaves. Training chooses splits that improve class purity; prediction follows the query's feature values from root to leaf. ID3 chooses the largest information gain. For class proportions $p_c$:
+A decision tree classifies through questions such as “attendance above 75%?” followed by “study hours above 3?”.
+
+| Part | Function |
+|---|---|
+| Root | First question |
+| Internal node | Further feature test |
+| Leaf | Predicted class |
+
+Training selects questions that improve class purity; prediction follows the tests from root to leaf.
+
+**ID3 split selection.** Choose the attribute with the largest information gain.
+
+**Why information gain works**
+
+- **Purity:** all records at a pure node have the same class.
+- **Entropy:** measures class uncertainty; a 50–50 binary mix has 1 bit, while a pure node has 0.
+- **Information gain:** uncertainty before a question minus the remaining weighted uncertainty.
+
+For a split on $A$, $p_c$ are class proportions in node $S$, and $S_v$ are the child subsets. Weight each child's entropy by its fraction of records.
 
 $$
 H(S)=-\sum_c p_c\log_2p_c,\quad
@@ -261,7 +389,11 @@ Treat $0\log_2 0$ as zero. Pure nodes have entropy zero. Use base-2 logs for ent
 | A | $(4Y,0N)$ and $(3Y,3N)$ | $(4/10)0+(6/10)1=0.6$ | 0.28129 |
 | B | $(5Y,0N)$ and $(2Y,3N)$ | $(5/10)0+(5/10)0.97095=0.48548$ | 0.39582 |
 
-Choose B. Its first branch is a Yes leaf. The second branch remains mixed, so examine remaining attributes on that subset. For a concrete continuation, suppose a remaining binary feature C separates that subset into $(2Y,0N)$ for C=1 and $(0Y,3N)$ for C=0. Both leaves are pure; the final rules are: first B branch → Yes; second B branch with C=1 → Yes; second B branch with C=0 → No. The C counts are supplied for this illustrative continuation, not inferred from the root table. A new example taking the second B branch and C=0 is classified No.
+B has the higher information gain, so it becomes the root. Its first branch is pure Yes; the second remains mixed. Suppose feature C separates that mixed subset into $(2Y,0N)$ for C=1 and $(0Y,3N)$ for C=0. These additional counts produce the tree:
+
+![Feature B selects a pure Yes branch or a mixed branch split by C.](../Figures/decision-tree-splits.svg)
+
+An example taking the second B branch with C=0 is classified No. Further splits are chosen using only records reaching the current node.
 
 Other split criteria are
 
@@ -274,11 +406,26 @@ $$
 \operatorname{GainRatio}(A)=\frac{IG(S,A)}{\operatorname{SplitInfo}(A)}
 $$
 
-when split information is nonzero. Parent Gini is $1-0.7^2-0.3^2=0.42$. Weighted Gini after A is 0.30 and after B is 0.24, so their reductions are 0.12 and 0.18. A's split information is 0.97095 and B's is 1, giving gain ratios about 0.28971 and 0.39582. Information gain can favor attributes with many outcomes; gain ratio adjusts by split information. Actual tree algorithms can apply additional selection rules.
+Gain ratio requires nonzero split information. For the worked example, parent Gini is $1-0.7^2-0.3^2=0.42$.
 
-A deep tree can memorize training examples. Pre-pruning limits depth, minimum leaf size or split improvement; post-pruning removes branches when their complexity does not improve validation performance. Numeric features may use tests such as $x\le t$. Trees do not require Euclidean feature scaling for their split tests.
+| Criterion | Split A | Split B |
+|---|---:|---:|
+| Weighted child Gini | 0.30 | 0.24 |
+| Gini reduction | 0.12 | 0.18 |
+| Split information | 0.97095 | 1 |
+| Gain ratio | 0.28971 | 0.39582 |
 
-## Practice
+Information gain can favor attributes with many outcomes; gain ratio adjusts by split information. Actual algorithms may apply further selection rules.
+
+**Controlling overfitting**
+
+- **Pre-pruning:** limit depth, minimum leaf size or split improvement.
+- **Post-pruning:** remove branches whose complexity fails to improve validation performance.
+- **Numeric features:** tests can take the form $x\le t$; Euclidean feature scaling is unnecessary for these split tests.
+
+Without such controls, a deep tree can memorize training records.
+
+## Exercises
 
 - **7A.** For $z=\ln3$ and target 0, calculate the logistic probability and loss.
 - **7B.** Reproduce the two scatter matrices in the Fisher example. Explain why changing the sign of $w$ reverses the threshold inequality.
@@ -287,7 +434,7 @@ A deep tree can memorize training examples. Pre-pruning limits depth, minimum le
 - **7E.** Recompute the decision-tree gains, then trace an example taking the second B branch with C=1.
 - **7F.** Write and verify all four mapped XOR KKT conditions.
 
-## Answer checks
+## Answers
 
 | Exercise | Answer |
 |---|---|

@@ -2,37 +2,79 @@
 
 [Contents](../readme.md)
 
-**CT2 reading order:** §§5.1–5.3, including their worked calculations, cover the Module 5 topics in the supplied lecture outline. Use §5.4 for additional reference after the core topics. [CT2 guide and checklist](../CT2%20Guide.md).
+[Hopfield](#51-hopfield-networks-and-associative-recall) · [Boltzmann and RBM](#52-boltzmann-machines-and-restricted-boltzmann-machines) · [Sigmoid and autoencoders](#53-sigmoid-networks-and-autoencoders) · [Exercises](#exercises)
+
+A neural network transforms numbers using adjustable connection strengths called **weights**. This chapter studies three tasks: recovering a damaged pattern, learning which patterns are likely, and compressing an input while retaining enough information to reconstruct it.
+
+A pattern such as $x=(1,0,1,0)$ can represent four black/white pixels. Weights control how neurons influence one another; biases shift their activation tendencies. Training changes these parameters, while recall or inference uses them to compute outputs.
 
 ## 5.1 Hopfield networks and associative recall
 
-A Hopfield network stores memories in symmetric weights. Use bipolar units $s_i\in\{-1,1\}$ and zero self-connections. For stored patterns $p^{(\mu)}$, the unscaled Hebbian rule is $w_{ij}=\sum_\mu p_i^{(\mu)}p_j^{(\mu)}$ for $i\ne j$. During recall, initialize the state with the noisy input and update one unit at a time. The local field is $h_i=\sum_jw_{ij}s_j+b_i$. Set the bit to the sign of the field and keep the old bit on a tie.
+A **Hopfield network** retrieves a complete pattern from a damaged version, like recognizing a familiar symbol despite a missing stroke. This is **associative memory**: the input's content acts as the cue.
 
-With symmetric weights and $w_{ii}=0$, the terms in $E=-\frac12s^TWs-b^Ts$ that depend on bit $i$ sum to $-s_i h_i$. Its field stays fixed while that bit changes, so
+| Property | Meaning |
+|---|---|
+| Bipolar state | Each neuron holds $+1$ or $-1$. |
+| Recurrent connections | Neurons feed back to one another; the state changes repeatedly until it settles. |
+| Symmetric weights | $w_{ij}=w_{ji}$; the connections encode the memories. |
+| No self-connections | $w_{ii}=0$. |
+
+**Hebbian learning.** For one stored pattern, use $w_{ij}=p_ip_j$.
+
+| Stored signs | Weight | Relationship encouraged |
+|---|---:|---|
+| Equal | $+1$ | Agreement |
+| Opposite | $-1$ | Disagreement |
+
+For $(p_1,p_2,p_3)=(1,1,-1)$, this gives $w_{12}=1$ and $w_{13}=-1$. For several memories, add their pairwise contributions.
+
+For bipolar stored patterns $p^{(\mu)}\in\{-1,+1\}^N$, the unscaled Hebbian rule and recall field are
+
+$$
+\begin{aligned}
+w_{ij}&=\sum_\mu p_i^{(\mu)}p_j^{(\mu)}, && i\ne j,\\
+h_i&=\sum_{j\ne i}w_{ij}s_j+b_i.
+\end{aligned}
+$$
+
+The pattern index $\mu$ distinguishes stored memories $p^{(\mu)}$ from the current recall state $s$. The **local field** $h_i$ combines the other neurons' weighted influences: a positive field favors $+1$, and a negative field favors $-1$.
+
+**Recall procedure**
+
+1. Calculate one neuron's local field using the latest states.
+2. Set its state to the field's sign; retain the old state when the field is zero.
+3. Repeat across neurons until no state changes.
+
+A neuron flips only when its state opposes its field. **Weights stay fixed during recall.** The fully connected network has $N(N-1)/2$ undirected edges.
+
+![Hopfield slide showing a stored bipolar pattern that remains stable under neuron updates.](../Figures/slides/hopfield-stable-pattern-p060.png)
+
+*A stored pattern is stable when each local field agrees with its neuron. The slide uses y for the states denoted s here.*
+
+### Energy and convergence
+
+**Meaning.** Energy measures how well the states satisfy the learned relationships; it is a mathematical score.
+
+- **Pair contribution:** $-w_{ij}s_is_j$. Positive weights favor equal states; negative weights favor opposite states.
+- **Bias contribution:** $-b_is_i$. A bias favors alignment with its sign.
+
+In matrix form, $E=-\frac12s^TWs-b^Ts$. The factor $1/2$ compensates for counting every symmetric connection twice. During one update, only terms involving neuron $i$ change. Writing its old and new states as $s_i$ and $s_i'$ gives
 
 $$
 \Delta E=-(s_i'-s_i)h_i.
 $$
 
-A flip changes $s_i$ from the opposite sign of $h_i$ to its sign, giving $\Delta E=-2|h_i|$. With fair asynchronous updates and ties left unchanged, recall reaches a fixed point. Interfering memories can produce a spurious fixed point.
+**Why recall settles.** A flip aligns the state with its field, so $\Delta E=-2|h_i|<0$. Recall reaches a fixed point when:
 
-**Worked Hopfield recall.** Store $(1,1,-1,1,-1)$ and start from $(1,-1,-1,1,-1)$. The second neuron's weights from the other four units are $(1,-1,1,-1)$. Their weighted contributions are all $+1$, so the field is $4$ and the second bit flips to $+1$. The network finds the unstable bit through its field. It only needs the current pattern and the learned weights at recall.
+- weights are symmetric;
+- updates are asynchronous and revisit every neuron;
+- zero-field ties keep the old state.
 
-Discrete Hopfield units have binary or bipolar states, depending on the formulation. Continuous Hopfield models use continuous activations. The single-bit energy argument above applies to discrete asynchronous updates. Recall capacity is limited because stored patterns can interfere.
+**Limits.** Simultaneous updates do not have this same single-bit convergence argument. Discrete models may use binary or bipolar states; continuous Hopfield models use continuous activations.
 
-**One Hopfield update.** Only the second bit changes in this step.
+### Worked example Pattern storage and recall
 
-```text
-Before: (1, -1, -1, 1, -1)
-             |
-       bit 2 field = +4
-             v
-After:  (1, +1, -1, 1, -1)    Energy change = -8
-```
-
-### Constructing the complete weight matrix
-
-For the single stored pattern $p=(1,1,-1,1,-1)^T$, form $pp^T$ and replace its diagonal by zero:
+For the single stored pattern $p=(1,1,-1,1,-1)^T$, the **outer product** $pp^T$ lists every product $p_ip_j$ in a matrix. Replacing the diagonal by zero removes self-connections:
 
 $$
 W=\begin{bmatrix}
@@ -44,38 +86,67 @@ W=\begin{bmatrix}
 \end{bmatrix}.
 $$
 
-The matrix is symmetric. Five fully connected neurons have $5(5-1)/2=10$ undirected connections. With zero biases and noisy state $(1,-1,-1,1,-1)$, $h_2=1+1+1+1=4$, so neuron 2 flips. Before the flip, $E=-2$; after it, $E=-10$. The difference is $-8$, agreeing with the single-bit formula. The final pattern has fields $4p_i$, so every bit agrees with its field and the pattern is stable.
+**One-bit recovery.** The matrix is symmetric and has $5(5-1)/2=10$ undirected connections. With zero biases:
 
-For two flipped bits, start from $(1,-1,1,1,-1)$. Updating neuron 2 first gives $h_2=1-1+1+1=2$, restoring it to 1. Using that new state, $h_3=-1-1-1-1=-4$, restoring neuron 3 to $-1$. State the update order and always use the latest states. A zero-bias single-pattern network also stabilizes $-p$; it cannot promise recovery after arbitrarily many corrupted bits.
+| Step | Calculation or result |
+|---|---|
+| Noisy input | $(1,-1,-1,1,-1)$ |
+| Field at neuron 2 | $h_2=1+1+1+1=4$ |
+| Update | Neuron 2 flips from $-1$ to $+1$. |
+| Energy | $-2\to-10$, so $\Delta E=-8$. |
+| Final state | $(1,1,-1,1,-1)$; every field is $4p_i$, agreeing with its state. |
+
+**Two-bit recovery.** Start from $(1,-1,1,1,-1)$.
+
+1. Update neuron 2: $h_2=1-1+1+1=2$, restoring it to $+1$.
+2. Using that new state, update neuron 3: $h_3=-1-1-1-1=-4$, restoring it to $-1$.
+
+**Limitation.** A zero-bias single-pattern network also stabilizes $-p$; arbitrary corruption need not recover the intended memory.
 
 ### Interference between stored patterns
 
-Each Hebbian outer product favors states that align with its stored pattern. When several patterns contribute to the same weights, their effects add. For two bipolar patterns, their dot product measures overlap. Orthogonal patterns have zero dot product, while highly overlapping patterns can introduce cross-talk. The network can converge to a mixture or another spurious minimum. For a recall question, check the actual fields and the update order instead of assuming that the closest stored pattern will always win.
+Each Hebbian outer product favors states that align with its stored pattern. When several patterns contribute to the same weights, their effects add. For two bipolar patterns, their dot product measures overlap. Orthogonal patterns have zero dot product, while highly overlapping patterns can introduce cross-talk. The network can converge to a mixture or another spurious minimum. Consequently, recall need not return the nearest stored pattern.
 
 ## 5.2 Boltzmann machines and restricted Boltzmann machines
 
-Use binary $0/1$ units for this section. A Boltzmann machine assigns probability proportional to $e^{-E(s)/T}$, where $T>0$ is the temperature and $E$ is the energy for the binary state. A unit with field $h_i$ turns on with conditional probability $\sigma(h_i/T)$. To sample, draw $r$ uniformly from $[0,1)$ and turn the unit on when $r<p$. If $p=0.85$, $r=0.72$ gives 1 and $r=0.95$ gives 0. A larger field makes 1 more likely. Clamping the known bits and sampling the rest can complete a pattern.
+A noisy observation may have several plausible explanations. A probabilistic model assigns each possible pattern a probability instead of selecting a single fixed outcome immediately. A **configuration** is one complete assignment of unit states; three binary units have $2^3=8$ configurations.
 
-Temperature controls exploration. A high temperature makes the two binary states closer to equally likely. A low temperature favors the lower-energy choice. Simulated annealing starts with more random transitions and cools gradually to search for low-energy states. The outcome can still depend on the schedule and the energy landscape.
+A **Boltzmann machine** models a distribution over binary $0/1$ configurations. Visible units represent observed data; hidden units represent latent dependencies. For symmetric weights and temperature $T>0$,
 
-| Model | Connections and update | What it gives you |
+$$
+\begin{aligned}
+E(x)&=-\sum_{i<j}w_{ij}x_ix_j-\sum_i b_ix_i,\\
+P(x)&=\frac{e^{-E(x)/T}}{Z},\qquad Z=\sum_xe^{-E(x)/T}.
+\end{aligned}
+$$
+
+**From energy to probability**
+
+1. **Count pairs once:** the energy sum uses $i<j$.
+2. **Assign a positive weight:** $e^{-E/T}$ gives lower-energy configurations larger weights.
+3. **Normalize:** divide by the partition function $Z$ so all probabilities sum to 1.
+
+For energies 0 and $-2$ at $T=1$, the weights are 1 and $e^2$; the second configuration is about 7.39 times as likely.
+
+Lower-energy configurations have higher probability. A unit turns on with conditional probability $\sigma(h_i/T)$, where $\sigma(z)=1/(1+e^{-z})$. Sampling draws $r$ uniformly from $[0,1)$ and chooses state 1 when $r<p$. Clamping known visible bits and sampling the remaining units can complete a pattern.
+
+**Temperature and exploration**
+
+| Temperature | Effect |
+|---|---|
+| High | Conditional choices move closer to equally likely. |
+| Low | Lower-energy choices become more likely. |
+| Gradually decreasing | Simulated annealing explores first, then increasingly favors low energy. |
+
+The result still depends on the cooling schedule and energy landscape.
+
+| Model | Connections and update | Function |
 |---|---|---|
 | Discrete Hopfield network | Symmetric recurrent weights and deterministic asynchronous updates | Retrieval of a stable pattern from partial or noisy input |
 | Full Boltzmann machine | Symmetric connections among units, with stochastic updates and optional hidden units | A distribution over patterns with hidden units that can model dependencies |
 | Restricted Boltzmann machine | Visible-to-hidden connections only | Conditional independence within each layer and efficient alternating Gibbs steps |
 
-For binary units at unit temperature, the RBM energy is $E(v,h)=-a^Tv-b^Th-v^TWh$. Summing the joint distribution over $h$ gives the visible distribution. The log-likelihood gradient for $W$ is the data-conditioned mean of $vh^T$ minus its mean under the model. The first term favors training patterns. The second term offsets patterns the model already generates. In a fully connected Boltzmann machine, both phases can require slow sampling. The RBM structure speeds up each Gibbs step, and contrastive divergence approximates the equilibrium phase with a short chain.
-
-An **RBM** has visible units $v$ and hidden units $h$ with connections only across the layers. Given one layer, the other layer's units can be sampled independently. At unit temperature, with visible bias $a$, hidden bias $b$, and $W$ shaped visible by hidden, use
-
-$$
-P(h_j=1\mid v)=\sigma(b_j+(W^Tv)_j),\qquad
-P(v_i=1\mid h)=\sigma(a_i+(Wh)_i).
-$$
-
-The restriction concerns connections, not layer sizes: an RBM may have more hidden units than visible units. A smaller hidden layer illustrates compression.
-
-### Complete Boltzmann energy and probability table
+### Worked example Configuration probabilities
 
 For $0/1$ units, zero biases and weights $w_{12}=2,w_{13}=-1,w_{23}=-1$:
 
@@ -95,9 +166,32 @@ $$
 | 110 | $-2$ | $e^2$ | 0.56298 |
 | 111 | 0 | 1 | 0.07619 |
 
-Thus $Z=5+2e^{-1}+e^2\approx13.1248$. Sum all eight unnormalized weights before dividing. State 110 has the lowest energy and highest probability, rather than probability 1. For $x_1=1,x_3=0$, the field of unit 2 is $h_2=2$. Its activation probability is $\sigma(2)\approx0.8808$: draw 0.72 gives state 1, while draw 0.95 gives state 0. Probabilities come from weights, biases and normalization; a machine does not store a separate probability lookup table in a large implementation.
+**Normalization:** $Z=5+2e^{-1}+e^2\approx13.1248$. State 110 has the lowest energy and highest probability, about 0.563 rather than 1.
 
-**Exact learning step for this small machine.** Suppose the data consist of pattern 110, with all three units observed. Data pair correlations are $(1,0,0)$ for pairs $(12,13,23)$. Under the current model:
+**Sampling:** With $x_1=1,x_3=0$, unit 2 has field $h_2=2$ and activation probability $\sigma(2)\approx0.8808$.
+
+| Random draw | Sampled state |
+|---|---:|
+| $0.72<0.8808$ | 1 |
+| $0.95>0.8808$ | 0 |
+
+Weights and biases determine the probabilities; the random draw selects an outcome.
+
+In $P(x_i=1\mid x_{-i})$, $x_{-i}$ denotes all other units' current states. Sampling realizes the conditional probability: if $p=0.8$, the interval $r<0.8$ occupies 80% of possible uniform draws. Repeated draws therefore turn the unit on about 80% of the time.
+
+### Learning from correlations
+
+Training increases the probability of observed data. For binary units, $x_ix_j=1$ only when both are on; its average measures coactivation frequency. Brackets $\langle\cdot\rangle$ denote that average.
+
+| Data coactivation compared with model | Weight adjustment |
+|---|---|
+| More frequent | Increase the weight. |
+| Less frequent | Decrease the weight. |
+| Equal | No adjustment from that pair statistic. |
+
+This gives the **data average minus model average** rule. The learning rate $\eta$ sets the update size.
+
+**Worked update.** Suppose the data consist of pattern 110, with all three units observed. Data pair correlations are $(1,0,0)$ for pairs $(12,13,23)$. Under the current model:
 
 $$
 \langle x_1x_2\rangle_{\rm model}=P(110)+P(111)\approx0.63918,
@@ -108,13 +202,52 @@ $$
 \quad \langle x_2x_3\rangle_{\rm model}\approx0.10422.
 $$
 
-At $T=1$, log-likelihood ascent uses $w_{ij}'=w_{ij}+\eta(\langle x_ix_j\rangle_{\rm data}-\langle x_ix_j\rangle_{\rm model})$. At $\eta=0.1$, the updated weights are approximately $(2.03608,-1.01042,-1.01042)$. All expectations here use the old weights. Bias updates similarly use $\eta(\langle x_i\rangle_{\rm data}-\langle x_i\rangle_{\rm model})$. With hidden units, the positive-phase averages include their distribution conditioned on the visible data.
+**Update rule at $T=1$**
+
+$$
+w_{ij}'=w_{ij}+\eta\left(\langle x_ix_j\rangle_{\rm data}-\langle x_ix_j\rangle_{\rm model}\right).
+$$
+
+At $\eta=0.1$, the three weights become approximately $(2.03608,-1.01042,-1.01042)$, using expectations from the old parameters.
+
+- **Bias update:** $\Delta b_i=\eta(\langle x_i\rangle_{\rm data}-\langle x_i\rangle_{\rm model})$.
+- **Hidden units:** positive-phase averages include their distribution conditioned on visible data.
+
+### Restricted Boltzmann machines
+
+Fully connected hidden units make the probability calculations expensive. An RBM simplifies the connections so each layer can be updated in parallel once the other layer is known. Its hidden activations provide a learned representation of the visible pattern; reconstructing the visible layer tests which patterns those features tend to generate.
+
+An **RBM** has visible units $v$ and hidden units $h$ with connections only across the layers. Given one layer, the other layer's units can be sampled independently. At unit temperature, with visible bias $a$, hidden bias $b$, and $W$ shaped visible by hidden, use
+
+$$
+P(h_j=1\mid v)=\sigma(b_j+(W^Tv)_j),\qquad
+P(v_i=1\mid h)=\sigma(a_i+(Wh)_i).
+$$
+
+**Energy:** $E(v,h)=-a^Tv-b^Th-v^TWh$. Summing the joint distribution over hidden states gives the visible distribution.
+
+**Learning phases**
+
+- **Positive phase:** data-conditioned coactivations favor training patterns.
+- **Negative phase:** model coactivations offset patterns already generated too often.
+- **Approximation:** contrastive divergence replaces a slow equilibrium calculation with a short chain. The restricted connections make each Gibbs step efficient.
+
+Visible units have no connections to one another, and neither do hidden units. The layer sizes are unrestricted; a smaller hidden layer illustrates compression.
+
+The learning procedure alternates conditional samples: $v^0\to h^0\to v^1\to h^1$, from the data pair to a reconstructed pair. This is one alternating **Gibbs sampling** step. **Contrastive divergence with one step**, or CD-1, compares the original pair with the reconstructed pair. The outer product $vh^T$ contains every visible–hidden coactivation product.
+
+![Original RBM slide showing connections only between visible and hidden layers.](../Figures/slides/rbm-connections-p089.png)
+
+*Every connection crosses between the two layers; units within one layer are conditionally independent given the other.*
 
 For a sampled CD-1 step, compute all states with the current parameters, then use
 
 $$
-\Delta W=\eta[v^0(h^0)^T-v^1(h^1)^T],\quad
-\Delta a=\eta(v^0-v^1),\quad \Delta b=\eta(h^0-h^1).
+\begin{aligned}
+\Delta W&=\eta[v^0(h^0)^T-v^1(h^1)^T],\\
+\Delta a&=\eta(v^0-v^1),\\
+\Delta b&=\eta(h^0-h^1).
+\end{aligned}
 $$
 
 These are one-sample estimates; averages over a batch or hidden probabilities can also estimate the terms. Positive-phase associations come from the data; negative-phase associations come from reconstruction. Learning changes the parameters, whereas a Gibbs reconstruction step alone samples states.
@@ -126,26 +259,50 @@ These are one-sample estimates; averages over a batch or hidden probabilities ca
 3. Compute $P(h^1=1\mid v^1)=\sigma(2)\approx0.881$. A draw of $0.8$ gives $h^1=1$.
 4. For the second weight, $v_2^0h^0-v_2^1h^1=0-1=-1$. A sampled CD-1 update with $\eta=0.1$ takes $w_2$ from 1 to $0.9$. This reduces the model's tendency to activate the second visible bit with that hidden state.
 
-**Sample both pairs before updating.** The second visible bit is off in the data pair and on in the reconstructed pair.
-
-```text
-v0 = (1,0) -> h0 = 1 -> v1 = (1,1) -> h1 = 1
-[     data pair    ]    [ reconstructed pair ]
-
-Data product: 0 x 1 = 0
-Reconstructed product: 1 x 1 = 1
-w2 update: 1 + 0.1(0 - 1) = 0.9
-```
-
-The two products record whether the visible and hidden units are active together in each sampled pair. The data pair contributes positively and the reconstructed pair negatively. CD-1 uses the reconstruction to approximate the equilibrium model term. This example samples both hidden states. Some implementations use hidden activation probabilities to estimate the corresponding averages. [Hinton’s RBM training guide](https://www.cs.toronto.edu/~hinton/absps/guideTR.pdf)
+CD-1 uses reconstructed coactivations to approximate the equilibrium model expectation. Hidden activation probabilities may replace sampled hidden states in the correlation estimates. [Hinton’s RBM training guide](https://www.cs.toronto.edu/~hinton/absps/guideTR.pdf)
 
 ## 5.3 Sigmoid networks and autoencoders
 
-With the same forward-pass notation as Chapter 4, a feedforward sigmoid network applies $\sigma(Wx+b)$ layer by layer. In this example, the hidden outputs are $(0.8176,0.2689)$ and $\hat y=\sigma(2(0.8176)-0.2689-0.5)\approx0.7040$. With target 1 and half-squared error, $\delta_o\approx-0.0617$. At $\eta=0.1$, the first output weight rises from 2 to about $2.0050$.
+### Sigmoid networks
 
-To reproduce that forward pass, use $x=(1,0)$, hidden scores $z_1=2x_1-x_2-0.5=1.5$ and $z_2=-x_1+2x_2=-1$, then output score $z_o=2\sigma(z_1)-\sigma(z_2)-0.5$. Sigmoid is bounded, nonlinear and differentiable, with $\sigma'(z)=\sigma(z)(1-\sigma(z))$. A normal feedforward sigmoid net outputs these continuous activations; sampling a binary state from a sigmoid probability is a separate operation in a stochastic model.
+A hard threshold changes abruptly from off to on. The **sigmoid** $\sigma(z)=1/(1+e^{-z})$ provides a smooth alternative: $\sigma(0)=0.5$, positive scores approach 1 and negative scores approach 0. Smoothness lets training estimate how a small weight change affects the loss.
 
-An **autoencoder** learns to reproduce its input. The encoder computes $z=f_\theta(x)$ and the decoder computes $\hat x=g_\phi(z)$. Both sets of parameters receive gradients from a reconstruction loss. For real-valued outputs, squared error is common. Binary cross-entropy can be used for Bernoulli targets with sigmoid outputs.
+A sigmoid network applies $h^{(l)}=\sigma(W^{(l)}h^{(l-1)}+b^{(l)})$ layer by layer. Sigmoid is bounded, nonlinear and differentiable, with $\sigma'(z)=\sigma(z)[1-\sigma(z)]$. Its continuous output differs from a hard-threshold perceptron's state. Sampling a binary state from that output is a separate stochastic operation.
+
+**Worked forward pass.** For $x=(1,0)$,
+
+$$
+\begin{aligned}
+z_1&=2x_1-x_2-0.5=1.5, & h_1&=0.8176,\\
+z_2&=-x_1+2x_2=-1, & h_2&=0.2689,\\
+\hat y&=\sigma(2h_1-h_2-0.5)\approx0.7040.
+\end{aligned}
+$$
+
+**Learning the weights**
+
+- **Loss:** $L$ measures prediction error.
+- **Gradient:** $\partial L/\partial w$ measures sensitivity to a weight change.
+- **Update:** $w\leftarrow w-\eta\,\partial L/\partial w$.
+- **Backpropagation:** the chain rule multiplies sensitivities along each path and adds contributions from different paths.
+
+For target 1 and loss $\frac12(\hat y-1)^2$, the output-score gradient is $(\hat y-1)\hat y(1-\hat y)\approx-0.0617$. The gradient of the weight from $h_1$ is approximately $-0.0504$; learning rate 0.1 increases that weight from 2 to about 2.0050.
+
+### Autoencoders
+
+An **autoencoder** learns to reproduce its input through a code that retains useful structure.
+
+| Component | Operation | Role |
+|---|---|---|
+| Encoder | $z=f_\theta(x)$ | Builds the latent representation. |
+| Decoder | $\hat x=g_\phi(z)$ | Reconstructs the input. |
+| Reconstruction loss | Compares $x$ and $\hat x$ | Trains both components jointly. |
+
+**Applications:** compression, denoising and anomaly detection through unusually high reconstruction error relative to the training distribution.
+
+**Why a bottleneck helps.** A two-value code forces a four-value input to be represented through shared structure. Compression is approximate and may lose detail.
+
+**Training target.** The input itself supplies the target; no separate class labels are needed. MSE averages squared reconstruction errors, preventing positive and negative errors from cancelling. Binary cross-entropy is another choice for Bernoulli targets with sigmoid outputs.
 
 **Worked reconstruction.** For input $x=(1,0,1,0)$, encoder pre-activations $(1,0.6)$ give $z\approx(0.7311,0.6457)$. Apply sigmoid to each decoder score.
 
@@ -165,26 +322,34 @@ Its scores are $0.5+0.4+0.1=1$ and $0.1+0.3+0.2=0.6$. These are illustrative sta
 | 3 | $0.6z_1+0.4z_2$ | $0.6675$ |
 | 4 | $0.2z_1+0.9z_2-0.2$ | $0.6289$ |
 
-**Follow the dimensions.** The decoder predicts four values from the two-value code. The loss compares its output with the original input.
+The decoder predicts four values from a two-value code:
 
-```text
-x (4 values) -> encoder -> z (2 values)
-                            |
-                            v
-x_hat (4 values) <- decoder
+![An autoencoder compresses four input values into a two-value code, then reconstructs four outputs.](../Figures/autoencoder-architecture.svg)
 
-Reconstruction loss compares x_hat with x.
-```
-
-Subtract each target from its reconstruction, square the differences, and average.
+The reconstruction loss is
 
 $$
 \operatorname{MSE}\approx\frac{(-0.3070)^2+0.6047^2+(-0.3325)^2+0.6289^2}{4}\approx0.2415.
 $$
 
-The decoder receives the reconstruction gradient first. The encoder receives it through the decoder and the latent code.
+**Reconstruction gradient.** Let $\delta_i$ be the loss derivative with respect to decoder score $i$. The chain rule separates into:
 
-For the stated MSE, decoder score gradient $\delta_i=\frac{2}{4}(\hat x_i-x_i)\hat x_i(1-\hat x_i)$. For output 1, $\delta_1\approx-0.03266$. Hence $\partial L/\partial W_{d,11}=\delta_1z_1\approx-0.02388$, and a step at learning rate 0.1 changes that decoder weight from 0.8 to approximately 0.80239. For an encoder unit, $\delta_{e,j}=z_j(1-z_j)\sum_iW_{d,ij}\delta_i$, so its weights update using $\delta_{e,j}x_k$. Compute all gradients at the old parameters before applying the joint update. Reducing the loss trains both parts; it does not guarantee exact reconstruction of every input.
+| Factor | Source |
+|---|---|
+| $2(\hat x_i-x_i)/4$ | MSE derivative |
+| $\hat x_i(1-\hat x_i)$ | Sigmoid derivative |
+| $z_j$ | Input to decoder weight $W_{d,ij}$ |
+
+Thus
+
+$$
+\delta_i=\frac24(\hat x_i-x_i)\hat x_i(1-\hat x_i),\qquad
+\frac{\partial L}{\partial W_{d,ij}}=\delta_i z_j.
+$$
+
+**One weight update:** $\delta_1\approx-0.03266$, so $\partial L/\partial W_{d,11}\approx-0.02388$. At learning rate 0.1, $W_{d,11}$ changes from 0.8 to approximately 0.80239.
+
+**Encoder gradient:** $\delta_{e,j}=z_j(1-z_j)\sum_iW_{d,ij}\delta_i$; its weight gradients are $\delta_{e,j}x_k$. The sum combines contributions from all decoder outputs. Evaluate both sets of gradients before applying the joint update.
 
 | Variant | Constraint |
 |---|---|
@@ -194,6 +359,10 @@ For the stated MSE, decoder score gradient $\delta_i=\frac{2}{4}(\hat x_i-x_i)\h
 | Contractive | Penalize sensitivity of the encoder to small input changes |
 
 Denoising reconstructs the clean input from a corrupted version, such as a vector with randomly masked entries. A contractive autoencoder instead adds $\lambda\|\partial f_\theta(x)/\partial x\|_F^2$, penalizing changes in the code under small changes in the input. A sparse autoencoder can add a penalty on latent activations. These constraints have different effects even if the same reconstruction loss is used.
+
+![Original denoising autoencoder slide tracing clean input through corruption, encoding and reconstruction.](../Figures/slides/denoising-autoencoder-p020.png)
+
+*Noise changes the input supplied to the encoder, while the reconstruction target remains clean. Tied decoder weights are one possible design.*
 
 ### What the latent space preserves
 
@@ -207,8 +376,6 @@ An undercomplete linear autoencoder with squared reconstruction error can learn 
 | Compression, retrieval, and metric learning | Use codes for low-dimensional storage or similarity search. Reconstruction preserves useful variation, but labels or a similarity objective may be needed if semantic neighbors matter. |
 
 ## 5.4 Related neural architectures
-
-The earlier architecture material also introduced these models. The Chapter 5 syllabus lists the models in §§5.1–5.3.
 
 | Model | Mechanism and use |
 |---|---|
@@ -224,18 +391,17 @@ The earlier architecture material also introduced these models. The Chapter 5 sy
 
 ### Applications of the related architectures
 
-BAM recalls paired patterns, such as a noisy code and its associated symbol. Competitive models such as SOM and ART group similar vectors, while LVQ attaches labels to prototypes. In character recognition, a bitmap can be flattened into a binary vector. The model compares or transforms that vector and returns a class code. The reference compilation illustrates this workflow.
+BAM recalls paired patterns, such as a noisy code and its associated symbol. Competitive models such as SOM and ART group similar vectors, while LVQ attaches labels to prototypes. In character recognition, a bitmap can be flattened into a binary vector. The model compares or transforms that vector and returns a class code.
 
-## Practice
+## Exercises
 
 - **5A.** Store $(1,-1,1)$ with unscaled Hebbian weights. Starting from $(1,1,1)$, update neuron 2 and compute the energy change.
 - **5B.** Distinguish what gets updated during Hopfield recall, an RBM Gibbs step, and autoencoder training.
 - **5C.** In the CD-1 example, change the second visible draw from $0.4$ to $0.9$. With the same hidden draws, find the new reconstruction and second-weight update.
-
 - **5D.** Reproduce the eight-state Boltzmann table and calculate all three weight updates for data pattern 110 at learning rate 0.1.
 - **5E.** Recompute the autoencoder code and MSE; derive and update decoder weight $W_{d,11}$ at learning rate 0.1.
 
-## Answer checks
+## Answers
 
 | Exercise | Answer |
 |---|---|

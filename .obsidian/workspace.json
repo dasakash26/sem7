@@ -20,8 +20,23 @@
               "icon": "lucide-file",
               "title": "plan"
             }
+          },
+          {
+            "id": "66ed7c0da1e57589",
+            "type": "leaf",
+            "state": {
+              "type": "markdown",
+              "state": {
+                "file": "ML/05 - Probabilistic Networks/Probabilistic Networks.md",
+                "mode": "preview",
+                "source": false
+              },
+              "icon": "lucide-file",
+              "title": "Probabilistic Networks"
+            }
           }
-        ]
+        ],
+        "currentTab": 1
       }
     ],
     "direction": "vertical"
@@ -83,7 +98,7 @@
       }
     ],
     "direction": "horizontal",
-    "width": 260.875
+    "width": 270.31640625
   },
   "right": {
     "id": "8697c88fb17fc811",
@@ -161,7 +176,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "ML/plan.md",
+                "file": "ML/05 - Probabilistic Networks/Probabilistic Networks.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -188,53 +203,53 @@
       "bases:Create new base": false
     }
   },
-  "active": "6524959bf591c247",
+  "active": "66ed7c0da1e57589",
   "lastOpenFiles": [
-    "ML/CT2 Guide.md",
+    "ML/05 - Probabilistic Networks/sources/01_Hopfield_Networks.pdf",
+    "ML/05 - Probabilistic Networks/sources/05_Hopfield_and_Boltzmann_Reference.pdf",
+    "ML/05 - Probabilistic Networks/Probabilistic Networks.md",
+    "ML/Figures/slides/svm-feature-transformation-p025.png",
+    "ML/Figures/slides/svm-boundary-choice-p009.png",
+    "ML/Figures/slides/model-complexity-p005.png",
+    "ML/Figures/slides/fisher-projection-p022.png",
+    "ML/Figures/slides/dropout-subnetworks-p026.png",
+    "ML/Figures/slides/rnn-unfolding-p027.png",
+    "ML/Figures/slides/denoising-autoencoder-p020.png",
+    "ML/Figures/slides/rbm-connections-p089.png",
+    "ML/Figures/slides/hopfield-stable-pattern-p060.png",
+    "ML/Figures/slides",
+    "ML/07 - Classification/sources/08_Classification_Methods.pdf",
+    "ML/07 - Classification/sources/07_SVM_Margins_and_Kernels.pdf",
+    "ML/07 - Classification/sources/06_SVM_Linear_Margins.pdf",
+    "ML/07 - Classification/sources/05_Linear_Discriminant_Functions.pdf",
+    "ML/07 - Classification/sources/04_LDA_Tutorial.pdf",
+    "ML/07 - Classification/sources/03_Logistic_Regression_Derivation.pdf",
+    "ML/07 - Classification/sources/02_Logistic_Regression_Slides.pdf",
+    "ML/07 - Classification/sources/01_Linear_and_Logistic_Regression.pdf",
+    "ML/Figures/decision-tree-splits.svg",
+    "ML/06 - Deep Learning/Deep Learning.md",
     "ML/plan.md",
+    "ML/CT2 Guide.md",
     "ML/readme.md",
     "ML/Semester Practice.md",
     "ML/References/Syllabus.md",
-    "ML/05 - Probabilistic Networks/Probabilistic Networks.md",
-    "ML/yt/16 - ML Lecture 15 - Hopfield Nets (Part 1).en.srt",
-    "ML/yt/16 - ML Lecture 15 - Hopfield Nets (Part 1).en.vtt",
-    "ML/yt",
     "ML/01 - ML Basics/ML Basics.md",
     "DM/00_Course_Guide/SYLLABUS_MAP.md",
     "DM/00_Course_Guide/CT2_10_HOUR_GUIDE.md",
-    "DM/05_Classification_and_Prediction/sources/5_Classification.pdf",
     "DM/05_Classification_and_Prediction/Classification_and_Prediction.md",
-    "DM/06_Clustering_and_Outlier_Analysis/sources/6_Clustering.pdf",
     "DM/06_Clustering_and_Outlier_Analysis/Clustering_and_Outlier_Analysis.md",
-    "DM/06_Clustering_and_Outlier_Analysis/assets/kmeans-nonglobular-shapes.png",
-    "DM/06_Clustering_and_Outlier_Analysis/assets/dbscan-direct-reachability.png",
     "DM/03_Data_Warehousing/Data_Warehousing.md",
-    "DM/03_Data_Warehousing/sources/3_Data_Warehouse.pdf",
     "DM/00_Course_Guide/PYQ_TOPIC_INDEX.md",
     "DM/01_Data_Mining_Foundations/Data_Mining_Foundations.md",
     "DM/00_Course_Guide/IMPORTANT_TOPICS.md",
     "DM/04_Association_Rule_Mining/Association_Rule_Mining.md",
     "DM/07_Application_Oriented_Mining/Application_Oriented_Mining.md",
     "DM/02_Data_Preprocessing/Data_Preprocessing.md",
-    "DM/04_Association_Rule_Mining/sources/4_Association_Rules.pdf",
     "DM/04_Association_Rule_Mining/README.md",
     "DM/00_Course_Guide/FORMULA_ALGORITHM_CHECKLIST.md",
     "DM/00_Course_Guide/REVISION_PLAN.md",
     "DM/06_Data_Warehousing/Data_Warehousing.md",
-    "DM/07_Application_Oriented_Mining/sources",
-    "DM/07_Application_Oriented_Mining/assets",
-    "DM/07_Application_Oriented_Mining",
     "DM/99_References/README.md",
-    "DM/90_Past_Questions/README.md",
-    "DM/90_Past_Questions/COVERED_WORKED_EXAMPLES.md",
-    "DM/03_Data_Warehousing/assets/three-tier-architecture.png",
-    "DM/01_Data_Mining_Foundations/README.md",
-    "DM/06_Data_Warehousing/assets/three-tier-architecture.png",
-    "DM/08_Cluster_Analysis/assets/dbscan-direct-reachability.png",
-    "DM/08_Cluster_Analysis/assets/kmeans-nonglobular-shapes.png",
-    "DC/03_Global_State_and_Snapshots/assets/chandy-lamport-flowchart.png",
-    "DC/03_Global_State_and_Snapshots/assets/fifo-marker-boundary.png",
-    "DC/06_Distributed_Mutual_Exclusion/assets/suzuki-kasami-token-handoff.png",
-    "DC/06_Distributed_Mutual_Exclusion/assets/maekawa-vote-deadlock.png"
+    "DM/90_Past_Questions/README.md"
   ]
 }

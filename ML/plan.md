@@ -1,6 +1,6 @@
 # CT2 Study Plan
 
-**Modules 5–7 · three days · six study hours per day · 18 hours total.** Take breaks outside the study blocks. Lecture numbers follow the attached playlist summary. Open the [CT2 guide](CT2%20Guide.md) for the taught-topic outline, equations, examples and readiness checklist.
+**Modules 5–7 · three days · six study hours per day · 18 hours total.** Take breaks outside the study blocks. Lecture numbers follow the attached playlist summary. Open the [CT2 guide](CT2%20Guide.md) for scope, study priorities and the readiness checklist. The chapters contain the theory and worked examples.
 
 For every topic, explain the idea, trace a worked example, close the notes and solve it again. Use the [teacher chats](References/Teacher%20Chat%20Index.md) to resolve unclear steps.
 

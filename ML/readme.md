@@ -38,72 +38,72 @@ The notes group repeated material by topic and retain representative worked exam
 
 ### 1. Introduction to Machine Learning
 
-- [01_ML-UNIT-1-notes](01%20-%20ML%20Basics/sources/01_ML-UNIT-1-notes.pdf)
+- [Machine Learning Introduction](01%20-%20ML%20Basics/sources/01_Machine_Learning_Introduction.pdf)
 
 ### 2. Evaluating Hypotheses and Bayesian Learning
 
-- [bayes](02%20-%20Evaluation%20and%20Bayes/sources/bayes.pdf)
-- [Bayesian classification, pp. 31–41](02%20-%20Evaluation%20and%20Bayes/sources/lec04-BayesianLearning.pdf#page=31)
-- [module_5](02%20-%20Evaluation%20and%20Bayes/sources/module_5.pdf)
-- [Unit-4](02%20-%20Evaluation%20and%20Bayes/sources/Unit-4.pdf)
+- [Bayesian Methods](02%20-%20Evaluation%20and%20Bayes/sources/02_Bayesian_Methods.pdf)
+- [Bayesian classification, pp. 31–41](02%20-%20Evaluation%20and%20Bayes/sources/01_Bayesian_Learning.pdf#page=31)
+- [Bayesian Learning Notes](02%20-%20Evaluation%20and%20Bayes/sources/04_Bayesian_Learning_Notes.pdf)
+- [Bayesian Applications](02%20-%20Evaluation%20and%20Bayes/sources/03_Bayesian_Applications.pdf)
 
 ### 3. Artificial Neural Networks
 
-- [7-nn2-perceptron](03%20-%20Neural%20Networks/sources/7-nn2-perceptron.pdf)
-- [Artificial_Neural_Network](03%20-%20Neural%20Networks/sources/Artificial_Neural_Network.pdf)
-- [L03 Multilayer Perceptrons](03%20-%20Neural%20Networks/sources/L03%20Multilayer%20Perceptrons.pdf)
+- [Perceptron Learning](03%20-%20Neural%20Networks/sources/02_Perceptron_Learning.pdf)
+- [Neural Network Foundations](03%20-%20Neural%20Networks/sources/01_Neural_Network_Foundations.pdf)
+- [Multilayer Perceptrons](03%20-%20Neural%20Networks/sources/03_Multilayer_Perceptrons.pdf)
 
 ### 4. Feedforward Networks and Graphical Models
 
 #### Feedforward Networks
 
-- [03-4-5.feedforward-nets](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/03-4-5.feedforward-nets.pdf)
-- [13_Multilayer_Perceptron](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/13_Multilayer_Perceptron.pdf)
-- [6](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/6.pdf)
-- [7_BP_21](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/7_BP_21.pdf)
-- [chapter4v2](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/chapter4v2.pdf)
-- [ff](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/ff.pdf)
-- [ffnets-note](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/ffnets-note.pdf)
-- [in3050_lecture_07_ffnn_2025](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/in3050_lecture_07_ffnn_2025.pdf)
-- [Chain rule notes, pp. 4–8](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/lec21.notes.pdf#page=4)
-- [lec3.learning](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/lec3.learning.pdf)
+- [Neural Networks for NLP Slides](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/09_Neural_Networks_for_NLP_Slides.pdf)
+- [Multilayer Perceptrons](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/02_Multilayer_Perceptrons.pdf)
+- [Neural Networks for NLP](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/10_Neural_Networks_for_NLP.pdf)
+- [MLP and Backpropagation](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/05_MLP_and_Backpropagation.pdf)
+- [Feedforward Networks Chapter](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/08_Feedforward_Networks_Chapter.pdf)
+- [Feedforward Networks Collins](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/07_Feedforward_Networks_Collins.pdf)
+- [Perceptrons and Feedforward Nets](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/03_Perceptrons_and_Feedforward_Nets.pdf)
+- [Feedforward and Backpropagation](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/04_Feedforward_and_Backpropagation.pdf)
+- [Chain rule notes, pp. 4–8](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/06_Backpropagation_Derivation.pdf#page=4)
+- [Perceptron Learning](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/sources/01_Perceptron_Learning.pdf)
 
 #### Graphical Models
 
-- [7bf751479f644ef0785964a0151a1180cb48](04%20-%20Feedforward%20and%20Graphical%20Models/Graphical%20Models/sources/7bf751479f644ef0785964a0151a1180cb48.pdf)
-- [crf-tutorial](04%20-%20Feedforward%20and%20Graphical%20Models/Graphical%20Models/sources/crf-tutorial.pdf)
-- [HMM](04%20-%20Feedforward%20and%20Graphical%20Models/Graphical%20Models/sources/HMM.pdf)
-- [Lecture06](04%20-%20Feedforward%20and%20Graphical%20Models/Graphical%20Models/sources/Lecture06.pdf)
-- [ml-1-hmm-basic](04%20-%20Feedforward%20and%20Graphical%20Models/Graphical%20Models/sources/ml-1-hmm-basic.pdf)
+- [Markov Chains and HMMs](04%20-%20Feedforward%20and%20Graphical%20Models/Graphical%20Models/sources/04_Markov_Chains_and_HMMs.pdf)
+- [Conditional Random Fields](04%20-%20Feedforward%20and%20Graphical%20Models/Graphical%20Models/sources/05_Conditional_Random_Fields.pdf)
+- [HMM Inference and Learning](04%20-%20Feedforward%20and%20Graphical%20Models/Graphical%20Models/sources/02_HMM_Inference_and_Learning.pdf)
+- [HMM Algorithms](04%20-%20Feedforward%20and%20Graphical%20Models/Graphical%20Models/sources/03_HMM_Algorithms.pdf)
+- [HMM Foundations](04%20-%20Feedforward%20and%20Graphical%20Models/Graphical%20Models/sources/01_HMM_Foundations.pdf)
 
 ### 5. Probabilistic Neural Networks
 
-- [Srihari, autoencoders, pp. 9–29](05%20-%20Probabilistic%20Networks/sources/14.1%20Autoencoders.pdf#page=9)
-- [Hopfield recall, energy, and storage, pp. 23–78](05%20-%20Probabilistic%20Networks/sources/lec25.Hopfield.pdf#page=23)
-- [Hopfield and Boltzmann machines, pp. 17–81 and 97–192](05%20-%20Probabilistic%20Networks/sources/lec26.hopfieldBM.pdf#page=17)
-- [Salakhutdinov, autoencoders, pp. 4–34](05%20-%20Probabilistic%20Networks/sources/Lecture_Autoencoder_2019.pdf#page=4)
-- [Boltzmann sampling and RBM training, pp. 41–103](05%20-%20Probabilistic%20Networks/sources/lecx3.boltzmann.pdf#page=41)
+- [Srihari, autoencoders, pp. 9–29](05%20-%20Probabilistic%20Networks/sources/04_Autoencoders_Srihari.pdf#page=9)
+- [Hopfield recall, energy, and storage, pp. 23–78](05%20-%20Probabilistic%20Networks/sources/01_Hopfield_Networks.pdf#page=23)
+- [Hopfield and Boltzmann machines, pp. 17–81 and 97–192](05%20-%20Probabilistic%20Networks/sources/05_Hopfield_and_Boltzmann_Reference.pdf#page=17)
+- [Salakhutdinov, autoencoders, pp. 4–34](05%20-%20Probabilistic%20Networks/sources/03_Autoencoders_Salakhutdinov.pdf#page=4)
+- [Boltzmann sampling and RBM training, pp. 41–103](05%20-%20Probabilistic%20Networks/sources/02_Boltzmann_Machines_and_RBMs.pdf#page=41)
 
 ### 6. Modern Practical Deep Networks
 
-- [Deep feedforward networks, CNNs, and RNNs, pp. 4–60](06%20-%20Deep%20Learning/sources/1_DEEP%20LEARNING%20_%20DFFNN.pdf#page=4)
-- [Regularization, pp. 5–40](06%20-%20Deep%20Learning/sources/3_dl-regularization_B.pdf#page=5)
-- [Regularization and optimization, pp. 9–27](06%20-%20Deep%20Learning/sources/4_DL-regularization%20and%20optimization_A.pdf#page=9)
-- [Deep learning notes, pp. 16–30 and 40–50](06%20-%20Deep%20Learning/sources/5_whole%20DL.pdf#page=16)
-- [MIT sequence modeling, pp. 16–77](06%20-%20Deep%20Learning/sources/6_RNN-Sequence%20modelling.pdf#page=16)
-- [Karpathy RNN slides, pp. 49–75](06%20-%20Deep%20Learning/sources/RNN_AndrejKarpathy.pdf#page=49)
+- [Deep feedforward networks, CNNs, and RNNs, pp. 4–60](06%20-%20Deep%20Learning/sources/01_Deep_Learning_Overview.pdf#page=4)
+- [Regularization, pp. 5–40](06%20-%20Deep%20Learning/sources/03_Regularization_Methods.pdf#page=5)
+- [Regularization and optimization, pp. 9–27](06%20-%20Deep%20Learning/sources/02_Training_and_Regularization.pdf#page=9)
+- [Deep learning notes, pp. 16–30 and 40–50](06%20-%20Deep%20Learning/sources/06_Deep_Learning_Reference.pdf#page=16)
+- [MIT sequence modeling, pp. 16–77](06%20-%20Deep%20Learning/sources/04_RNN_Sequence_Modeling.pdf#page=16)
+- [Karpathy RNN slides, pp. 49–75](06%20-%20Deep%20Learning/sources/05_RNN_Visualization_Karpathy.pdf#page=49)
 - [Feedforward backpropagation refresher](04%20-%20Feedforward%20and%20Graphical%20Models/Feedforward%20Networks/Feedforward%20Networks.md#42-forward-pass-and-backpropagation)
 
 ### 7. Classification and Clustering
 
-- [LDA tutorial, pp. 7–31](07%20-%20Classification/sources/1_LDA.pdf#page=7)
-- [Zisserman, SVMs, pp. 10–19 and 30–39](07%20-%20Classification/sources/3_SVM%20classifier.pdf#page=10)
-- [Hoiem, regression and logits, pp. 5–27](07%20-%20Classification/sources/4_%20Logistic%20Regression%20and%20Linear%20Regression.pdf#page=5)
-- [Harvard CS109A, logistic regression, pp. 17–36](07%20-%20Classification/sources/5_logistic_regression1.pdf#page=17)
-- [Unit II notes, pp. 6–10](07%20-%20Classification/sources/6_ML%20UNIT-II%20NOTES_1.pdf#page=6)
-- [Fisher discriminants, pp. 3–13 and 21–28](07%20-%20Classification/sources/7_LDA-LDF.pdf#page=3)
-- [Rakotomalala, SVMs, pp. 5–33](07%20-%20Classification/sources/9_svm.pdf#page=5)
-- [Logistic regression notes, pp. 1–5](07%20-%20Classification/sources/notes_LogisticRegression.pdf)
+- [LDA tutorial, pp. 7–31](07%20-%20Classification/sources/04_LDA_Tutorial.pdf#page=7)
+- [Zisserman, SVMs, pp. 10–19 and 30–39](07%20-%20Classification/sources/06_SVM_Linear_Margins.pdf#page=10)
+- [Hoiem, regression and logits, pp. 5–27](07%20-%20Classification/sources/01_Linear_and_Logistic_Regression.pdf#page=5)
+- [Harvard CS109A, logistic regression, pp. 17–36](07%20-%20Classification/sources/02_Logistic_Regression_Slides.pdf#page=17)
+- [Unit II notes, pp. 6–10](07%20-%20Classification/sources/08_Classification_Methods.pdf#page=6)
+- [Fisher discriminants, pp. 3–13 and 21–28](07%20-%20Classification/sources/05_Linear_Discriminant_Functions.pdf#page=3)
+- [Rakotomalala, SVMs, pp. 5–33](07%20-%20Classification/sources/07_SVM_Margins_and_Kernels.pdf#page=5)
+- [Logistic regression notes, pp. 1–5](07%20-%20Classification/sources/03_Logistic_Regression_Derivation.pdf)
 
 ### 8. Reinforcement Learning
 

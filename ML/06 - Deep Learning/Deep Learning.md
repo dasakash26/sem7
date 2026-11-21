@@ -2,17 +2,30 @@
 
 [Contents](../readme.md)
 
-**CT2 reading order:** §§6.1–6.4 and the worked training, CNN and RNN calculations. Named architectures and the table of additional topics are broader reference material. [CT2 guide and checklist](../CT2%20Guide.md).
+[Architecture](#61-architecture-and-training) · [Training](#62-batch-size-loss-curves-and-regularization) · [CNN](#63-convolutional-networks) · [RNN](#64-recurrent-and-recursive-networks) · [Exercises](#exercises)
 
 ## 6.1 Architecture and training
 
-The feedforward network from Chapter 4 becomes deep as it stacks more hidden layers. Each nonlinear layer transforms features produced by the previous layer. The same forward pass, loss, and backpropagation apply. Depth raises compute costs and can make gradients unstable. Batch normalization commonly uses batch statistics in training and running statistics at inference. Momentum smooths the gradient direction. Adam also tracks squared gradients to scale each parameter's step.
+Suppose an image must be classified as a cat or a dog. The input is a list of pixel values, and the desired output is a class. A neuron combines inputs with weights, adds a bias and applies an activation function. A **layer** computes several such outputs; a **hidden layer** lies between input and final prediction.
+
+A **deep feedforward network** stacks hidden layers. Each calculates weighted sums plus biases, then applies a nonlinear activation. “Feedforward” means information moves toward the output without recurrent feedback. Forward propagation produces a prediction; backpropagation differentiates the loss; an optimizer updates the parameters. Depth supports hierarchical representations but increases computation and can make gradients unstable.
+
+Layer $l$ computes $h^{(l)}=\phi(W^{(l)}h^{(l-1)}+b^{(l)})$, starting from input $h^{(0)}$ and applying activation $\phi$. Nonlinearity matters: stacking only linear maps still produces a linear map.
+
+**Training cycle**
+
+1. **Forward pass:** compute prediction $\hat y$.
+2. **Loss:** compare $\hat y$ with target $y$ using $L$.
+3. **Backward pass:** backpropagation calculates parameter gradients.
+4. **Update:** the optimizer adjusts the parameters.
+
+**Inference** uses fixed learned parameters to make predictions.
 
 Deep models became practical as larger labeled datasets, faster parallel hardware, and improved optimization supported more layers and parameters. The same design choices create tradeoffs in training cost, interpretability, and the amount of data needed.
 
-### Perspectives and issues for a written answer
+### Perspectives and practical issues
 
-| Perspective | Explain with an example |
+| Perspective | Interpretation |
 |---|---|
 | Neural network | Stack learned affine transformations and nonlinearities: $h^{(l)}=\phi(W^{(l)}h^{(l-1)}+b^{(l)})$. Depth alone does not guarantee quality. |
 | Representation learning | Earlier image layers may detect edges, intermediate layers combine shapes, and later layers support object recognition. Features are learned jointly. |
@@ -20,7 +33,15 @@ Deep models became practical as larger labeled datasets, faster parallel hardwar
 | Computation | Matrix operations benefit from parallel hardware, while data size, parameter count and batch size affect time and memory. |
 | Applications and transfer | Learned representations support vision, speech and language tasks. Pretrained features may be adapted to a new task. |
 
-Discuss overfitting, biased or insufficient data, compute/energy cost, interpretability and unstable gradients as practical issues. A deep model may fit training data while generalizing poorly. A 70/15/15 split of 10,000 examples gives 7,000 training, 1,500 validation and 1,500 test examples. Fit parameters on training data, select settings/checkpoints with validation data, and reserve test data for final evaluation.
+**Practical issues:** overfitting, biased or insufficient data, computation and energy cost, interpretability and unstable gradients.
+
+| Split | Purpose | Example from 10,000 records |
+|---|---|---:|
+| Training | Fit parameters | 7,000 |
+| Validation | Select settings and checkpoints | 1,500 |
+| Test | Evaluate the selected model | 1,500 |
+
+A model can fit training data well while generalizing poorly.
 
 ### Capacity, initialization, and normalization
 
@@ -33,21 +54,31 @@ Discuss overfitting, biased or insufficient data, compute/energy cost, interpret
 
 ## 6.2 Batch size, loss curves, and regularization
 
-An **epoch** is one pass through the training data. With 1,000 examples and batch size 64 there are 16 updates if the last partial batch is retained. Batch gradient descent uses all training examples for one update. SGD uses one example. Mini-batch descent uses a subset, trading gradient noise against computational efficiency.
+Training uses input–target pairs $(x_i,y_i)$ to predict, measure error and update parameters. **Batch size** is the number of examples used to estimate one update. A **hyperparameter**, such as batch size or learning rate, is chosen outside these parameter updates.
 
-**Worked update.** For $\ell_i=\frac12(wx_i-y_i)^2$, the gradient is $(wx_i-y_i)x_i$. At $w=0$, examples $(1,2),(2,2),(1,0)$ give gradients $-2,-4,0$. At learning rate $0.1$:
+An **epoch** is one pass through the training data. With 1,000 examples and batch size 64, retaining the last partial batch gives 16 updates.
 
-| Batch for the first update | Mean gradient | New $w$ |
-|---|---:|---:|
-| All three examples | $-2$ | $0.2$ |
-| Second example alone | $-4$ | $0.4$ |
-| First and second examples | $-3$ | $0.3$ |
+| Method | Examples used per update | Updates per epoch |
+|---|---|---|
+| Batch GD (BGD) | Entire training set | 1 |
+| Stochastic GD (SGD) | One example | $N$ |
+| Mini-batch GD | A subset of size $B$ | $\lceil N/B\rceil$ when the partial batch is kept |
 
-The next update uses the new weights. The factor $\frac12$ cancels the 2 from differentiating a square.
+Mini-batches balance gradient noise against computational efficiency.
 
-### Complete BGD versus SGD versus mini batch epoch
+Gradient descent takes a small step opposite the loss's slope. If increasing a weight increases loss, the slope is positive and the weight decreases. The learning rate $\eta>0$ controls the step: very large steps can overshoot; very small steps learn slowly. For $\hat y=wx$, the chain rule gives
 
-Use data $(1,2),(2,4),(3,6)$, prediction $\hat y=wx$, no bias, $w_0=0$, learning rate 0.1 and per-example loss $\ell=\frac12(wx-y)^2$. The gradient is $(wx-y)x$; batch gradients below are means.
+$$
+\frac{\partial \ell}{\partial w}
+=\frac{\partial\ell}{\partial\hat y}\frac{\partial\hat y}{\partial w}
+=(\hat y-y)x.
+$$
+
+For $\ell_i=\frac12(wx_i-y_i)^2$, the gradient is $g_i=(wx_i-y_i)x_i$, and gradient descent uses $w\leftarrow w-\eta g$. The factor $1/2$ merely cancels the 2 from differentiation. Batch gradients below are means, and every new gradient uses the latest parameter values.
+
+### Worked example One training epoch
+
+Use data $(1,2),(2,4),(3,6)$, prediction $\hat y=wx$, no bias, $w_0=0$, learning rate 0.1 and per-example loss $\ell=\frac12(wx-y)^2$.
 
 **BGD:** At the same old weight 0, the three gradients are $-2,-8,-18$. Their mean is $-28/3$, giving one update $w'=0-0.1(-28/3)=0.93333$.
 
@@ -59,19 +90,20 @@ Use data $(1,2),(2,4),(3,6)$, prediction $\hat y=wx$, no bias, $w_0=0$, learning
 | $(2,4)$ | 0.2 | $(0.4-4)2=-7.2$ | 0.92 |
 | $(3,6)$ | 0.92 | $(2.76-6)3=-9.72$ | 1.892 |
 
-**Mini-batch:** For the first two examples at $w=0$, the mean gradient is $(-2-8)/2=-5$, so $w=0.5$. The last one-example batch gives gradient $(1.5-6)3=-13.5$, so $w=1.85$. These are different optimization paths; the largest first-epoch weight is not automatically the best method in general. SGD is noisy but updates frequently; mini-batches also use parallel hardware efficiently. For 100 examples, batch sizes 20 and 50 give five and two updates per epoch respectively. The factor $1/2$ in squared loss is convenient, not mandatory.
+**Mini-batch updates**
 
-| Method | Exam explanation |
-|---|---|
-| Early stopping | Select the checkpoint with lowest validation loss. If validation loss is $0.70,0.60,0.50,0.52,0.57$, restore epoch 3 |
-| L1 penalty | $\lambda\sum_i\lvert w_i\rvert$. Encourages sparse weights |
-| L2 penalty | $\frac{\lambda}{2}\sum_iw_i^2$. Adds $\lambda w_i$ to each weight gradient |
-| Inverted dropout | Multiply activations by a random mask and divide by the keep probability during training. At test time, use the unmasked activations |
-| Data augmentation | Apply training transformations that preserve the task's label |
+1. First two examples at $w=0$: mean gradient $(-2-8)/2=-5$, giving $w=0.5$.
+2. Last one-example batch: gradient $(1.5-6)3=-13.5$, giving $w=1.85$.
 
-For example, with keep probability $0.5$, activation vector $(2,4)$, and mask $(1,0)$, inverted dropout produces $(4,0)$ in that pass. Averaging over masks recovers the original activation in expectation.
+| Method | Weight after this epoch | Updates |
+|---|---:|---:|
+| BGD | 0.93333 | 1 |
+| SGD | 1.892 | 3 |
+| Mini-batch | 1.85 | 2 |
 
-### Optimizers and regularization choices
+**Interpretation:** these are different optimization paths; a larger first-epoch weight does not imply a better method. SGD updates frequently but noisily; mini-batches use parallel hardware efficiently. For 100 examples, batch sizes 20 and 50 give five and two updates per epoch.
+
+### Optimization methods
 
 | Optimizer | What changes from plain gradient descent |
 |---|---|
@@ -81,58 +113,134 @@ For example, with keep probability $0.5$, activation vector $(2,4)$, and mask $(
 | RMSProp | A moving average of squared gradients scales each coordinate and gradually forgets old gradients. |
 | Adam | Uses moving averages of gradients and squared gradients, with bias correction near initialization. |
 
-Deep-network objectives are generally nonconvex. Initialization, stochastic gradients, and the learning-rate schedule affect training. A saddle can have a small gradient while directions of both ascent and descent still exist. Gradient clipping bounds a large gradient norm and is useful when training recurrent models.
+**Optimization difficulties**
 
-For a gradient $g_t$, AdaGrad uses $s_t=s_{t-1}+g_t^2$, while RMSProp uses $s_t=\beta s_{t-1}+(1-\beta)g_t^2$. Both divide the coordinatewise gradient by $\sqrt{s_t}+\epsilon$. Adam uses a first-moment estimate in the numerator and a second-moment estimate in the denominator, with both moments corrected for their zero initialization.
+- **Nonconvex loss:** initialization and learning-rate schedules affect the solution.
+- **Saddle points:** the gradient can be small although both ascent and descent directions remain.
+- **Exploding gradients:** clipping bounds large gradient norms, especially in recurrent models.
 
-One momentum convention is $u_t=\beta u_{t-1}+g_t$, $w_t=w_{t-1}-\eta u_t$. Another uses a factor $(1-\beta)$ in the moving average; state the convention. Adam uses
+**Adaptive step sizes**
+
+- **AdaGrad:** $s_t=s_{t-1}+g_t^2$ accumulates squared gradients.
+- **RMSProp:** $s_t=\beta s_{t-1}+(1-\beta)g_t^2$ gradually forgets older gradients.
+- **Both:** divide the current gradient by $\sqrt{s_t}+\epsilon$ coordinatewise.
+- **Adam:** uses an averaged gradient in the numerator and averaged squared gradients in the denominator, correcting both for initialization bias.
+
+Momentum retains some previous update direction rather than responding only to the current slope. In Adam, $m_t$ tracks the average gradient and $v_t$ tracks squared gradients; these adjust direction and step scale separately for each parameter. The coefficients $\beta,\beta_1,\beta_2\in[0,1)$ control how much history is retained; $\epsilon>0$ prevents division by zero.
+
+One momentum convention is $u_t=\beta u_{t-1}+g_t$, $w_t=w_{t-1}-\eta u_t$. A moving-average convention instead includes $(1-\beta)$ in the gradient term. Adam uses
 
 $$
-m_t=\beta_1m_{t-1}+(1-\beta_1)g_t,\quad
-v_t=\beta_2v_{t-1}+(1-\beta_2)g_t^2,
+\begin{aligned}
+m_t&=\beta_1m_{t-1}+(1-\beta_1)g_t,\\
+v_t&=\beta_2v_{t-1}+(1-\beta_2)g_t^2.
+\end{aligned}
 $$
 
 $$
-\hat m_t=\frac{m_t}{1-\beta_1^t},\quad
-\hat v_t=\frac{v_t}{1-\beta_2^t},\quad
-w_t=w_{t-1}-\eta\frac{\hat m_t}{\sqrt{\hat v_t}+\epsilon}.
+\begin{aligned}
+\hat m_t&=\frac{m_t}{1-\beta_1^t}, & \hat v_t&=\frac{v_t}{1-\beta_2^t},\\
+w_t&=w_{t-1}-\eta\frac{\hat m_t}{\sqrt{\hat v_t}+\epsilon}.
+\end{aligned}
 $$
 
 Operations are coordinatewise. For a first scalar gradient $g_1=2$ and zero initial moments, bias correction gives $\hat m_1=2$, $\hat v_1=4$; with $\eta=0.1$ the first step is approximately $-0.1$ when $\epsilon$ is negligible.
 
-### Numerical regularization and loss curves
+### Regularization and generalization
 
-For weights $(2,-1,0.5)$ and $\lambda=0.1$, L1 penalty is $0.1(2+1+0.5)=0.35$, and L2 penalty under the $\lambda/2$ convention is $0.05(4+1+0.25)=0.2625$. L1 encourages sparse solutions; L2 discourages large weights. Elastic net combines both. A penalty is added to data loss, rather than replacing it.
+Training loss measures fit on training examples; validation loss supports model selection. High losses on both sets suggest underfitting or failed optimization. Falling training loss with rising validation loss suggests overfitting. Regularization restricts effective model complexity.
 
-Training loss measures fit on training examples; validation loss measures generalization during model selection. High training and validation losses can suggest underfitting or failed optimization. Falling training loss accompanied by rising validation loss suggests overfitting. For validation losses $(0.70,0.60,0.50,0.52,0.57)$ and patience 2, stop after epoch 5 and restore epoch 3. For inverted dropout, drop probability 0.5, activations $(0.8,0.4,0.9,0.2)$ and mask $(1,0,1,0)$ give $(1.6,0,1.8,0)$. Dropout is disabled at ordinary inference. Augmentation must preserve the relevant label; a transformation appropriate for one task may change another task's label.
+![Original slide comparing a linear, quadratic and highly oscillatory polynomial fit to the same data.](../Figures/slides/model-complexity-p005.png)
 
-| Additional slide topic | How to use it |
+*A more flexible fit can lower training error while introducing sharp oscillations; held-out data are needed to assess generalization.*
+
+A network can memorize training details that do not recur in new examples. Weight penalties discourage overly sensitive fits; their strength $\lambda\ge0$ controls the tradeoff between fitting the data and restricting weights. L1 grows with absolute weight size and can produce exact zeros; L2 grows quadratically, so large weights cost disproportionately more. Dropout trains with randomly missing activations, reducing dependence on particular combinations.
+
+| Method | Mechanism |
 |---|---|
-| Underfitting and overfitting | High training error suggests checking model capacity and optimization. A large validation gap suggests checking regularization, data quality, and the split. |
-| Parameter shrinkage and max-norm | L1 and L2 add penalties. Max-norm constrains a weight vector to stay within a specified norm. |
-| Dropout conventions | Inverted dropout scales retained activations during training. The original convention leaves training activations unscaled and multiplies them by the keep probability at inference. |
-| Data augmentation | Crops, flips, shifts, color changes, or erasing can improve robustness when they preserve labels. Apply random augmentation to training data. |
-| Transfer learning | Start from a pretrained representation, replace the task head, then choose which layers to fine-tune using validation. |
+| L1 | Add $\lambda\sum_i\lvert w_i\rvert$; encourages sparse solutions. |
+| L2 | Add $\frac\lambda2\sum_iw_i^2$; shrinks weights and adds $\lambda w_i$ to the gradient. |
+| Elastic net | Combine L1 and L2 penalties. |
+| Max-norm | Constrain a weight vector's norm. |
+| Early stopping | Restore the checkpoint with the lowest validation loss. |
+| Dropout | Randomly remove activations during training. |
+| Data augmentation | Transform training examples while preserving their labels. |
 
-**Early stopping in practice.** Keep the checkpoint with the lowest validation loss. A patience setting controls how many successive checks without an improvement trigger the stop. Restore the saved checkpoint after stopping. Shared representations can also act as a constraint in multitask or semi-supervised learning, provided the auxiliary task or unlabeled data is relevant.
+**Penalty calculation.** For $w=(2,-1,0.5)$ and $\lambda=0.1$, the L1 penalty is $0.1(2+1+0.5)=0.35$; the L2 penalty is $0.05(4+1+0.25)=0.2625$. Each is added to the data loss.
+
+![Original dropout slide showing a base network and multiple subnetworks created by dropping units.](../Figures/slides/dropout-subnetworks-p026.png)
+
+*Different masks select different subnetworks during training, all sharing the original learned parameters.*
+
+**Inverted dropout.** With drop probability $p$, mask $m_i\sim\operatorname{Bernoulli}(1-p)$ and activation vector $a$,
+
+$$
+\tilde a=\frac{m\odot a}{1-p}.
+$$
+
+The binary mask retains each activation with probability $1-p$. Dividing retained activations by $1-p$ preserves their expected contribution.
+
+For $a=(0.8,0.4,0.9,0.2)$, $m=(1,0,1,0)$ and $p=0.5$, the result is $(1.6,0,1.8,0)$. Scaling preserves each activation in expectation. Ordinary inference uses unmasked activations with no extra scaling. The alternative original convention leaves training activations unscaled and scales them at inference.
+
+**Early stopping.** Validation losses $(0.70,0.60,0.50,0.52,0.57)$ have their minimum at epoch 3. With patience 2 and validation each epoch, training stops after epoch 5 and restores epoch 3. The test set does not select the checkpoint.
+
+![Training loss continues falling while validation loss reaches its minimum at epoch 3.](../Figures/early-stopping-loss.svg)
+
+Augmentation may use crops, shifts, flips or color changes when these preserve the task's label. Transfer learning initializes from pretrained representations, replaces the task head and fine-tunes selected layers. Shared representations in multitask learning can also constrain a model when the tasks are related.
 
 ## 6.3 Convolutional networks
 
-A convolutional layer slides learned filters across the input, sums elementwise products over all input channels, adds a bias per filter, and produces one feature map per filter. A nonlinearity such as ReLU follows. Pooling reduces spatial size. Flattening turns a stack of maps into a vector for a dense layer. Global average pooling is another possible readout.
+Images contain spatial structure: neighboring pixels form edges and textures. A **convolutional neural network**, or CNN, looks for small local patterns and reuses the same detector across the image. A grayscale image has one intensity value per pixel; an RGB image has three **channels**, one per color component. A **filter** or kernel is a small array of learned weights.
+
+A convolutional layer slides learned filters across an input, sums elementwise products over all input channels and adds a bias per filter. Each filter produces a feature map. Shared filter weights detect a pattern at different locations.
+
+```text
+Image -> Convolution -> ReLU -> Pooling -> Flatten -> Dense -> Softmax
+         local features       smaller maps        scores    probabilities
+```
+
+Pooling reduces spatial size; flattening reshapes the maps without removing entries. Global average pooling is an alternative readout. Filters and dense layers learn weights; pooling and flattening do not.
+
+At each location, the filter and image patch are multiplied entry by entry and summed. A large response means that patch matches the filter's preferred pattern. **Stride** is the distance between successive positions. **Padding** adds border values so filters can also cover boundary regions. **ReLU**, $\max(0,z)$, keeps positive responses and replaces negative ones with zero.
 
 **Worked filter.** Take a $3\times3$ image with every row $(1,0,1)$ and a $2\times2$ filter with both rows $(1,-1)$. With stride 1, no padding, and zero bias, the first patch scores $1+1=2$ and the next patch scores $-1-1=-2$. Both feature-map rows are $(2,-2)$. ReLU gives rows $(2,0)$ and a $2\times2$ max pool gives 2.
 
 ![The top-left 2 by 2 patch scores 2. The feature map has rows (2, −2), ReLU gives rows (2, 0), and max pooling gives 2.](../Figures/cnn-filter.svg)
 
-The shaded patch produces the top-left feature-map value. Sliding the same filter produces the other three values.
+The output-size rule counts valid filter positions. After padding, a dimension has length $H+2P$; subtracting the filter length gives the available travel distance, division by stride counts moves, and adding 1 includes the starting position. The floor symbol $\lfloor\cdot\rfloor$ rounds down.
 
-For input height $H$, padding $P$, kernel height $K_h$, and stride $S$, the output height with unit dilation is $\lfloor(H+2P-K_h)/S\rfloor+1$. Width uses the corresponding dimensions. A layer has $(K_hK_wC_{\mathrm{in}}+1)C_{\mathrm{out}}$ trainable parameters when each filter has a bias. For a $32\times32\times3$ image with 16 filters of size $3\times3$, stride 1 and padding 1, the convolution gives $32\times32\times16$. A $2\times2$ pool with stride 2 gives $16\times16\times16$. Flattening yields 4,096 values. The convolution learns $(3\cdot3\cdot3+1)16=448$ parameters because each filter is reused at every position.
+**Output dimensions and parameter count**
 
-Activation functions also affect the feature map. ReLU clips negative values to zero. Leaky ReLU keeps a small negative-side slope. Sigmoid and tanh can saturate at large input magnitudes. At the classifier output, softmax converts logits into mutually exclusive class probabilities.
+With unit dilation, output height is
 
-### Complete convolution to prediction example
+$$
+H_{\rm out}=\left\lfloor\frac{H+2P-K_h}{S}\right\rfloor+1.
+$$
 
-Use the teacher-chat image and filter, sliding the filter as written without reversing it:
+Width follows the same rule. Each filter has $K_hK_wC_{\rm in}$ weights and one bias, so the layer learns $(K_hK_wC_{\rm in}+1)C_{\rm out}$ parameters.
+
+| Stage | Example shape or count |
+|---|---|
+| Input | $32\times32\times3$ |
+| Convolution | 16 filters, $3\times3$, stride 1, padding 1 → $32\times32\times16$ |
+| Pooling | $2\times2$ window, stride 2 → $16\times16\times16$ |
+| Flattening | 4,096 values |
+| Learned convolution parameters | $(3\cdot3\cdot3+1)16=448$ |
+
+The filter weights are reused at every spatial position.
+
+**Activation choices**
+
+| Function | Effect |
+|---|---|
+| ReLU | Replaces negative values by zero. |
+| Leaky ReLU | Retains a small negative-side slope. |
+| Sigmoid and tanh | Can saturate at large input magnitudes. |
+| Softmax | Converts class logits into mutually exclusive probabilities. |
+
+### Worked example From image to class
+
+Consider the image and filter below. The filter slides as written, without reversal:
 
 $$
 I=\begin{bmatrix}1&1&1&0&0\\1&1&1&0&0\\1&1&1&0&0\\0&0&0&1&1\\0&0&0&1&1\end{bmatrix},\quad
@@ -147,15 +255,38 @@ F=\begin{bmatrix}0&3&3\\0&1&1\\0&-1&-1\end{bmatrix}
 A=\begin{bmatrix}0&3&3\\0&1&1\\0&0&0\end{bmatrix}.
 $$
 
-With a $2\times2$ pooling window, **stride 1** and no padding, max pooling gives $\begin{bmatrix}3&3\\1&1\end{bmatrix}$; average pooling gives $\begin{bmatrix}1&2\\0.25&0.5\end{bmatrix}$. Row-major flattening of the max-pooled map gives $q=(3,3,1,1)$. A max pool at stride 2 would instead produce a single value, so the pooling stride must be stated.
+**Pooling and flattening.** Use a $2\times2$ window, stride 1 and no padding.
 
-For illustrative dense-layer weights $w_A=(0.5,0,0.5,0)$, $w_B=(0,0,0.5,0.5)$ and zero biases, logits are $z_A=2$ and $z_B=1$. Softmax gives $P(A)=e^2/(e^2+e)=0.7311$, $P(B)=0.2689$, so choose A. These weights illustrate inference; training learns both filter and dense weights. Pooling and flattening have no learned parameters. The filter responds to a brightness transition; a filter with the opposite sign reverses the response.
+| Operation | Output |
+|---|---|
+| Max pooling | $\begin{bmatrix}3&3\\1&1\end{bmatrix}$ |
+| Average pooling | $\begin{bmatrix}1&2\\0.25&0.5\end{bmatrix}$ |
+| Row-major flattening of max pool | $q=(3,3,1,1)$ |
+
+At stride 2, max pooling instead gives a single value. The pooling stride therefore changes the result.
+
+A **dense layer** combines every flattened feature into a score, or **logit**, for each class. Softmax converts logits to positive probabilities that sum to 1:
+
+$$
+P(k)=\frac{e^{z_k}}{\sum_j e^{z_j}}.
+$$
+
+Larger logits receive larger probabilities. The class with the largest probability is the prediction.
+
+**Dense layer and prediction.** With zero biases and illustrative weights:
+
+| Class | Weights | Logit | Softmax probability |
+|---|---|---:|---:|
+| A | $(0.5,0,0.5,0)$ | 2 | 0.7311 |
+| B | $(0,0,0.5,0.5)$ | 1 | 0.2689 |
+
+The prediction is **A**. The convolution filter detects a brightness transition; reversing its sign reverses the response.
 
 ### CNN design choices
 
-The operation used above is cross-correlation: deep-learning libraries usually slide the kernel without reversing it. Weight sharing lets a filter detect a pattern at different positions. Pooling or strided convolution lowers spatial resolution. Average pooling summarizes a region, while max pooling emphasizes its strongest response.
+The sliding operation above is cross-correlation, commonly called convolution in neural networks. Pooling or strided convolution reduces spatial resolution. Max pooling retains the strongest response, average pooling summarizes a region, and min pooling retains its smallest value.
 
-| Architecture | Design to remember |
+| Architecture | Design |
 |---|---|
 | LeNet and AlexNet | LeNet illustrates convolution, subsampling, and a classifier for digits. AlexNet scales the pattern to larger images and uses ReLU and dropout. |
 | VGG | Repeats small $3\times3$ kernels to build a larger receptive field through depth. |
@@ -166,7 +297,11 @@ A typical image pipeline resizes and normalizes input, uses training augmentatio
 
 ## 6.4 Recurrent and recursive networks
 
+For a sequence, order changes meaning: “good” and “not good” should produce different predictions. A **recurrent neural network** carries a running summary, its **hidden state**, from one input to the next. Each step combines the current input with that previous summary.
+
 A simple recurrent neural network (RNN) reuses $h_t=\tanh(W_xx_t+W_hh_{t-1}+b_h)$ at each time step. The current state carries information from earlier tokens. Unrolling the recurrence gives a computation graph. **Backpropagation through time** sums contributions to shared weights. Repeated Jacobian products can lead to vanishing or exploding gradients.
+
+The recurrent term $W_hh_{t-1}$ carries the previous state into the current computation. The activation $\tanh$ maps a score smoothly into $(-1,1)$ while preserving its sign. Output scores are formed from the new state and converted into a prediction. In BPTT, repeatedly multiplying small or large sensitivities can make gradients vanish or explode, making long-range learning difficult.
 
 **Worked RNN update.** Let the current word “good” have input $x_t=0.3$, with $h_t=\tanh(x_t+0.8h_{t-1})$ and output $\sigma(2h_t)$.
 
@@ -175,9 +310,7 @@ A simple recurrent neural network (RNN) reuses $h_t=\tanh(W_xx_t+W_hh_{t-1}+b_h)
 | $0$ | $0.291$ | $0.642$ |
 | $-0.762$ from negative context | $-0.300$ | $0.354$ |
 
-Unroll three steps as $h_1\to h_2\to h_3$. The third prediction depends on the first input through that chain. Backpropagation carries the third-step loss back along the same chain and adds its contributions to the shared weights. In a language model, softmax over vocabulary logits converts the final state into next-token probabilities.
-
-**Read an RNN across time.** Each input uses the same input weights. Each state transition uses the same recurrent weights.
+The unrolled computation shares input and recurrent weights across time:
 
 ```text
 x1          x2          x3
@@ -188,13 +321,45 @@ h1 --W_h--> h2 --W_h--> h3    forward states
 h1 <------- h2 <------- h3    backward gradients
 ```
 
-A long short-term memory network (LSTM) controls its cell state with gates and uses $c_t=f_t\odot c_{t-1}+i_t\odot\tilde c_t$. The forget gate can preserve part of an earlier state and the input gate can write new information. A recursive network instead combines child representations to build a parent representation, such as a phrase representation in a parse tree.
+![MIT slide showing an RNN unrolled over successive inputs with shared recurrent and input weights.](../Figures/slides/rnn-unfolding-p027.png)
 
-For the numerical RNN above, encode “not” as $-1$ and “good” as 0.3. From $h_0=0$, “not” gives $h_1=\tanh(-1)=-0.76159$; “good” then gives $h_2=\tanh(0.3+0.8(-0.76159))=-0.29978$, and $\sigma(2h_2)=0.35445$. “Good” alone instead gives $\sigma(2\tanh(0.3))=0.64167$. The previous state changes the prediction. These are hand-chosen illustrative inputs and weights, not a complete trained language system.
+*The slide labels hidden states $s$, input weights $W$ and recurrent weights $U$; these correspond to $h$, $W_x$ and $W_h$ in the equations here.*
 
-An RNN learns next-word scores from many training sequences: $z=W_yh_t+b_y$, followed by softmax over the vocabulary. A plausible completion after “a cup of” receives higher probability because learned weights reflect context; other words are not excluded by a hard-coded rule. One-hot encoding selects a vocabulary coordinate and does not itself encode meaning. Unrolled time steps reuse weights; additional stacked recurrent layers are a separate architectural choice. A bidirectional RNN uses both directions for a known input sequence, while causal generation cannot use unavailable future tokens.
+### Worked example Context changes the prediction
 
-**Recursive-network calculation:** Let two scalar child representations be $h_L=0.2,h_R=0.4$. With composition $h_P=\tanh(0.5h_L+h_R)$, the parent is $\tanh(0.5)\approx0.46212$. Combining that parent with a third child 0.1 using the same rule gives $\tanh(0.5(0.46212)+0.1)\approx0.31947$. Shared composition follows a tree; recurrent computation follows time. During training, gradients pass back through those composition operations.
+**Inputs:** “not” $=-1$, “good” $=0.3$, initial state $h_0=0$.
+
+1. **Process “not”:** $h_1=\tanh(-1)=-0.76159$.
+2. **Process “good” with context:** $h_2=\tanh(0.3+0.8(-0.76159))=-0.29978$.
+3. **Predict:** $\sigma(2h_2)=0.35445$.
+
+**Comparison:** “good” alone gives $\sigma(2\tanh(0.3))=0.64167$. The previous state changes the prediction. These inputs and weights are chosen to illustrate context dependence.
+
+**Sequence modeling**
+
+- **Next-word prediction:** learned scores $z=W_yh_t+b_y$ pass through softmax over the vocabulary. Context can make a completion after “a cup of” more likely; it is not a hard-coded allowed-word list.
+- **Input representation:** one-hot vectors identify vocabulary entries but do not themselves encode meaning.
+- **Depth versus time:** unrolled time steps reuse weights; stacked recurrent layers are a separate design choice.
+- **Bidirectional context:** both directions are available for a known sequence. Causal generation cannot use unavailable future tokens.
+
+### Recursive composition
+
+A recursive network combines child representations in a tree, using the same composition function at each internal node. Recurrent computation instead advances through time.
+
+```text
+       h_root
+       /    \
+     h_P    h_3
+    /   \
+  h_L   h_R
+```
+
+**Worked composition**
+
+1. **Combine two children:** $h_L=0.2$, $h_R=0.4$ give $h_P=\tanh(0.5h_L+h_R)=\tanh(0.5)\approx0.46212$.
+2. **Combine with a third child:** using the same rule with child value 0.1 gives $\tanh(0.5(0.46212)+0.1)\approx0.31947$.
+
+Shared composition follows a tree rather than time. Training propagates gradients backward through the composition operations.
 
 ### Sequence outputs and gated recurrence
 
@@ -205,7 +370,14 @@ An RNN learns next-word scores from many training sequences: $z=W_yh_t+b_y$, fol
 | One output per input step | Token tagging |
 | Input and output sequences of different lengths | Translation with an encoder and decoder |
 
-For next-token prediction, apply a softmax to the logits at the relevant step and compare it with the actual next token. Use the observed prefix during training. When generating, feed sampled or selected predictions back as inputs. A bidirectional RNN uses both past and future context for a known sequence, so it suits tagging. Causal generation can only use information available so far.
+Next-token training compares vocabulary probabilities with the observed next token. Generation feeds selected or sampled tokens back as subsequent inputs.
+
+A **long short-term memory network** (LSTM) adds a cell state $c_t$ and learned gates with values between 0 and 1. Multiplication by a gate controls how much information passes: 0 blocks it and 1 preserves it. Its state updates are
+
+$$
+c_t=f_t\odot c_{t-1}+i_t\odot\tilde c_t,\qquad
+h_t=o_t\odot\tanh(c_t).
+$$
 
 | Component | Role |
 |---|---|
@@ -218,9 +390,7 @@ For next-token prediction, apply a softmax to the logits at the relevant step an
 
 Character-level language models predict one character at a time. An $n$-gram baseline has a fixed context, whereas an RNN can carry earlier information in its state. Compare models on held-out next-character loss and probe specific long dependencies, such as closing a brace that opened many characters earlier. Plots of cell activations can reveal sensitivity to quotes or positions in a line, but such patterns are qualitative evidence.
 
-### Additional topics in the deep learning sources
-
-The broader lecture PDFs also introduce the following ideas. The course syllabus centers on §§6.1–6.4.
+### Related representation and generative models
 
 | Topic | Core idea |
 |---|---|
@@ -231,17 +401,16 @@ The broader lecture PDFs also introduce the following ideas. The course syllabus
 | Autoencoder and GAN hybrids | A reconstruction objective links a code to a specific input. An adversarial objective can encourage more realistic outputs or regularize latent codes. |
 | Other examples | ImageNet supplies labeled images for benchmarking and pretraining. Word2Vec learns distributional word vectors. WaveNet generates audio with causal convolutions. CNNs can also predict keypoint locations, such as joints. |
 
-## Practice
+## Exercises
 
 - **6A.** For 130 examples and batch size 32, find updates per epoch when the partial batch is kept. For validation losses $0.70,0.60,0.50,0.52,0.57$, select a checkpoint.
 - **6B.** For a $28\times28\times1$ input and eight $3\times3$ filters with stride 1, no padding, and one bias per filter, find the output shape and parameter count.
 - **6C.** Explain how two identical current inputs can produce different RNN outputs, and how a tree-structured recursive model differs.
-
 - **6D.** Reproduce the complete BGD/SGD/mini-batch epoch, including each intermediate gradient.
 - **6E.** Reproduce the $5\times5$ CNN example through max pooling at stride 1, flattening and softmax. Repeat pooling at stride 2.
 - **6F.** Trace the two recursive composition steps and explain how the computation differs from unrolling an RNN.
 
-## Answer checks
+## Answers
 
 | Exercise | Answer |
 |---|---|
