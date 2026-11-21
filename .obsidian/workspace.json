@@ -13,12 +13,12 @@
             "state": {
               "type": "markdown",
               "state": {
-                "file": "ML/readme.md",
+                "file": "ML/plan.md",
                 "mode": "source",
                 "source": false
               },
               "icon": "lucide-file",
-              "title": "readme"
+              "title": "plan"
             }
           }
         ]
@@ -161,7 +161,7 @@
             "state": {
               "type": "outline",
               "state": {
-                "file": "ML/readme.md",
+                "file": "ML/plan.md",
                 "followCursor": false,
                 "showSearch": false,
                 "searchQuery": ""
@@ -190,7 +190,15 @@
   },
   "active": "6524959bf591c247",
   "lastOpenFiles": [
+    "ML/CT2 Guide.md",
     "ML/plan.md",
+    "ML/readme.md",
+    "ML/Semester Practice.md",
+    "ML/References/Syllabus.md",
+    "ML/05 - Probabilistic Networks/Probabilistic Networks.md",
+    "ML/yt/16 - ML Lecture 15 - Hopfield Nets (Part 1).en.srt",
+    "ML/yt/16 - ML Lecture 15 - Hopfield Nets (Part 1).en.vtt",
+    "ML/yt",
     "ML/01 - ML Basics/ML Basics.md",
     "DM/00_Course_Guide/SYLLABUS_MAP.md",
     "DM/00_Course_Guide/CT2_10_HOUR_GUIDE.md",
@@ -216,22 +224,14 @@
     "DM/07_Application_Oriented_Mining/sources",
     "DM/07_Application_Oriented_Mining/assets",
     "DM/07_Application_Oriented_Mining",
-    "DM/99_References/data-mining-concepts-and-techniques-2nd-edition-impressao.pdf",
     "DM/99_References/README.md",
-    "DM/99_References/Data Warehousing and Data Mining Syllabus.docx",
-    "DM/99_References",
     "DM/90_Past_Questions/README.md",
     "DM/90_Past_Questions/COVERED_WORKED_EXAMPLES.md",
     "DM/03_Data_Warehousing/assets/three-tier-architecture.png",
     "DM/01_Data_Mining_Foundations/README.md",
     "DM/06_Data_Warehousing/assets/three-tier-architecture.png",
-    "DM/08_Cluster_Analysis/Cluster_Analysis.md",
-    "DC/06_Distributed_Mutual_Exclusion/Distributed Mutual Exclusion.md",
-    "DM/07_Classification_and_Prediction/Classification_and_Prediction.md",
-    "DM/data-association-share/04-association-rule-mining.md",
     "DM/08_Cluster_Analysis/assets/dbscan-direct-reachability.png",
     "DM/08_Cluster_Analysis/assets/kmeans-nonglobular-shapes.png",
-    "DM/DM_EXAM_NOTES.md",
     "DC/03_Global_State_and_Snapshots/assets/chandy-lamport-flowchart.png",
     "DC/03_Global_State_and_Snapshots/assets/fifo-marker-boundary.png",
     "DC/06_Distributed_Mutual_Exclusion/assets/suzuki-kasami-token-handoff.png",

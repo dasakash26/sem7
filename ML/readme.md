@@ -17,7 +17,7 @@ Open a chapter below or jump to the [chapter sources](#chapter-sources).
 
 For a written answer, define the model and state its assumptions. Draw the architecture or boundary if it helps. Write the governing equation, show one complete calculation, and interpret the result.
 
-[CT2 study plan](plan.md) · [Semester practice](Semester%20Practice.md) · [References](References/README.md)
+[CT2 topic outline and guide](CT2%20Guide.md) · [CT2 study plan](plan.md) · [Semester practice](Semester%20Practice.md) · [References](References/README.md)
 
 ## Past questions
 

@@ -2,6 +2,8 @@
 
 [Contents](../readme.md)
 
+**CT2 reading order:** §§5.1–5.3, including their worked calculations, cover the Module 5 topics in the supplied lecture outline. Use §5.4 for additional reference after the core topics. [CT2 guide and checklist](../CT2%20Guide.md).
+
 ## 5.1 Hopfield networks and associative recall
 
 A Hopfield network stores memories in symmetric weights. Use bipolar units $s_i\in\{-1,1\}$ and zero self-connections. For stored patterns $p^{(\mu)}$, the unscaled Hebbian rule is $w_{ij}=\sum_\mu p_i^{(\mu)}p_j^{(\mu)}$ for $i\ne j$. During recall, initialize the state with the noisy input and update one unit at a time. The local field is $h_i=\sum_jw_{ij}s_j+b_i$. Set the bit to the sign of the field and keep the old bit on a tie.
@@ -28,7 +30,25 @@ Before: (1, -1, -1, 1, -1)
 After:  (1, +1, -1, 1, -1)    Energy change = -8
 ```
 
-### Interference and memory capacity
+### Constructing the complete weight matrix
+
+For the single stored pattern $p=(1,1,-1,1,-1)^T$, form $pp^T$ and replace its diagonal by zero:
+
+$$
+W=\begin{bmatrix}
+0&1&-1&1&-1\\
+1&0&-1&1&-1\\
+-1&-1&0&-1&1\\
+1&1&-1&0&-1\\
+-1&-1&1&-1&0
+\end{bmatrix}.
+$$
+
+The matrix is symmetric. Five fully connected neurons have $5(5-1)/2=10$ undirected connections. With zero biases and noisy state $(1,-1,-1,1,-1)$, $h_2=1+1+1+1=4$, so neuron 2 flips. Before the flip, $E=-2$; after it, $E=-10$. The difference is $-8$, agreeing with the single-bit formula. The final pattern has fields $4p_i$, so every bit agrees with its field and the pattern is stable.
+
+For two flipped bits, start from $(1,-1,1,1,-1)$. Updating neuron 2 first gives $h_2=1-1+1+1=2$, restoring it to 1. Using that new state, $h_3=-1-1-1-1=-4$, restoring neuron 3 to $-1$. State the update order and always use the latest states. A zero-bias single-pattern network also stabilizes $-p$; it cannot promise recovery after arbitrarily many corrupted bits.
+
+### Interference between stored patterns
 
 Each Hebbian outer product favors states that align with its stored pattern. When several patterns contribute to the same weights, their effects add. For two bipolar patterns, their dot product measures overlap. Orthogonal patterns have zero dot product, while highly overlapping patterns can introduce cross-talk. The network can converge to a mixture or another spurious minimum. For a recall question, check the actual fields and the update order instead of assuming that the closest stored pattern will always win.
 
@@ -52,6 +72,52 @@ $$
 P(h_j=1\mid v)=\sigma(b_j+(W^Tv)_j),\qquad
 P(v_i=1\mid h)=\sigma(a_i+(Wh)_i).
 $$
+
+The restriction concerns connections, not layer sizes: an RBM may have more hidden units than visible units. A smaller hidden layer illustrates compression.
+
+### Complete Boltzmann energy and probability table
+
+For $0/1$ units, zero biases and weights $w_{12}=2,w_{13}=-1,w_{23}=-1$:
+
+$$
+E(x)=-2x_1x_2+x_1x_3+x_2x_3,\quad
+P(x)=\frac{e^{-E(x)}}{Z}\quad(T=1).
+$$
+
+| State | Energy | Unnormalized weight | Probability |
+|---|---:|---:|---:|
+| 000 | 0 | 1 | 0.07619 |
+| 001 | 0 | 1 | 0.07619 |
+| 010 | 0 | 1 | 0.07619 |
+| 011 | 1 | $e^{-1}$ | 0.02803 |
+| 100 | 0 | 1 | 0.07619 |
+| 101 | 1 | $e^{-1}$ | 0.02803 |
+| 110 | $-2$ | $e^2$ | 0.56298 |
+| 111 | 0 | 1 | 0.07619 |
+
+Thus $Z=5+2e^{-1}+e^2\approx13.1248$. Sum all eight unnormalized weights before dividing. State 110 has the lowest energy and highest probability, rather than probability 1. For $x_1=1,x_3=0$, the field of unit 2 is $h_2=2$. Its activation probability is $\sigma(2)\approx0.8808$: draw 0.72 gives state 1, while draw 0.95 gives state 0. Probabilities come from weights, biases and normalization; a machine does not store a separate probability lookup table in a large implementation.
+
+**Exact learning step for this small machine.** Suppose the data consist of pattern 110, with all three units observed. Data pair correlations are $(1,0,0)$ for pairs $(12,13,23)$. Under the current model:
+
+$$
+\langle x_1x_2\rangle_{\rm model}=P(110)+P(111)\approx0.63918,
+$$
+
+$$
+\langle x_1x_3\rangle_{\rm model}=P(101)+P(111)\approx0.10422,
+\quad \langle x_2x_3\rangle_{\rm model}\approx0.10422.
+$$
+
+At $T=1$, log-likelihood ascent uses $w_{ij}'=w_{ij}+\eta(\langle x_ix_j\rangle_{\rm data}-\langle x_ix_j\rangle_{\rm model})$. At $\eta=0.1$, the updated weights are approximately $(2.03608,-1.01042,-1.01042)$. All expectations here use the old weights. Bias updates similarly use $\eta(\langle x_i\rangle_{\rm data}-\langle x_i\rangle_{\rm model})$. With hidden units, the positive-phase averages include their distribution conditioned on the visible data.
+
+For a sampled CD-1 step, compute all states with the current parameters, then use
+
+$$
+\Delta W=\eta[v^0(h^0)^T-v^1(h^1)^T],\quad
+\Delta a=\eta(v^0-v^1),\quad \Delta b=\eta(h^0-h^1).
+$$
+
+These are one-sample estimates; averages over a batch or hidden probabilities can also estimate the terms. Positive-phase associations come from the data; negative-phase associations come from reconstruction. Learning changes the parameters, whereas a Gibbs reconstruction step alone samples states.
 
 **Worked CD-1 update.** Use two visible bits and one hidden bit, weights $(1,1)$, zero biases, and training pattern $v^0=(1,0)$.
 
@@ -77,9 +143,20 @@ The two products record whether the visible and hidden units are active together
 
 With the same forward-pass notation as Chapter 4, a feedforward sigmoid network applies $\sigma(Wx+b)$ layer by layer. In this example, the hidden outputs are $(0.8176,0.2689)$ and $\hat y=\sigma(2(0.8176)-0.2689-0.5)\approx0.7040$. With target 1 and half-squared error, $\delta_o\approx-0.0617$. At $\eta=0.1$, the first output weight rises from 2 to about $2.0050$.
 
+To reproduce that forward pass, use $x=(1,0)$, hidden scores $z_1=2x_1-x_2-0.5=1.5$ and $z_2=-x_1+2x_2=-1$, then output score $z_o=2\sigma(z_1)-\sigma(z_2)-0.5$. Sigmoid is bounded, nonlinear and differentiable, with $\sigma'(z)=\sigma(z)(1-\sigma(z))$. A normal feedforward sigmoid net outputs these continuous activations; sampling a binary state from a sigmoid probability is a separate operation in a stochastic model.
+
 An **autoencoder** learns to reproduce its input. The encoder computes $z=f_\theta(x)$ and the decoder computes $\hat x=g_\phi(z)$. Both sets of parameters receive gradients from a reconstruction loss. For real-valued outputs, squared error is common. Binary cross-entropy can be used for Bernoulli targets with sigmoid outputs.
 
 **Worked reconstruction.** For input $x=(1,0,1,0)$, encoder pre-activations $(1,0.6)$ give $z\approx(0.7311,0.6457)$. Apply sigmoid to each decoder score.
+
+The complete encoder is
+
+$$
+W_e=\begin{bmatrix}0.5&0.2&0.4&0.1\\0.1&0.6&0.3&0.5\end{bmatrix},\quad
+b_e=\begin{bmatrix}0.1\\0.2\end{bmatrix},\quad z=\sigma(W_ex+b_e).
+$$
+
+Its scores are $0.5+0.4+0.1=1$ and $0.1+0.3+0.2=0.6$. These are illustrative starting parameters, not weights inferred from the single input. The decoder parameters are the coefficients and biases in the following table.
 
 | Output | Decoder score | Activation |
 |---|---|---:|
@@ -106,6 +183,8 @@ $$
 $$
 
 The decoder receives the reconstruction gradient first. The encoder receives it through the decoder and the latent code.
+
+For the stated MSE, decoder score gradient $\delta_i=\frac{2}{4}(\hat x_i-x_i)\hat x_i(1-\hat x_i)$. For output 1, $\delta_1\approx-0.03266$. Hence $\partial L/\partial W_{d,11}=\delta_1z_1\approx-0.02388$, and a step at learning rate 0.1 changes that decoder weight from 0.8 to approximately 0.80239. For an encoder unit, $\delta_{e,j}=z_j(1-z_j)\sum_iW_{d,ij}\delta_i$, so its weights update using $\delta_{e,j}x_k$. Compute all gradients at the old parameters before applying the joint update. Reducing the loss trains both parts; it does not guarantee exact reconstruction of every input.
 
 | Variant | Constraint |
 |---|---|
@@ -153,6 +232,9 @@ BAM recalls paired patterns, such as a noisy code and its associated symbol. Com
 - **5B.** Distinguish what gets updated during Hopfield recall, an RBM Gibbs step, and autoencoder training.
 - **5C.** In the CD-1 example, change the second visible draw from $0.4$ to $0.9$. With the same hidden draws, find the new reconstruction and second-weight update.
 
+- **5D.** Reproduce the eight-state Boltzmann table and calculate all three weight updates for data pattern 110 at learning rate 0.1.
+- **5E.** Recompute the autoencoder code and MSE; derive and update decoder weight $W_{d,11}$ at learning rate 0.1.
+
 ## Answer checks
 
 | Exercise | Answer |
@@ -160,6 +242,9 @@ BAM recalls paired patterns, such as a noisy code and its associated symbol. Com
 | 5A | The field is $-2$, so the bit flips from $+1$ to $-1$. $\Delta E=-(-2)(-2)=-4$. |
 | 5B | Hopfield recall changes states deterministically. An RBM Gibbs step samples states. Autoencoder training changes weights by backpropagating reconstruction error. |
 | 5C | The reconstruction becomes $(1,0)$. The final hidden draw $0.8$ gives 0 since $\sigma(1)\approx0.731$. Both second-bit products are zero, so the sampled update is zero. |
+| 5D | $Z=13.1248$, $P(110)=0.56298$; updated weights $(2.03608,-1.01042,-1.01042)$, approximately. |
+| 5E | Code $(0.73106,0.64566)$, MSE $0.24149$, gradient $-0.02388$ and updated weight $0.80239$. |
+
 [Chapter sources](../readme.md#5-probabilistic-neural-networks)
 
 ---
